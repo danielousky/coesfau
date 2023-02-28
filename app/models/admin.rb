@@ -9,6 +9,7 @@ class Admin < ApplicationRecord
   enum role: [:super, :jefe_control_estudio, :director, :jefe_departamento, :asistente]
 
   # ASSOCIATIONS:
+  has_paper_trail
   belongs_to :user
   # accepts_nested_attributes_for :user
   

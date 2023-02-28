@@ -20,6 +20,7 @@ class Student < ApplicationRecord
   enum marital_status: ESTADOS_CIVILES
 
   # ASSOCIATIONS:
+  has_paper_trail
   #belons_to
   belongs_to :user
   # accepts_nested_attributes_for :user

@@ -3,6 +3,7 @@ class Teacher < ApplicationRecord
   # t.bigint "area_id", null: false
 
   # ASSOCIATIONS:
+  has_paper_trail
   belongs_to :user
   accepts_nested_attributes_for :user
 

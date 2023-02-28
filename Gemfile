@@ -109,5 +109,8 @@ group :test do
 end
 gem "cssbundling-rails"
 
-# Gema del Gestor de Correos
+# Gestor de Correo
 gem "mailersend-ruby"
+
+# Log History
+gem 'paper_trail'
