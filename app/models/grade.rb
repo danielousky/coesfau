@@ -75,7 +75,7 @@ class Grade < ApplicationRecord
   scope :left_not_enrolled_in_academic_process, -> (academic_process_id) {left_joins(:enroll_academic_processes).where('enroll_academic_processes.academic_process_id != ?', academic_process_id)}
 
 
-  scope :sort_by_numbers, -> () {order([efficiency: :desc, simple_average: :desc, weighted_average: :desc])}
+  scope :sort_by_numbers, -> () {order([simple_average: :desc, weighted_average: :desc])}
   
   scope :total_with_enrollments_in_period, -> (period_id) { with_enrollments_in_period(period_id).uniq.count }
   
