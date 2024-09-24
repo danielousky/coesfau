@@ -1,0 +1,22 @@
+
+%h1{style: 'text-align:center'} ATENCIÓN
+
+= "Estimad#{@user.genero} <b>#{@user.nick_name}</b>,".html_safe
+
+= "usted ha preinscrito las siguientes asignaturas en #{@school.name} para el período académico #{@period.name}:"
+
+%ul
+	- @subjects.each do |asig| 
+		%li{style: 'list-style-type: square;margin-bottom: 10px'}= asig.description_code
+
+%p Usted debe realizar el pago del arancel de inscripción y posteriormente deberá generar el reporte de pago de ese arancel. En ese reporte, usted deberá indicar el banco del cual realizó el pago del arancel, el número de la operación, el día, entre otros y deberá subir una foto legible del depósito, transferencia o comprobante de pago.
+
+%p Posteriormente, su pago será validado y confirmada su inscripción.
+%p{style: 'color: #946e01; background-color: #fdf1cc; border-color: #fdeab3; padding: 20px;'}
+	%b NOTA IMPORTANTE: 
+	El estudiante es el único responsable de su inscripción ante Secretaría, Facultad y Escuela. Cualquier error o imprecisión en los datos, falta de documentos, así como la violación del régimen de prelaciones y el exceso en el número de créditos a inscribir, que sean imputables al estudiante, invalidarán su inscripción sin posibilidad de apelación. Otra causal para invalidar esta inscripción es no cumplir con los lapsos de tiempo establecidos para realizar y reportar su pago. Para asegurarse de que la (s) materia (s) seleccionada (s) no está (n) afectada (s) por ese régimen, el Estudiante deberá consultar su récord académico (Kardex) y el listado de asignaturas y sus códigos en COES.
+    
+Saludos cordiales.
+
+
+

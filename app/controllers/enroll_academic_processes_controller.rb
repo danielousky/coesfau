@@ -175,7 +175,7 @@ class EnrollAcademicProcessesController < ApplicationController
       begin
         # info_bitacora "Envío de correo de Preinscripcion #{enroll_academic_process.estudiante_id} Preinscrito en el periodo #{enroll_academic_process.periodo.id} en #{enroll_academic_process.escuela.descripcion}.", Bitacora::CREACION, enroll_academic_process if EstudianteMailer.preinscrito(enroll_academic_process.estudiante.usuario, enroll_academic_process).deliver
 
-        EstudianteMailer.preinscrito(enroll_academic_process.estudiante.usuario, enroll_academic_process).deliver
+        StudentMailer.preinscrito(enroll_academic_process).deliver
         
       rescue Exception => e
         flash[:warning] = "Correo de completación de proceso de preinscripción no enviado: #{e}" 
