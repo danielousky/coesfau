@@ -1,18 +1,11 @@
 %h5.bg-info.p-1.text-center.mb-0 Agregar Nuevo Registro
 .border.p-3.mb-3
   .row.text-center.fw-bold
-    .col-3{title: 'Descripción de la asigntura'} Asignatura
-    .col-2{title: 'Identificador de la Sección'} Sección
-    .col-1.dual{style: 'display:none',title: 'Equivalencia'} EQ
-    
-    .col-1.numerica{style: 'display:none', title: 'Pérdida por Inasistencia'} PI
-    .col-1.dual.border-end{style: 'display:none', title: 'Retirada'} RT
-    .col-3.absoluta{style: 'display:none'} ¿Aprobado?
-    - if GeneralSetup.enabled_post_qualification?
-      .col-1.numerica{style: 'display:none', title: 'Tipo de Calificación'} Tipo
-    .col-1.numerica{style: 'display:none', title: 'Calificación'} Calif
-    .col-2 
-
+    .col-3{'data-bs-toggle': :tooltip, title: 'Descripción de la asigntura'} Asignatura
+    .col-4{'data-bs-toggle': :tooltip, title: 'Identificación y tipo de la Sección'} Sección
+    .col-2{'data-bs-toggle': :tooltip, title: 'Estado de calificación'} Estado
+    .col-2{'data-bs-toggle': :tooltip, title: 'Valor de calificación'} Calificación
+    .col-1
   = form_tag "/academic_records" do
     = hidden_field_tag 'academic_record[enroll_academic_process_id]', enroll.id
     .row
@@ -22,131 +15,94 @@
           %option{label: " ", value: ""}
           %option{value: ""}
 
+      .col-4
+        #divSectionCode.d-none
+          .row
+            .col-5
+              =# EXISTENTS SECTIONS CODES 
+              .input-group.text-center
+                =# select_tag :section_code, options_for_select(Section.codes), {class: "form-control", id: 'sections'} 
+                = select_tag :section_code, nil, {class: "form-control withSections", id: 'sections'} 
+                = link_to 'javascript:void(0)', id: 'addCodeBtn', class: 'input-group-text btn btn-success withSections', 'data-bs-toggle': :tooltip, title: 'Agregar Nuevo Código de la Sección', onclick: "toggleSectionCodes(false);" do
+                  %i.fa-regular.fa-plus
 
+              =# NEW SECTION CODE 
+              #newSection
+                .input-group.text-center
+                  = text_field_tag :section_code, {}, {placeholder: 'Código', class: "form-control newSection", oninput: "notSpecialChars(this)", maxlength: 3, id: :inputCode}        
+                  = link_to 'javascript:void(0)', id: 'restoreSections', class: 'input-group-text btn btn-success d-none newSection', 'data-bs-toggle': :tooltip, title: 'Códigos existentes', onclick: "toggleSectionCodes(true);" do
+                    %i.fa-regular.fa-rotate
+        
+            .col-6
+              =# SECTION TYPE
+              - options = Section.modalities.keys.join(".").titleize.split(".")
+              = select_tag 'section_type', options_for_select(options), {class: "form-control"}
       .col-2
-        =# EXISTENTS SECTIONS CODES 
-        #subjectSectionsCode.text-center
-          .input-group
-            =# select_tag :section_code, options_for_select(Section.codes), {class: "form-control", id: 'sessions'} 
-            = select_tag :section_code, nil, {class: "form-control", id: 'sessions'} 
+        -# options = ['Sin Calificar', 'Calificar', 'Pérdida por Inasistencia', 'Retirada']
+        =# select_tag 'status', options_for_select(options), {id: :numerica, class: "d-none form-control", onChange: 'showNumericValue(this);'}
 
-            = link_to 'javascript:void(0)', id: 'addCode', class: 'input-group-text btn btn-success', title: 'Agregar Identificador', onclick: "showSections(false);" do
-              %i.fa-regular.fa-plus
-
-        =# NEW SECTION CODE 
-        #newSection.text-center{style: 'display:none'}
-          .input-group
-            = text_field_tag :section_code, {}, {placeholder: 'Identificador', class: "form-control", oninput: "notSpecialChars(this)", maxlength: 3, id: :code}
-                    
-            = link_to 'javascript:void(0)', id: 'restoreSections', class: 'input-group-text btn btn-success', title: 'Códigos existentes', onclick: "showSections(true);" do
-              %i.fa-regular.fa-minus
-        - if false 
-          .radios
-            .form-check.form-check-inline
-              .mx-2 
-                = radio_button :options, nil, :eq, {class: 'form-check-input', checked: false}
-                EQ
-              .mx-2
-                = radio_button :options, nil, :pi, {class: 'form-check-input', checked: false}
-                PI
-              .mx-2  
-                = radio_button :options, nil, :rt, {class: 'form-check-input', checked: false}
-                RT
-
-
-      .col-1.text-center.dual{style: 'display:none', title: 'Marque esta casilla para indicar que la sección es de Equivalencia'}
-        =# EQUIVALENCIA
-        = check_box_tag :eq, nil, false, {class: 'checkeable btn-check', autocomplete: :off, onclick: "disabledByCheck(this);"}
-        %label.btn.btn-outline-primary{for: :eq}
-          .fa-regular.fa-check      
-      = # CHECKS
-      .col-1.text-center.numerica{style: 'display:none', title: 'Marque esta casilla para indicar Pérdida por Inasistencia'}
-        =# PI'S
-        = check_box_tag :pi, nil, false, {class: 'checkeable btn-check', onclick: "disabledByCheck(this);", autocomplete: :off}
-        %label.btn.btn-outline-primary{for: :pi}
-          .fa-regular.fa-check
-
-      .col-1.text-center.dual.border-end{style: 'display:none', title: 'Marque esta casilla para indicar Retiro'}
-        =# RETIRO
-        = check_box_tag :rt, nil, false, {class: 'checkeable btn-check', onclick: "disabledByCheck(this);", autocomplete: :off}
-        %label.btn.btn-outline-primary{for: :rt}
-          .fa-regular.fa-check
-
-      .col-3.text-center.absoluta{style: 'display:none', title: 'Marque esta casilla si aprobó el curso'}
-        =# ABSOLUTAS
-        = check_box_tag :approved, nil, false, {class: 'btn-check', autocomplete: :off}
-        %label.btn.btn-outline-primary{for: :approved}
-          .fa-regular.fa-check
-      - if GeneralSetup.enabled_post_qualification?
-        .col-1.numerica{style: 'display:none'}
+        -# options = ['Aplazada', 'Aprobada']
+        = select_tag 'academic_record[status]', options_for_select([]), {class: "d-none form-control", onChange: 'showNumericValue(this);'}        
+      .col-2
+        .row#NumericValue
           =# NUMERICAS
-          = select_tag '[qualifications]type_q', options_for_select(Qualification.type_qs.keys), {class: "form-control qualificable text-capitalize"}
-      - else
-        = hidden_field_tag '[qualifications]type_q', :final
-      .col-1.numerica{style: 'display:none'}
-        =# QUALIFICATION VALUE
-        =# text_field_tag '[qualifications]value', {}, {placeholder: 'Cal', class: "form-control qualificable", required: true, step: 1, in: 0...21, oninput: 'onlyValidQ(this);'}
-        = select_tag '[qualifications]value', options_for_select( (1..20).map{|a| sprintf("%02i", a)}), {class: "form-control qualificable", include_blank: '--'}
-      .col-2
+          .col-7.pe-0
+            - types_q = GeneralSetup.enabled_post_qualification? ? Qualification.type_qs.keys.join(".").titleize.split(".") : {'Final': :final}
+            = select_tag '[qualifications]type_q', options_for_select(types_q), {class: "form-control numericValue d-none"}
+          =# QUALIFICATION VALUE
+          .col-5.px-0
+            = select_tag '[qualifications]value', options_for_select( (1..20).map{|a| sprintf("%02i", a)}), {class: "form-control numericValue d-none", required: true}
+      .col-1
         =# GUARDAR
-        %button.btn.bt.btn-primary.float-end{type: :submit}
+        %button.btn.bt.btn-primary.float-end.d-none{id: 'submitBtn', type: :submit, 'data-bs-toggle': :tooltip, title: 'Guardar'}
           %i.fa-regular.fa-check
-          Guardar
 
 :javascript
+
+  function showNumericValue(ele){
+    let value = ele.value == 'Calificar';
+    let numericValue = $('.numericValue');
+    toggleRequireActiveOption(numericValue, !value);
+  }
 
   function notSpecialChars(ele){
     var node = $(ele);
     node.val(node.val().toUpperCase().replace(/[^A-Za-z0-9]/g,''))
-  }  
-
-  function onlyValidQ(ele){
-    var node = $(ele);
-    node.val(node.val().replace(/[^0-9]/g,'') );
   }
 
-  function disabledByCheck(ele) {
-    let elem = $(ele);
-    let checked = elem.prop('checked');
-    
-    $('.checkeable').prop('disabled', checked);
+  function toggleSectionCodes(enabled){
 
-    elem.prop('disabled', false);
-    let qa = $(`.qualificable`);
-    if (elem.prop('id') != 'eq') {
-      
-      qa.prop('disabled', checked);
-      qa.prop('readonly', checked);
-      qa.prop('required', false);
-    } else {
-      qa.prop('required', checked);
-    }
+    let withSections = $('.withSections');
+    let newSection = $('.newSection');
+
+    toggleRequireActiveOption(withSections, !enabled);
+    toggleRequireActiveOption(newSection, enabled);
+
   }
 
-  function showSections(value){
-    let sections = $('#sessions');
-    let codeInput = $('#code');
-    if (value) {
-      $('#subjectSectionsCode').show();
-      $('#newSection').hide();
-      codeInput.hide();
-    } else {
-      $('#subjectSectionsCode').hide();
-      $('#newSection').show();
-      codeInput.show();
-
-    }
-    sections.prop('disabled', !value);
-    sections.prop('readonly', !value);
-    sections.prop('required', value);
-    codeInput.prop('disabled', value);
-    codeInput.prop('readonly', value);
-    codeInput.prop('required', !value);
+  function toggleRequireActiveOption(ele, value) {
+    ele.prop('disabled', value);
+    ele.prop('readonly', value);
+    ele.prop('required', !value);
+    ele.toggleClass('d-none', value)
   }
 
   function getSections(ele){
-    let sections = $('#sessions');
+    let sections = $('#sections');
+    let status = $('#academic_record_status');
+    let submitBtn = $('#submitBtn');
+    let numericValue = $('.numericValue');
+
+
     sections.find('option').remove();
+    status.find('option').remove();
+
+    toggleRequireActiveOption(submitBtn, true);
+    toggleRequireActiveOption(sections, true);
+    toggleRequireActiveOption(status, true);
+    toggleRequireActiveOption(numericValue, true);
+
+    $('#restoreSections').addClass('d-none')
     $.ajax({
       url: `/subjects/${ele.value}`,
       type: 'GET',
@@ -155,50 +111,38 @@
         xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'));
       },
       success: function(data) {
-        let codeBtn = $('#addCode');
+  
+        let addCodeBtn = $('#addCodeBtn');
         let toAppend = '';
-        let codeInput = $('#code')
+        let inputCode = $('#inputCode');
+        let restoreSections = $('#restoreSections');
+        let haveSections = data.section_codes.length > 0;
 
-        if (data.section_codes.length > 0) {
+        if (haveSections) {
           $.each(data.section_codes,function(i,o){
-             toAppend += '<option>'+o+'</option>';
-            });
+            toAppend += '<option>'+o+'</option>';
+          });
 
           sections.find('option').end().append(toAppend);
-          showSections(true);
-          codeBtn.prop('disabled', false);
-          codeBtn.removeClass('disabled');
+          toastr.success('Secciones previas encontradas');
+        }else{
+          toastr.error('Sin secciones previas');
+        }
+        toggleRequireActiveOption(sections, !haveSections);
+        toggleRequireActiveOption(addCodeBtn, !haveSections);
+        toggleRequireActiveOption(inputCode, haveSections);
+
+        $('#divSectionCode').removeClass('d-none');
+        let optionsStatus;
+        if (data.qualification_type == 'absoluta') {
+          optionsStatus = '<option>Aprobada</option><option>Aplazada</option>'
 
         }else{
-          showSections(false);
-          toastr.error('Sin secciones previas');
-          $('#subjectSectionsCode').hide();
-          $('#newSection').show(); 
-          sections.prop('required', false);
-          codeInput.prop('required', true);
-          $('#restoreSections').hide();
-
+          optionsStatus = "<option>Sin Calificar</option><option>Calificar</option><option>Pérdida por Inasistencia</option><option>Retirado</option>"
         }
-        let abs = $('.absoluta');
-        let num = $('.numerica');
-        let qa = $('#_qualificationsvalue');
-        let tq = $('#_qualificationstype_q');
-
-        $('.dual').show();
-        
-        if (data.qualification_type == 'absoluta') {
-          abs.show();
-          num.hide(); 
-          qa.prop('required', false);
-          qa.prop('disabled', true);
-          tq.prop('disabled', true);
-
-        }else {
-          abs.hide(); 
-          num.show();
-          qa.prop('disabled', false);
-          tq.prop('disabled', false);
-        }
+        status.find('option').end().append(optionsStatus);
+        toggleRequireActiveOption(status, false);
+        toggleRequireActiveOption(submitBtn, false);
 
       },
       error: function(json) {

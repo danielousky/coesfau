@@ -25,59 +25,43 @@ class AcademicRecordsController < ApplicationController
 
   # POST /academic_records or /academic_records.json
   def create
-
+    params[:academic_record][:status] = params[:academic_record][:status].delete(" ").underscore.to_sym
+    if (params[:academic_record][:status].to_s.eql? 'calificar')
+      params[:academic_record][:status] = 'sin_calificar'
+    end
     @academic_record = AcademicRecord.new(academic_record_params)
 
     if enroll_academic_process = @academic_record.enroll_academic_process
       if subject = Subject.find(params[:course][:subject_id])
         if academic_process = @academic_record.academic_process
           course = Course.find_or_create_by(subject_id: subject.id, academic_process_id: academic_process.id)
+          params[:section_type] = params[:section_type].delete(" ").underscore.to_sym
+          
 
           section = Section.find_or_initialize_by(course_id: course.id, code: params[:section_code])
-
-          if section.new_record?
-            section.capacity = 30
-            section.modality = params[:eq] ? :equivalencia : :nota_final
-          end
+          # section.modalities: {nota_final: 0, equivalencia_externa: 1, equivalencia_interna: 2, suficiencia: 3}
+          
+          section.modality = params[:section_type]
+          section.capacity = 30 if section.new_record?
 
           if section.save 
             @academic_record.section = section
 
-            if subject.absoluta?
-              if params[:approved]
-                @academic_record.status = :aprobado
-              else
-                # @academic_record.status = :aplazado
-                if params[:pi]
-                  @academic_record.status = :perdida_por_inasistencia
-                elsif params[:rt]
-                  @academic_record.status = :retirado
-                elsif params[:eq]
-                  @academic_record.status = :equivalencia
-                else
-                  @academic_record.status = :aplazado
-                end
-              end
-            elsif params[:pi]
-              @academic_record.status = :perdida_por_inasistencia
-            elsif params[:rt]
-              @academic_record.status = :retirado
-            end
+            @academic_record.status = :sin_calificar if @academic_record.status.eql? 'calificar'
             if @academic_record.save
               flash[:success] = 'Se guardó el historial ' 
-              if subject.numerica? and @academic_record.sin_calificar?
-                if params[:qualifications] and !params[:qualifications][:value].blank?
-                  qa = @academic_record.qualifications.new
-                  qa.type_q = params[:qualifications][:type_q]
-                  qa.value = params[:qualifications][:value]
-                  if qa.save
-                    flash[:success] += '¡Calificación cargada!'
-                  else
-                    flash[:danger] = "Error al intentar guardar la calificación: #{qa.errors.full_messages.to_sentence}"
-                  end
+              if subject.numerica? and !@academic_record.pi? and !@academic_record.rt? and params[:qualifications] and !params[:qualifications][:value].blank?
+                qa = @academic_record.qualifications.new
+                qa.type_q = params[:qualifications][:type_q].delete(" ").underscore.to_sym
+
+                qa.value = params[:qualifications][:value]
+                if qa.save
+                  flash[:success] += '¡Calificación cargada!'
                 else
-                  flash[:warning] = 'No se especificó la calificación'
+                  flash[:danger] = "Error al intentar guardar la calificación: #{qa.errors.full_messages.to_sentence}"
                 end
+              else
+                flash[:warning] = 'No se especificó la calificación'
               end
             else
               flash[:danger] = "Error al intentar guardar el histórico: #{@academic_record.errors.full_messages.to_sentence}"
