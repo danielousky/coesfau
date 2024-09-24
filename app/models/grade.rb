@@ -262,7 +262,8 @@ class Grade < ApplicationRecord
       end
 
       # Buscamos las asignaturas sin prelación
-      ids_subjects_independients = self.school.subjects.independents.not_inicial.ids
+      # ids_subjects_independients = self.school.subjects.independents.not_inicial.ids
+      ids_subjects_independients = self.school.subjects.independents.ids
 
       # Sumamos todas las ids ()
       asignaturas_disponibles_ids = ids_subjects_positives + ids_subjects_independients
