@@ -36,7 +36,7 @@
             .col-6
               =# SECTION TYPE
               - options = Section.modalities.keys.join(".").titleize.split(".")
-              = select_tag 'section_type', options_for_select(options), {class: "form-control"}
+              = select_tag 'section_type', options_for_select(options), {class: "form-control", onChange: "$('#academic_record_status').toggleClass('d-none')"}
       .col-2
         -# options = ['Sin Calificar', 'Calificar', 'Pérdida por Inasistencia', 'Retirada']
         =# select_tag 'status', options_for_select(options), {id: :numerica, class: "d-none form-control", onChange: 'showNumericValue(this);'}

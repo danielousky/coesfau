@@ -311,7 +311,7 @@ class Grade < ApplicationRecord
   # TOTALS CREDITS:
 
   def credits_completed_by_type tipo
-    academic_records.aprobado.or(academic_records.equivalencia).by_subject_types(tipo).total_credits
+    academic_records.aprobado.by_subject_types(tipo).total_credits
   end
 
   def total_credits
@@ -338,8 +338,8 @@ class Grade < ApplicationRecord
     self.academic_records.total_credits_equivalence
   end
 
-  def total_credits_approved_or_eq
-    academic_records.aprobado.or(academic_records.equivalencia).total_credits
+  def total_credits_approved_not_eq
+    self.academic_records.aprobado.total_credits_not_equivalence
   end
 
   def total_credits_by_type_subject tipo
@@ -366,7 +366,7 @@ class Grade < ApplicationRecord
   end  
 
   def total_subjects_approved_or_eq
-    academic_records.aprobado.or(academic_records.equivalencia).total_subjects
+    academic_records.aprobado.total_subjects
   end
 
   def total_subjects_retiradas

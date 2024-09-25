@@ -5,7 +5,7 @@ class AcademicRecord < ApplicationRecord
   # t.integer "status"
 
   # ENUMERIZE:
-  enum status: [:sin_calificar, :aprobado, :aplazado, :retirado, :perdida_por_inasistencia, :equivalencia]
+  enum status: [:sin_calificar, :aprobado, :aplazado, :retirado, :perdida_por_inasistencia]
 
   # HISTORY:
   has_paper_trail on: [:create, :destroy, :update]
@@ -100,9 +100,12 @@ class AcademicRecord < ApplicationRecord
   scope :total_subjects_approved, -> {aprobado.total_subjects}
   scope :total_subjects_equivalence, -> {equivalencia.total_subjects}
 
+  scope :equivalencia, -> {joins(:section).where('sections.modality': :equivalencia)}
+  scope :not_equivalencia, -> {joins(:section).where('sections.modality': :nota_final)}
   scope :total_credits_coursed, -> {coursed.total_credits}
   scope :total_credits_approved, -> {aprobado.total_credits}
   scope :total_credits_equivalence, -> {equivalencia.total_credits}
+  scope :total_credits_not_equivalence, -> {not_equivalencia.total_credits}
   
   scope :weighted_average, -> {joins(:subject).joins(:qualifications).definitives.coursed.sum('subjects.unit_credits * qualifications.value')}
 
@@ -132,8 +135,18 @@ class AcademicRecord < ApplicationRecord
 
   scope :sort_by_user_name, -> {joins(:user).order('users.last_name asc, users.first_name asc')}
 
-
+  before_save :set_status_by_EQ_modality_section
   # FUNCTIONS:
+
+  def equivalencia?
+    section&.equivalencia?
+  end
+  def set_status_by_EQ_modality_section
+    if equivalencia?
+      self.status = :aprobado
+      self.qualifications.destroy_all  
+    end
+  end
 
   def student_name_with_retired
     aux = user.reverse_name
