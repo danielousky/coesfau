@@ -1,0 +1,67 @@
+- params = request.params.except(:action, :controller, :utf8, :page, :per_page, :format, :authenticity_token)
+- visible_fields = @model_config.export.with(view: self, object: @abstract_model.model.new, controller: self.controller).visible_fields
+
+= form_tag export_path(params.merge(all: true)), method: 'post', class: "main", data: {turbo: false}, target: "_blank", rel: "noopener" do
+  = hidden_field 'csv_options[encoding_to]', 'utf-8' 
+  = hidden_field 'csv_options[generator][col_sep]', ';' 
+
+  %input{:name => "send_data", :type => "hidden", :value => "true"}/
+  %fieldset#fields_to_export.mb-3
+    %legend
+      %i.fas.fa-chevron-down
+      = t('admin.export.select')
+    .form-group.control-group
+      .col-sm-12
+        .checkbox
+          %label{:for => "check_all"}
+            = check_box_tag 'all', 'all', true, { id: 'check_all' }
+            %b
+              = t('admin.export.select_all_fields')
+    .control-group.row
+      .col-sm-12
+        .card.bg-light.my-2.reverse-selection{:rel => "tooltip", :role => "button", :title => "#{t('admin.export.click_to_reverse_selection')}"}
+          .card-body.p-2
+            %b= t('admin.export.fields_from', name: @model_config.label_plural.downcase)
+        .controls
+          .row
+            - visible_fields.select{ |f| !f.association? || f.association.polymorphic? }.each do |field|
+              - list = field.virtual? ? 'methods' : 'only'
+              .checkbox.col-sm-3.my-1
+                - if field.association? && field.association.polymorphic?
+                  %label{:for => "schema_#{list}_#{field.method_name}"}
+                    = check_box_tag "schema[#{list}][]", field.method_name, true, { id: "schema_#{list}_#{field.method_name}" }
+                    = field.label + " [id]"
+                  - polymorphic_type_column_name = @abstract_model.properties.detect {|p| field.association.foreign_type == p.name }.name
+                  %label{:for => "schema_#{list}_#{polymorphic_type_column_name}"}
+                    = check_box_tag "schema[#{list}][]", polymorphic_type_column_name, true, { id: "schema_#{list}_#{polymorphic_type_column_name}" }
+                    = field.label + " [type]"
+                - else
+                  %label{:for => "schema_#{list}_#{field.name}"}
+                    = check_box_tag "schema[#{list}][]", field.name, true, { id: "schema_#{list}_#{field.name}" }
+                    = field.label
+    - visible_fields.select{ |f| f.association? && !f.association.polymorphic? }.each do |field|
+      - fields = field.associated_model_config.export.with(controller: self.controller, view: self, object: (associated_model = field.associated_model_config.abstract_model.model).new).visible_fields.select{ |f| !f.association? }
+      .control-group.row
+        .col-sm-12
+          .card.bg-light.my-2.reverse-selection{:rel => "tooltip", :role => "button", :title => "#{t('admin.export.click_to_reverse_selection')}"}
+            .card-body.p-2
+              %b= t('admin.export.fields_from_associated', name: field.label.downcase)
+          .controls
+            .row
+              - fields.each do |associated_model_field|
+                - list = associated_model_field.virtual? ? 'methods' : 'only'
+                .checkbox.col-sm-3.my-1
+                  %label{:for => "schema_include_#{field.name}_#{list}_#{associated_model_field.name}"}
+                    = check_box_tag "schema[include][#{field.name}][#{list}][]", associated_model_field.name, true, { id: "schema_include_#{field.name}_#{list}_#{associated_model_field.name}" }
+                    = associated_model_field.label
+
+  .form-actions.row.justify-content-end.mb-3
+    .col-sm-offset-2.col-sm-10
+      %input{:name => "return_to", :type => :hidden, :value => "#{(params[:return_to].presence || request.referer)}"}/
+      %button.btn.btn-primary{:name => "csv", :type => "submit"}
+        %i.fas.fa-check
+        = t("admin.export.confirmation", name: 'csv')
+      %button.btn.btn-light{:name => "_continue", :type => "submit"}
+        %i.fas.fa-times
+        = t("admin.form.cancel")
+
