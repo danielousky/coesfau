@@ -66,16 +66,23 @@ module RailsAdmin
 
                   header, encoding, output = CSVConverter.new(@objects, @schema).to_csv(params[:csv_options].permit!.to_h)
 
+                  
                   response.headers.delete('Content-Length')
+                  # response.headers['Content-Type'] = "text/event-stream;charset=#{encoding}; #{'header=present' if header}"
+                  response.headers['Content-Type'] = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
                   response.headers['Cache-Control'] = 'no-cache'
-                  response.headers['Content-Type'] = "text/event-stream;charset=#{encoding}; #{'header=present' if header}"
                   response.headers['X-Accel-Buffering'] = 'no'
                   response.headers['ETag'] = '0'
-                  response.headers['Last-Modified'] = '0'
-                  aux = "Reporte Coes - #{I18n.t("activerecord.models.#{params[:model_name]}.other")&.titleize} #{DateTime.now.strftime('%d-%m-%Y_%I:%M%P')}.csv"
-                  response.headers['Content-Disposition'] = "attachment; filename=#{aux}"
+                  aux = "Reporte Coes - #{I18n.t("activerecord.models.#{params[:model_name]}.other")&.titleize} #{DateTime.now.strftime('%d-%m-%Y_%I:%M%P')}.xlsx"
+                  response.headers['Content-Disposition'] = "attachment; filename=\"#{aux}\""
+
+                  xls_adapter = XlsAdapter.new(output)
                   
-                  response.stream.write output
+                  # send_data xls_stream.read,
+                  #           type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                  #           filename: aux
+
+                  response.stream.write xls_adapter.to_xls.read
                 ensure
                   response.stream.close
                 end

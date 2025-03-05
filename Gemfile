@@ -64,6 +64,11 @@ group :development, :production do
 
   gem 'wicked_pdf'
 
+  
+  # gem 'axlsx'
+  gem 'axlsx', '~> 2.0', '>= 2.0.1'
+
+
   # gem 'prawn', '~> 2.4'
   # gem 'prawn-table'
 
