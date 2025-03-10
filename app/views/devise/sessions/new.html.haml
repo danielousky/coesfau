@@ -34,7 +34,8 @@
         %input#exampleCheck1.form-check-input.boolean.optional{type: :checkbox, name: 'user[remember_me]'}
         %label.form-check-label{for: "exampleCheck1"} Recuérdame
     .text-primary-hover
-      = link_to "Recuperar contraseña", new_user_password_path
+      =# link_to "Recuperar contraseña", new_user_password_path
+      = link_to "Recuperar contraseña", '#', onclick: "alert('Opción en mantenimiento. Por favor, escriba al correo controldeestudiosfau@gmail.com para gestionar la recuperación de su contraseña')" 
   / Button
   .align-items-center.mt-0
     .d-grid
