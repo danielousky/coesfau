@@ -237,6 +237,10 @@ class Grade < ApplicationRecord
     academic_records.aprobado.any?
   end
 
+  def subject_approved? id_subject
+    academic_records.aprobado.joins(:subject).where('subject.id': id_subject).any?
+  end
+
   def subjects_offer_by_dependent
 
     if is_new? or !any_approved?

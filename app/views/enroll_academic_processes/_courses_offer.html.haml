@@ -5,60 +5,49 @@
       %th.text-center.table-primary{colspan: 5} Asignaturas Ofertadas
       
     %tr.table-primary
-      %th.headers{style: 'width: 4%', scope: :col} #
       %th.headers{style: 'width: 56%', scope: :col}
         .input-group.input-group-sm{style: 'width: 100%;'}
-          %span.badge.bg-dark.align-middle{title: 'Total asignaturas disponibles'}= courses.count
-          %span#inputGroup-sizing-sm.input-group-text 
-            = "Asignaturas:"
-          %input.form-control{"aria-describedby" => "inputGroup-sizing-sm", "aria-label" => "", type: "text", onkeyup: 'filterSections(this);', placeholder: 'Buscar', autofocus: true, id: 'filterOffer', name: 'filterOffer'}
+          %input.form-control{"aria-describedby" => "inputGroup-sizing-sm", "aria-label" => "", type: "text", onkeyup: 'filterSections(this);', placeholder: 'Buscar Asignatura', autofocus: true, id: 'filterOffer', name: 'filterOffer'}
 
       %th.headers{style: 'width: 5%', scope: :col} Sem
       %th.headers{style: 'width: 5%', scope: :col} Créd
       %th.text-center.headers{style: 'width: 30%;', scope: :col} Sección
   %tbody
-    - courses.each_with_index do |course, i|
-      - ac = grade.academic_records.joins(:course).where('courses.id': course.id).first
-      - section_id = ac&.section_id # ? ac.section_id : nil
-      - approved = false
-      - desc_qualification = nil
-      
-      - if ac&.retirado?
-        - trStatus = 'text-muted border table-danger'      
-      - elsif ac&.aprobado?
-        - approved = true
-        - desc_qualification = ac.q_value_to_02i
-        - trStatus = 'text-muted border table-success'
-      - elsif (!section_id.nil?)
-        - trStatus = 'table-success'
-      - else
-        - trStatus = ''
-
-      - if grade.school.code&.eql? 'EACRV'
-        - # OJO: CONDICIÓN PARTICULAR DE ARQUITACTURA!!!!
+    - courses.each do |course|
+      - approved_record = grade.academic_records.aprobado.joins(:subject).where('subject.id': course.subject_id).first
+      - if !grade.subject_approved? course.subject_id
         - if grade.student.Caracas?
           - sections = course.sections.where.not("sections.code ILIKE '%E%'")#.con_cupos
         - else
           - sections = course.sections.where("sections.code ILIKE '%E%'")#.con_cupos
-      - else
-        - sections = course.sections#.con_cupos
-      - # ATENCIÓN: El scope "con_cupos" no va, ya que es importante seleccionar secciones que haya inscrito o con cupos juntas. Esto con el objetivo de que luego pueda cambiar secciones
 
-      - if sections.any?
-        - subject = course.subject
-        %tr{class: "#{trStatus}"}
-          %td.align-middle.text-right= i+1
-          %td.align-middle
-            = course.subject_desc_with_pci
-            = ac.badge_approved.html_safe if ac&.badge_approved
-            = ac.badge_status.html_safe if ac&.retirado?
+        - if current_record = grade.academic_records.joins(:course).where('courses.id': course.id).first
+          - section_id = current_record&.section_id # ? ac.section_id : nil
+          - if current_record&.retirado?
+            - trStatus = 'text-muted border table-danger'
+            - @course_desc = current_record.badge_status.html_safe
+          - elsif (!section_id.nil?)
+            - trStatus = 'table-success'
+          - else
+            - trStatus = ''
 
-          %td.align-middle.text-center= subject.ordinal
-          %td.align-middle.text-center= subject.unit_credits
-          %td.align-middle.pl-3
-            - unless approved
-              - if ac&.retirado?
-                .text-center.text-muted= 'RETIRADO'
+        - elsif last_tryed_record = grade.academic_records.joins(:subject, :academic_process).where('subject.id': course.subject_id, 'academic_processes.id': course&.academic_process&.process_before_id).order('academic_processes.name': :desc).first  
+          - if last_tryed_record&.pi?
+            - trStatus = 'text-muted border table-danger'
+            - @course_desc = "<span class= 'badge bg-danger'> Pérdida por Inasistencia en #{course&.academic_process&.process_before&.period&.name} </span>".html_safe
+
+        - # ATENCIÓN: El scope "con_cupos" no va, ya que es importante seleccionar secciones que haya inscrito o con cupos juntas. Esto con el objetivo de que luego pueda cambiar secciones
+        - if sections.any?
+          - subject = course.subject
+          %tr{class: "#{trStatus}"}
+            %td.align-middle= course.subject_desc_with_pci
+            %td.align-middle.text-center= subject.ordinal
+            %td.align-middle.text-center= subject.unit_credits
+            %td.align-middle.pl-3              
+              - if current_record&.retirado?
+                .text-center.text-muted= @course_desc
+              - elsif last_tryed_record&.pi?
+                .text-center.text-muted= @course_desc
               - else
                 - sections = sections.select{|s| s.has_capacity? or s.has_academic_record? grade.student_id or s.id.eql? section_id}
                 - disable_promt = ''
@@ -68,3 +57,4 @@
                   - disable_promt = 'Sin cupos'
                   %b.pl-3.text-muted
                     = collection_select(nil, nil, sections, nil, nil, { prompt: disable_promt}, {class: "form-control", style: 'width: 100%', disabled: true, readonly: true, name: "sections_void#{course.id}", id: "sections_void#{course.id}"})
+
