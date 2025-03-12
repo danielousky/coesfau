@@ -555,7 +555,7 @@ class Section < ApplicationRecord
 
       field :capacity do
         html_attributes do
-          {:min => 1}
+          {:min => 0}
         end
       end
 
