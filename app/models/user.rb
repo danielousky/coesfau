@@ -154,12 +154,16 @@ class User < ApplicationRecord
   #FUNCTIONS:
 
   # PERSONAL AND CONTACT DETAILS
+  def email_temp?
+    email.include? 'mailinator'
+  end
+
   def empty_info?
     empty_any_image? or empty_personal_info?
   end
 
   def empty_personal_info?
-    (self.email.blank? or self.first_name.blank? or last_name.blank? or self.number_phone.blank? or self.sex.blank?)
+    (self.email.blank? or self.email_temp? or self.first_name.blank? or last_name.blank? or self.number_phone.blank? or self.sex.blank?)
   end
 
   def empty_any_image?
