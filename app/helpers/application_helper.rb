@@ -50,7 +50,7 @@ module ApplicationHelper
 	end
 
 	def label_link_with_tooptip(href, klazz, content, title, placement='top')
-
+		klazz += ' text-dark' if klazz.include? 'bg-info'
 		content_tag :a, href: href, rel: :tooltip, 'data-bs-toggle': :tooltip, 'data-bs-placement': placement, 'data-bs-original-title': title do
 			capture_haml{"<span class='text-center badge #{klazz}'>#{content}</span>".html_safe }
 		end	

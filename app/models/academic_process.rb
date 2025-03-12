@@ -267,9 +267,10 @@ class AcademicProcess < ApplicationRecord
         pretty_value do 
           user = bindings[:view]._current_user
           if (user&.admin&.authorized_read? 'Section')
-            %{<a href='/admin/section?query=#{bindings[:object].period.name}' title='Total Secciones'><span class='badge bg-info'>#{value} en #{bindings[:object].courses.count} Cursos</span></a>}.html_safe
+            href = '/admin/section?query=#{bindings[:object].period.name}'
+            ApplicationController.helpers.label_link_with_tooptip(href, 'badge bg-info', "#{value} en #{bindings[:object].courses.count} Cursos", 'Total Secciones')
           else
-            %{<span class='badge bg-info'>#{value}</span>}.html_safe
+            %{<span class='badge bg-info text-dark'>#{value}</span>}.html_safe
           end
         end
       end
@@ -295,8 +296,9 @@ class AcademicProcess < ApplicationRecord
         label 'En Asignaturas'
         pretty_value do
           user = bindings[:view]._current_user
-          if (user and user.admin and user.admin.authorized_read? 'AcademicRecord')          
-            %{<a href='/admin/academic_record?query=#{bindings[:object].period.name}' title='Totas Inscripciones En Asignaturas'><span class='badge bg-info'>#{value}</span></a>}.html_safe
+          if (user and user.admin and user.admin.authorized_read? 'AcademicRecord')
+            href = "/admin/academic_record?query=#{bindings[:object].period.name}"
+            ApplicationController.helpers.label_link_with_tooptip(href, 'badge bg-info', "#{value}", 'Totas Inscripciones En Asignaturas')            
           else
             %{<span class='badge bg-info'>#{value}</span>}.html_safe
           end
