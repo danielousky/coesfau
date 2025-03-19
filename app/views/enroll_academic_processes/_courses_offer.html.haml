@@ -14,6 +14,7 @@
       %th.text-center.headers{style: 'width: 30%;', scope: :col} Sección
   %tbody
     - courses.each do |course|
+      - @short_desc = ""
       - approved_record = grade.academic_records.aprobado.joins(:subject).where('subject.id': course.subject_id).first
       - if !grade.subject_approved? course.subject_id
         - if grade.student.Caracas?
@@ -31,22 +32,25 @@
           - else
             - trStatus = ''
 
-        - elsif last_tryed_record = grade.academic_records.joins(:subject, :academic_process).where('subject.id': course.subject_id, 'academic_processes.id': course&.academic_process&.process_before_id).order('academic_processes.name': :desc).first  
-          - if last_tryed_record&.pi?
+        - elsif last_tryed_record = grade.academic_records.joins(:subject, :academic_process).where('subject.id': course.subject_id, 'academic_processes.id': @process_before&.id).order('academic_processes.name': :desc).first  
+          - if last_tryed_record&.pi? #and !current_user&.admin?
             - trStatus = 'text-muted border table-danger'
-            - @course_desc = "<span class= 'badge bg-danger'> Pérdida por Inasistencia en #{course&.academic_process&.process_before&.period&.name} </span>".html_safe
-
+            - before_process_name = @process_before&.period&.name
+            - @course_desc = "<span class= 'badge bg-danger'> Pérdida por Inasistencia en #{before_process_name} </span>".html_safe
+            - @short_desc = "(PI en #{before_process_name})"
         - # ATENCIÓN: El scope "con_cupos" no va, ya que es importante seleccionar secciones que haya inscrito o con cupos juntas. Esto con el objetivo de que luego pueda cambiar secciones
         - if sections.any?
           - subject = course.subject
           %tr{class: "#{trStatus}"}
-            %td.align-middle= course.subject_desc_with_pci
+            %td.align-middle
+              = course.subject_desc_with_pci
+              = @short_desc
             %td.align-middle.text-center= subject.ordinal
             %td.align-middle.text-center= subject.unit_credits
             %td.align-middle.pl-3              
               - if current_record&.retirado?
                 .text-center.text-muted= @course_desc
-              - elsif last_tryed_record&.pi?
+              - elsif last_tryed_record&.pi? and !current_user&.admin?
                 .text-center.text-muted= @course_desc
               - else
                 - sections = sections.select{|s| s.has_capacity? or s.has_academic_record? grade.student_id or s.id.eql? section_id}

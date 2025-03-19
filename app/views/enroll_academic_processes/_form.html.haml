@@ -48,7 +48,7 @@
     = msgDanger.html_safe
     %button.btn-close{"aria-label": "Close", "data-bs-dismiss": :alert, type: :button}
 
-
+- @process_before = academic_process&.process_before
 = form_tag('/enroll_academic_processes/enroll', id: "#{grade.id}Form", class: 'form-horizontal', multipart: true) do
   = hidden_field_tag 'grade_id', grade.id
   = hidden_field_tag 'academic_process_id', academic_process.id  
