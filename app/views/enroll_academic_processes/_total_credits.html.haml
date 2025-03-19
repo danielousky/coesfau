@@ -8,9 +8,13 @@
       %td{style: 'width: 66%;text-align:right;'} Total Créditos Seleccionados:
       %td
         %b.text-right#totalNumberOfCredits= totalCreditsReserved
-        = "de #{limitCredits} permitidos."
+        = "de #{limitCredits} permitidos"
+        - if current_user&.admin? and session[:rol].eql? 'admin'
+          (Hasta 3 extra) 
     %tr{class: tableColor}
       %td{style: 'width: 66%;text-align:right;height: 10px;'} Total Asignaturas Seleccionadas:
       %td
         %b.text-right#totalNumberOfSubjects= totalSubjectsReserved
-        = "de #{limitSubjects} permitidas."
+        = "de #{limitSubjects} permitidas "
+        - if current_user&.admin? and session[:rol].eql? 'admin'
+          (Hasta 1 extra) 

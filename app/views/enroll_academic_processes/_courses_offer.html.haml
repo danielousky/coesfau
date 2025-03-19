@@ -53,7 +53,10 @@
               - elsif last_tryed_record&.pi? and !current_user&.admin?
                 .text-center.text-muted= @course_desc
               - else
-                - sections = sections.select{|s| s.has_capacity? or s.has_academic_record? grade.student_id or s.id.eql? section_id}
+                - if current_user&.admin?
+                  - sections = sections.select{|s| s.has_capacity_admin? or s.has_academic_record? grade.student_id or s.id.eql? section_id}
+                - else
+                  - sections = sections.select{|s| s.has_capacity? or s.has_academic_record? grade.student_id or s.id.eql? section_id}
                 - disable_promt = ''
                 - if sections.any?
                   = collection_select("sections", nil, sections, :id, :description_with_quotes, {selected: section_id, include_blank: 'Seleccione sección o libere cupo'}, {class: "form-control selectInscripcion", style: 'width: 100%', titulo: subject.desc_to_select, credits: subject.unit_credits, gradeId: grade.id, courseId: course.id, pci: pcis, onchange: "selected(this);", name: "sections_course_id_#{course.id}", id: "sections_course_id_#{course.id}"})

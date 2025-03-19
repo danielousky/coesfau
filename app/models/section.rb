@@ -170,6 +170,10 @@ class Section < ApplicationRecord
     self.capacity and (self.capacity > 0) and (self.total_students < self.capacity)
   end
 
+  def has_capacity_admin?
+    self.capacity and (self.capacity > 0) and (self.total_students < self.capacity+2)
+  end  
+
   def set_default_values_by_import
     self.capacity = 50 
     self.modality =  (self.code.eql? 'U') ? :equivalencia : :nota_final

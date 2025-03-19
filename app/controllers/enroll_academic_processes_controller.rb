@@ -78,25 +78,35 @@ class EnrollAcademicProcessesController < ApplicationController
         # grade = Grade.find params[:grade_id]
         course = section.course
         academic_process = course.academic_process
-        limit_credits = academic_process.max_credits
-        limit_subjects = academic_process.max_subjects
-
+        
         # BUSCAR INSCRIPCIÓN:
         enroll_academic_process = EnrollAcademicProcess.find_or_initialize_by(academic_process_id: academic_process.id, grade_id: params[:grade_id])
-
+        
         if enroll_academic_process.new_record?
           enroll_academic_process.permanence_status = :regular
           enroll_academic_process.enroll_status = :reservado 
           enroll_academic_process.save!
         end
-
+        
         if enroll_academic_process
           # INTENTO POR TOTAL DE CREDITOS Y ASIGNATURAS: 
+          if current_user&.admin? and session[:rol].eql? 'admin'
+            # Totales para Admin
+            limit_credits = academic_process.max_credits+3
+            limit_subjects = academic_process.max_subjects+1
+            capacity = section.has_capacity_admin?
+            
+          else
+            # Totales para Student
+            limit_credits = academic_process.max_credits
+            limit_subjects = academic_process.max_subjects
+            capacity = section.has_capacity?
+          end
+          overlapped = false
+          
           credits_attemp = enroll_academic_process.total_credits_not_retired+course.subject.unit_credits
           subjects_attemp = enroll_academic_process.total_subjects_not_retired+1
 
-          overlapped = false
-          
           section.schedules.each_with_index do |sh,i|
             overlapped = enroll_academic_process.overlapped?(sh)
             break if overlapped
@@ -116,7 +126,7 @@ class EnrollAcademicProcessesController < ApplicationController
             estado = 'error'
             msg = "Supera el límite de asignaturas permitidas para este proceso de inscripción. Por favor, corrija su selección de asignaturas e inténtelo de nuevo. (#{credits_attemp} / #{limit_credits})"
 
-          elsif !(section.has_capacity?)
+          elsif !(capacity)
             # SIN CUPOS
             msg = "Sin cupos disponibles para: #{section.desc_subj_code} en el período #{section.period.name}"
             estado = 'error'
@@ -158,15 +168,29 @@ class EnrollAcademicProcessesController < ApplicationController
   def enroll
     enroll_academic_process = EnrollAcademicProcess.where(grade_id: params[:grade_id], academic_process_id: params[:academic_process_id]).first
     any_error = false
+
+
+    if current_user&.admin? and session[:rol].eql? 'admin'
+      # Totales para Admin
+      limit_credits = enroll_academic_process.academic_process.max_credits+3
+      limit_subjects = enroll_academic_process.academic_process.max_subjects+1
+      
+    else
+      # Totales para Student
+      limit_credits = enroll_academic_process.academic_process.max_credits
+      limit_subjects = enroll_academic_process.academic_process.max_subjects
+    end
+
+
     if enroll_academic_process.nil?
       flash[:danger] = 'No realizó inscripción alguna. Por favor, selección las asignaturas e inténtelo nuevamente. Tenga en cuenta que al seleccionar una sección en cada asignatura, debe aparecer un mensaje afirmativo de completación de la reserva del cupo.'
     elsif !(enroll_academic_process.academic_records.any?)
       flash[:danger] = 'Sin selección se asignaturas. Por favor, selección alguna asignaturas e inténtelo nuevamente. Tenga en cuenta que al seleccionar una sección en cada asignatura, debe aparecer un mensaje afirmativo de completación de la reserva del cupo.'
       any_error = true
-    elsif (enroll_academic_process.total_credits > enroll_academic_process.academic_process.max_credits)
-      flash[:danger] = "Supera el límite de créditos permitidos para este proceso de inscripción. Por favor, corrija su selección e inténtelo de nuevo. Se anularon las selecciones hechas con anteridad."
+    elsif (enroll_academic_process.total_credits > limit_credits)
+      flash[:danger] = "Supera el límite de créditos permitidos para este proceso de inscripción. Por favor, corrija su selección e inténtelo de nuevo. Se anularon las selecciones hechas con anterioridad."
       any_error = true
-    elsif (enroll_academic_process.total_subjects > enroll_academic_process.academic_process.max_subjects)
+    elsif (enroll_academic_process.total_subjects > limit_subjects)
       flash[:danger] = "Supera el límite de asignaturas permitidas para este proceso de inscripción. Por favor, corrija su inscripción e inténtelo de nuevo. Se anularon las selecciones previas."
       
       any_error = true      
