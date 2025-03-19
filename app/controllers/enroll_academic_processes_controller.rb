@@ -118,7 +118,7 @@ class EnrollAcademicProcessesController < ApplicationController
 
           elsif !(section.has_capacity?)
             # SIN CUPOS
-            msg = "Sin cupos disponibles para: #{sec.descripcion} en el período #{sec.periodo.id}"
+            msg = "Sin cupos disponibles para: #{section.desc_subj_code} en el período #{section.period.name}"
             estado = 'error'
           else
             # VÁLIDA PARA INSCRIBIR
