@@ -12,8 +12,15 @@ RailsAdmin.config do |config|
 
   ## == Devise ==
   config.authenticate_with do
-    warden.authenticate! scope: :user
+    begin
+      warden.authenticate! scope: :user
+    rescue Exception => e
+      reset_session
+      flash[:danger] = "Por favor inicie sesión antes de continuar" 
+      redirect_to '/users/sign_in'
+    end
   end
+
   config.current_user_method(&:current_user)
 
   ## == CancanCan ==
