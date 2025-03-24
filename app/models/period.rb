@@ -51,14 +51,14 @@ class Period < ApplicationRecord
     	group :dato_periodo do
     		label 'Datos del Perido'
     		# active false
-				field :year do
-					a = Date.today.year
-					html_attributes do
-						{onInput: "$(this).val($(this).val().replace(/[^0-9]/g,''))", min: a-60, max:a+10, step: 1 }
-					end  
-				end
-				field :period_type
+			field :year do
+				a = Date.today.year
+				html_attributes do
+					{onInput: "$(this).val($(this).val().replace(/[^0-9]/g,''))", min: a-60, max:a+10, step: 1, value: a}
+				end  
 			end
+			field :period_type
+		end
     end
 
     show do
