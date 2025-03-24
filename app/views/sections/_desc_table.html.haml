@@ -3,6 +3,7 @@
   %thead
     %tr.text-center
       %td.col-1 Período
+      %td.col-1 Sede
       %td.col-1 Sec
       %td Asignatura
       %td Profesor
@@ -13,6 +14,7 @@
   %tbody
     %tr.text-center
       %td= section.period.name if section.period
+      %td= ApplicationController.helpers.label_status('bg-info', section.location) 
       %td= section.code
       %td{title: section.subject.desc}
         - if section.subject
