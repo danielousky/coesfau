@@ -11,7 +11,6 @@ class AdmissionType < ApplicationRecord
   before_update :paper_trail_update
 
   #ASSOCIATIONS:
-  belongs_to :school
   has_many :grades, dependent: :destroy
   has_many :students, through: :grades
 
@@ -27,7 +26,6 @@ class AdmissionType < ApplicationRecord
     list do
       field :name
       field :code
-      field :school
 
       field :total_students do
         label 'Total Estudiantes'
@@ -39,7 +37,6 @@ class AdmissionType < ApplicationRecord
     show do
       field :name
       field :code
-      field :school
     end
 
     edit do
@@ -49,10 +46,6 @@ class AdmissionType < ApplicationRecord
           {length: 4, size: 4, onInput: "$(this).val($(this).val().replace(/[^0-9]/g,''))"}
         end
         help 'Sólo 4 dígitos numéricos permitidos' 
-      end
-
-      field :school do
-        inline_edit false
       end
     end
 

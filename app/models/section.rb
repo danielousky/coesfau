@@ -49,12 +49,14 @@ class Section < ApplicationRecord
 
   #ENUMERIZE:
   enum modality: [:nota_final, :equivalencia]
+  enum location: [:Caracas, :Barquisimeto]
 
   # VALIDATIONS:
   validates :code, presence: true, uniqueness: { scope: :course_id, message: 'Ya existe la sesión para el curso', case_sensitive: false, field_name: false}, length: { in: 1..7, too_long: "%{count} caracteres es el máximo permitido", too_short: "%{count} caracter es el mínimo permitido"}
   validates :capacity, presence: true
   validates :course, presence: true
   validates :modality, presence: true
+  validates :location, presence: true
   validates :qualified, inclusion: { in: [ true, false ] }
 
   #CALLBACKS
@@ -522,9 +524,7 @@ class Section < ApplicationRecord
         end
       end
 
-      field :modality do
-
-      end
+      fields :modality, :location
       field :teacher do
         inline_edit false
         inline_add false
@@ -568,7 +568,7 @@ class Section < ApplicationRecord
     end
 
     export do
-      fields :period, :area, :subject, :code, :classroom, :user, :qualified, :modality, :schedules, :capacity
+      fields :period, :area, :subject, :code, :classroom, :user, :qualified, :modality, :location, :schedules, :capacity
 
       field :total_students do 
         label 'Total inscritos'

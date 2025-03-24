@@ -682,26 +682,27 @@ es:
         endtime: Hora Final
       section:
         area: 'Área'
-        code: 'Sección'
-        capacity: 'Capacidad'
-        course: 'Curso (Período/Asignatura)'
-        teacher: 'Profesor'
-        qualified: '¿Calificada?'
-        modality: 'Tipo'
-        enabled: 'Activa'
-        user: 'Profesor'
-        subject: 'Asignatura'
-        nota_final: 'Final'
         academic_process: Período
-        period: Año
-        school: Escuela
-        faculty: Facultad
         academic_records: 'Registros Académicos'
-        enroll_academic_process: Inscripción en Registro Académico
+        capacity: 'Capacidad'
+        classroom: 'Aula'
+        code: 'Sección'
+        course: 'Curso (Período/Asignatura)'
         grades: Grados
+        faculty: Facultad
+        enabled: 'Activa'
+        enroll_academic_process: Inscripción en Registro Académico
+        modality: 'Tipo'
+        nota_final: 'Final'
+        location: Ubicación
+        period: Año
+        qualified: '¿Calificada?'
+        school: Escuela
         students: Estudiantes
         schedules: Horarios
-        classroom: 'Aula'
+        subject: 'Asignatura'
+        teacher: 'Profesor'
+        user: 'Profesor'
         created_at: Fecha Creación
         updated_at: Fecha Última Actualización
       student:

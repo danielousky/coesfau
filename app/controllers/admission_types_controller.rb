@@ -65,6 +65,6 @@ class AdmissionTypesController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def admission_type_params
-      params.require(:admission_type).permit(:code, :name, :school_id)
+      params.require(:admission_type).permit(:code, :name)
     end
 end

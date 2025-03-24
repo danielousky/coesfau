@@ -26,6 +26,24 @@
         .form-text
           %span.label.label-danger> Requerido
           \.
+
+    #section_location_field.control-group.row.mb-3.enum_type.location_field
+      %label.col-sm-2.col-form-label.text-md-end{for: "section_location"} Ubicación
+      .col-sm-10.controls
+        .row
+          .col-sm-4
+            %select#section_location{"data-enumeration" => "true", name: "section[location]", placeholder: "Buscar", style: "display: none;"}
+              %option{label: " ", value: ""}
+              %option{selected: "selected", value: "0"} Caracas
+              %option{value: "1"} Barquisimeto
+            .input-group.filtering-select{"data-input-for" => "section_location"}
+              %input.form-control.ra-filtering-select-input.ui-autocomplete-input{autocomplete: "off", placeholder: "Buscar", required: "required", style: "", type: "text"}/
+              %span.input-group-btn
+                %label.btn.btn-info.dropdown-toggle{"aria-label" => "Show All Items", "data-bs-original-title" => "Show All Items", role: "button"}
+        .form-text
+          %span.label.label-danger> Requerido
+          \.
+          
     #section_teacher_id_field.control-group.row.mb-3.belongs_to_association_type.teacher_field
       %label.col-sm-2.col-form-label.text-md-end{:for => "section_teacher_id"} Profesor
       .col-sm-10.controls

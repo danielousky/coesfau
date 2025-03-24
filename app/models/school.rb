@@ -29,9 +29,6 @@ class School < ApplicationRecord
   has_many :bank_accounts, dependent: :destroy
   accepts_nested_attributes_for :bank_accounts, allow_destroy: true
 
-  has_many :admission_types
-  accepts_nested_attributes_for :admission_types
-
   has_many :academic_processes
   has_many :areas, dependent: :destroy
   has_many :study_plans, dependent: :destroy

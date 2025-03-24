@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_10_31_200200) do
+ActiveRecord::Schema[7.0].define(version: 2025_03_24_204940) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -106,11 +106,9 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_31_200200) do
 
   create_table "admission_types", force: :cascade do |t|
     t.string "name"
-    t.bigint "school_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "code"
-    t.index ["school_id"], name: "index_admission_types_on_school_id"
   end
 
   create_table "area_authorizables", force: :cascade do |t|
@@ -379,6 +377,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_31_200200) do
     t.datetime "updated_at", null: false
     t.bigint "teacher_id"
     t.string "classroom"
+    t.integer "location", default: 0, null: false
     t.index ["code", "course_id"], name: "index_sections_on_code_and_course_id", unique: true
     t.index ["course_id"], name: "index_sections_on_course_id"
     t.index ["teacher_id"], name: "index_sections_on_teacher_id"
@@ -512,7 +511,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_31_200200) do
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "addresses", "students", primary_key: "user_id", on_update: :cascade, on_delete: :cascade
   add_foreign_key "admins", "users"
-  add_foreign_key "admission_types", "schools"
   add_foreign_key "areas", "schools"
   add_foreign_key "authorizables", "area_authorizables"
   add_foreign_key "authorizeds", "admins", primary_key: "user_id", on_update: :cascade, on_delete: :cascade
