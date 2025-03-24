@@ -57,6 +57,7 @@ class AcademicProcess < ApplicationRecord
 
   # CALLBACKS:
   before_save :set_name
+  after_initialize :set_default_value
 
   def invalid_grades_to_csv
 
@@ -392,11 +393,11 @@ class AcademicProcess < ApplicationRecord
     end
   end
 
-  after_initialize do
-    if new_record?
-      self.school_id ||= School.first.id
-    end
-  end
+  # after_initialize do
+  #   if new_record?
+  #     self.school_id ||= School.first.id
+  #   end
+  # end
 
   def redundant_subjects
     subj = self.courses.group(:subject_id).having('count(*) > 1').count
@@ -417,6 +418,14 @@ class AcademicProcess < ApplicationRecord
 
     def set_name
       self.name = self.get_name
+    end
+
+    def set_default_value
+      self.school_id ||= School.first.id
+      self.max_credits ||= 24
+      self.max_subjects ||= 5
+      self.modality ||= :semestral
+      self.process_before_id ||= AcademicProcess.first&.id
     end
 
     def paper_trail_update
