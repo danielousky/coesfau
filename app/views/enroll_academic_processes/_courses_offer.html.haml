@@ -17,10 +17,8 @@
       - @short_desc = ""
       - approved_record = grade.academic_records.aprobado.joins(:subject).where('subject.id': course.subject_id).first
       - if !grade.subject_approved? course.subject_id
-        - if grade.student.Caracas?
-          - sections = course.sections.where.not("sections.code ILIKE '%E%'")#.con_cupos
-        - else
-          - sections = course.sections.where("sections.code ILIKE '%E%'")#.con_cupos
+        - # Secciones de la sede del estudiante
+        - sections = grade.student.Caracas? ? course.sections.Caracas : course.sections.Barquisimeto
 
         - if current_record = grade.academic_records.joins(:course).where('courses.id': course.id).first
           - section_id = current_record&.section_id # ? ac.section_id : nil
