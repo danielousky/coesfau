@@ -401,6 +401,13 @@ class Section < ApplicationRecord
 
       # end
 
+      field :location do
+        column_width 60 
+        pretty_value do
+          ApplicationController.helpers.label_status('bg-info', value)
+        end
+      end
+
       field :schedule_name do
         label 'Horarios'
       end
