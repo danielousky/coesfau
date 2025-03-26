@@ -199,7 +199,7 @@ class Grade < ApplicationRecord
   end
 
   def appointment_to
-    I18n.l(self.appointment_time+self.duration_slot_time.minutes, format: "%I:%M %p") if (self.appointment_time and self.duration_slot_time.minutes)
+    I18n.l(self.appointment_time+self.duration_slot_time&.minutes, format: "%I:%M %p") if (self.appointment_time and self.duration_slot_time&.minutes)
   end
 
   def appointment_time_desc
