@@ -26,6 +26,7 @@ class AcademicRecordsController < ApplicationController
   # POST /academic_records or /academic_records.json
   def create
     params[:academic_record][:status] = params[:academic_record][:status].delete(" ").underscore.to_sym
+    
     params[:academic_record][:status] = 'sin_calificar' if (params[:academic_record][:status].to_s.eql? 'calificar')
     params[:academic_record][:status] = 'perdida_por_inasistencia' if (params[:academic_record][:status].to_s.eql? 'pérdidapor_inasistencia') 
     

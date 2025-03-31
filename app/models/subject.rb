@@ -95,6 +95,14 @@ class Subject < ApplicationRecord
 
   end
 
+  def option_status
+    if self.absoluta?
+      '<option>Aprobado</option><option>Aplazado</option><option>Retirado</option>'
+    else
+      "<option>Sin Calificar</option><option>Calificar</option><option>Pérdida por Inasistencia</option><option>Retirado</option>" 
+    end
+
+  end
   def remove_redundant_courses_of academic_process_id
     redundance_courses = self.courses.where(academic_process_id: academic_process_id)
     if redundance_courses.count > 1

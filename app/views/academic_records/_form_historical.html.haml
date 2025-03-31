@@ -111,7 +111,6 @@
         xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'));
       },
       success: function(data) {
-  
         let addCodeBtn = $('#addCodeBtn');
         let toAppend = '';
         let inputCode = $('#inputCode');
@@ -133,13 +132,8 @@
         toggleRequireActiveOption(inputCode, haveSections);
 
         $('#divSectionCode').removeClass('d-none');
-        let optionsStatus;
-        if (data.qualification_type == 'absoluta') {
-          optionsStatus = '<option>Aprobada</option><option>Aplazada</option>'
+        let optionsStatus = data.option_status ;
 
-        }else{
-          optionsStatus = "<option>Sin Calificar</option><option>Calificar</option><option>Pérdida por Inasistencia</option><option>Retirado</option>"
-        }
         status.find('option').end().append(optionsStatus);
         toggleRequireActiveOption(status, false);
         toggleRequireActiveOption(submitBtn, false);
