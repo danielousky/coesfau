@@ -107,6 +107,32 @@ class Grade < ApplicationRecord
   scope :custom_search, -> (keyword) { joins(:user, :school).where("users.ci ILIKE '%#{keyword}%' OR schools.name ILIKE '%#{keyword}%'") }
 
   # FUNCTIONS:
+
+  def numbers_desc
+    [efficiency, simple_average, weighted_average]
+  end
+
+  def desc_to_enrollment_day
+
+    if eap = enroll_academic_processes.joins(:period).order(['periods.year': :desc, 'periods.period_type_id': :desc]).first
+      label_status_aux = eap.label_status
+      efficiency_aux = eap.efficiency
+      simple_average_aux = eap.simple_average
+      weighted_average_aux = eap.weighted_average
+    else
+      label_status_aux = ApplicationController.helpers.label_status('bg-secondary', 'Sin Inscripción')
+      efficiency_aux = eap.efficiency
+      simple_average_aux = eap.simple_average
+      weighted_average_aux = eap.weighted_average
+    end      
+    
+    {label_status_aux: label_status_aux, sede: student.sede, user_ci: student.user_ci, student_link: link_to_student, from: appointment_from, to: appointment_to, status: label_current_permanence_status, efficiency: efficiency_aux, simple_average: simple_average_aux, weighted_average: weighted_average_aux}
+  end
+
+  def link_to_student
+    "<a href ='/admin/student/#{student_id}' target = '_black'>#{student.user.reverse_name}</a>"
+  end
+
   def help_msg
     unless self.school.contact_email.blank?
       "Puede escribir al correo: #{self.school.contact_email} para solicitar ayuda."

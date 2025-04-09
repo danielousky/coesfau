@@ -44,10 +44,9 @@ class EnrollmentDay < ApplicationRecord
     CSV.generate do |csv|
       csv << ['Cédula', 'Apellido y Nombre', 'Sede', 'Desde', 'Hasta', 'Eficiencia', 'Promedio', 'Ponderado']
       own_grades_sort_by_appointment.each do |grade|
-        user = grade.user
-        eap = grade.enroll_academic_processes.joins(:period).order(['periods.year': :desc, 'periods.period_type_id': :desc]).first
         
-        csv << [user.ci, user.reverse_name, grade.student.sede, grade.appointment_from, grade.appointment_to, eap.efficiency_desc, eap.simple_average_desc, eap.weighted_average_desc]
+        # csv << [grade[:ci], user.reverse_name, grade.student.sede, grade.appointment_from, grade.appointment_to, eap.efficiency_desc, eap.simple_average_desc, eap.weighted_average_desc]
+        csv << [grade[:user_ci], ActionView::Base.full_sanitizer.sanitize(grade[:student_link]), grade[:sede], grade[:from], grade[:to], grade[:efficiency], grade[:simple_average], grade[:weighted_average]]
       end
     end
   end
@@ -70,7 +69,7 @@ class EnrollmentDay < ApplicationRecord
 
 
   def own_grades
-    self.school.grades.with_day_enroll_eql_to(self.start)
+    self.school.grades.with_day_enroll_eql_to(self.start).uniq
   end
 
   def own_grades_count
@@ -80,7 +79,11 @@ class EnrollmentDay < ApplicationRecord
   def own_grades_sort_by_appointment
     # self.own_grades.order([appointment_time: :asc, duration_slot_time: :asc, efficiency: :desc, simple_average: :desc, weighted_average: :desc])
     
-    self.own_grades.joins(:enroll_academic_processes).order([appointment_time: :asc, duration_slot_time: :asc, 'enroll_academic_processes.efficiency': :desc, 'enroll_academic_processes.simple_average': :desc, 'enroll_academic_processes.weighted_average': :desc]).uniq
+    # self.own_grades.sort_by{|e| [e.efficiency, e.simple_average, e.weighted_average]}
+    # self.own_grades.unscope(:order).joins(:enroll_academic_processes).order(['enroll_academic_processes.efficiency': :desc, 'enroll_academic_processes.simple_average': :desc, 'enroll_academic_processes.weighted_average': :desc]).map
+
+    self.own_grades.map(&:desc_to_enrollment_day).sort_by{|e| [e[:efficiency], e[:simple_average], e[:weighted_average]]}.reverse
+    
   end
 
   def own_grades_sort_by_numbers

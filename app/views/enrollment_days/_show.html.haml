@@ -15,18 +15,24 @@
         %th.col-1.text-center= "Promedio #{academic_process.process_before.period.name}" 
         %th.col-1.text-center= "Ponderado #{academic_process.process_before.period.name}" 
     %tbody
-      - grades.each do |grade, i|
-        - student = grade.student
-        - reverse_name = student.user.reverse_name
-        - eap = grade.enroll_academic_processes.joins(:period).order(['periods.year': :desc, 'periods.period_type_id': :desc]).first
-        %tr
-          %td.text-center= grade.label_status_enroll_academic_process(academic_process.id)
-          %td= student.sede 
-          %td= student.user_ci
-          %td{title: reverse_name}= link_to reverse_name, "/admin/student/#{grade.student_id}", target: '_black'
-          %td.text-center= grade.appointment_from 
-          %td.text-center= grade.appointment_to
-          %td.text-center.align-middle= grade.label_current_permanence_status
-          %td= eap.efficiency
-          %td= eap.simple_average
-          %td= eap.weighted_average
+      - before_grade_hours = grades.first[:from]
+      - grades.each do |grade|
+        - p "COMPARACIÓN: <#{before_grade_hours}> | <#{grade[:from]}>: #{!(before_grade_hours.to_s.eql? grade[:from].to_s)}"
+        - border = !(before_grade_hours.to_s.eql? grade[:from].to_s) ? 'border-bottom border-danger' : ''
+        - before_grade_hours = grade[:from]
+        %tr{class: border}
+          -# {label_status_aux: label_status_aux, sede: student.sede, user_ci: student.user_ci, student_link: link_to_student, from: appointment_from, to: appointment_to, status: label_current_permanence_status, efficiency: efficiency_aux, simple_average: simple_average_aux, weighted_average: weighted_average_aux}
+          %td.text-center= grade[:label_status_aux].html_safe
+          %td= grade[:sede]
+          %td= grade[:user_ci]
+          %th= grade[:student_link].html_safe
+          %td.text-center= grade[:from] 
+          %td.text-center= grade[:to]
+          %td.text-center.align-middle= grade[:status]
+          %td= grade[:efficiency]
+          %td= grade[:simple_average]
+          
+          %td= grade[:weighted_average]
+
+        
+        
