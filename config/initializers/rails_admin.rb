@@ -1,6 +1,8 @@
-require 'same_period_validator'
+# require 'same_period_validator'
 
 Dir[Rails.root.join('app', 'rails_admin', '**/*.rb')].each { |file| require file }
+
+require Rails.root.join('lib', 'rails_admin', 'config', 'actions', 'history')
 
 # RailsAdmin::Config::Actions.register(:custom_export, RailsAdmin::Config::Actions::CustomExport)
 
@@ -145,6 +147,7 @@ RailsAdmin.config do |config|
     end
 
     history_show do
+      # require_relative '../../lib/rails_admin/config/actions/history'
       except [School, StudyPlan, ParentArea]
     end
   end

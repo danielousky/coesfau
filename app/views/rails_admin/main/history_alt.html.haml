@@ -1,0 +1,58 @@
+.row
+  .col-sm-12
+    .panel.panel-default
+      .panel-heading
+        %h3.panel-title= @page_name
+      .panel-body
+        - if false
+          .form-group
+            %label{:for => "user_filter"} Filter by User:
+            %select#user_filter.form-control{:onchange => "window.location = '?user_id=' + this.value"}
+              %option{:value => ""} All Users
+              - @users.each do |user|
+                %option{value: user.id, selected: (@user && @user.id == user.id) ? 'selected' : ''}= user.email
+              
+      = @model&.name
+      - if @model
+        .alert.alert-info
+          Mostrando actividades relacionadas a:
+          %strong= @model&.name
+      - if @versions&.empty?
+        .alert.alert-warning Sin historias encontradas
+      - else
+        %table.table.table-condensed.table-striped
+          %thead
+            %tr
+              %th Fecha
+              %th usuario
+              %th Acción
+              %th Item
+              %th Detalle
+          %tbody
+            - @versions&.each do |version|
+              %tr
+                %td= l(version.created_at)
+                %td
+                  - if version.whodunnit and  (user = User.find_by(id: version.whodunnit))
+                    = link_to user.email, rails_admin.history_index_path(user_id: user.id)
+                  - else
+                    Desconocido
+                %td= version.event.capitalize
+                %td
+                  - if version.item_type == 'User'
+                    - if version.item_id and (target_user = User.find_by(id: version.item_id))
+                      = link_to target_user.email, rails_admin.history_index_path(user_id: target_user.id)
+                    - else
+                      User (deleted)
+                  - else
+                    = #{version.item_type} ##{version.item_id}
+                %td
+                  - if version.object_changes.present?
+                    %button.btn.btn-info.btn-sm{"aria-controls" => "#changes-#{version.id}", "aria-expanded" => "false", "data-bs-target" => "#changes-#{version.id}", "data-bs-toggle" => "collapse", type: "button"}
+                      = "> Ver cambios"
+                    .collapse{id: "changes-#{version.id}"}
+                      .card.card-body
+                        %dl.dl-horizontal
+                          = version.object_changes
+
+    = paginate(@versions)

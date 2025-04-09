@@ -1,0 +1,167 @@
+- # Obtener información del objeto
+- object_name = @object.try(:name) || @object.try(:title) || @object.try(:email) || "#{@abstract_model.pretty_name} ##{@object.id}"
+
+.row
+  .col-sm-12
+    .panel.panel-default
+      .panel-heading
+        %h3.panel-title
+          Historial de #{@abstract_model.pretty_name}: #{object_name}
+      
+      .panel-body
+        - if @versions.empty?
+          .alert.alert-warning No se encontró historial para este objeto.
+        - else
+          / Resumen de actividad
+          .well.well-sm
+            %h4 Resumen de Actividad
+            .row
+              .col-sm-4
+                %strong Total de cambios:
+                = @stats[:total_changes]
+              .col-sm-4
+                %strong Creado:
+                - if @stats[:created_at]
+                  = l(@stats[:created_at])
+                - else
+                  %span.text-muted Desconocido
+              .col-sm-4
+                %strong Última modificación:
+                - if @stats[:last_update]
+                  = l(@stats[:last_update])
+                - else
+                  %span.text-muted Desconocido
+            
+            / Usuarios que han modificado este objeto
+            .row{style: "margin-top: 10px;"}
+              .col-sm-12
+                %strong Usuarios que han modificado este objeto:
+                - if @stats[:users].any?
+                  %ul.list-inline
+                    - @stats[:users].each do |user|
+                      %li
+                        %a.label.label-info{href: rails_admin.history_index_path(user_id: user.id)}
+                          %i.icon-user
+                          = user.email
+                - else
+                  %span.text-muted Ninguno
+          
+          / Tabla de historial
+          %table.table.table-condensed.table-striped.table-hover
+            %thead
+              %tr
+                %th{style: "width: 150px;"} Fecha
+                %th{style: "width: 150px;"} Usuario
+                %th{style: "width: 100px;"} Acción
+                %th Cambios
+            %tbody
+              - @versions.each do |version|
+                %tr
+                  %td= l(version.created_at)
+                  %td
+                    - user = version.instance_variable_get(:@user)
+                    - if user
+                      %a.label.label-info{href: rails_admin.history_index_path(user_id: user.id)}
+                        %i.icon-user
+                        = user.email
+                      
+                      - if version.instance_variable_get(:@self_action)
+                        %span.label.label-warning Auto-modificación
+                    - else
+                      %span.text-muted Desconocido
+                  %td
+                    - case version.event
+                    - when 'create'
+                      %span.label.label-success Creación
+                    - when 'update'
+                      %span.label.label-info Actualización
+                    - when 'destroy'
+                      %span.label.label-danger Eliminación
+                    - else
+                      %span.label.label-default= version.event.capitalize
+                  %td
+                    - if version.event == 'create'
+                      .alert.alert-success{style: "margin-bottom: 0;"}
+                        %strong Objeto creado
+                        - if version.object.present?
+                          %button.btn.btn-xs.btn-success.pull-right{"data-toggle" => "collapse", "data-target" => "#object-#{version.id}"}
+                            Ver Estado Inicial
+                          %div.collapse{id: "object-#{version.id}", style: "margin-top: 10px;"}
+                            %dl.dl-horizontal
+                              - begin
+                                - YAML.load(version.object).each do |key, value|
+                                  %dt= key
+                                  %dd= value.inspect
+                              - rescue => e
+                                %dt Error
+                                %dd= "No se pudo analizar el objeto: #{e.message}"
+                    - elsif version.event == 'destroy'
+                      .alert.alert-danger{style: "margin-bottom: 0;"}
+                        %strong Objeto eliminado
+                        - if version.object.present?
+                          %button.btn.btn-xs.btn-danger.pull-right{"data-toggle" => "collapse", "data-target" => "#object-#{version.id}"}
+                            Ver Estado Final
+                          %div.collapse{id: "object-#{version.id}", style: "margin-top: 10px;"}
+                            %dl.dl-horizontal
+                              - begin
+                                - YAML.load(version.object).each do |key, value|
+                                  %dt= key
+                                  %dd= value.inspect
+                              - rescue => e
+                                %dt Error
+                                %dd= "No se pudo analizar el objeto: #{e.message}"
+                    - elsif version.instance_variable_get(:@changes_error)
+                      .alert.alert-warning{style: "margin-bottom: 0;"}
+                        %strong Error al procesar los cambios:
+                        = version.instance_variable_get(:@changes_error)
+                    - elsif processed_changes = version.instance_variable_get(:@processed_changes)
+                      %table.table.table-bordered.table-condensed{style: "margin-bottom: 0;"}
+                        %thead
+                          %tr
+                            %th Campo
+                            %th Valor Anterior
+                            %th Nuevo Valor
+                        %tbody
+                          - processed_changes.each do |key, values|
+                            - if values.is_a?(Array) && values.size == 2
+                              %tr
+                                %td
+                                  %strong= key
+                                %td
+                                  - if values[0].nil?
+                                    %span.text-muted nulo
+                                  - elsif values[0] == ""
+                                    %span.text-muted vacío
+                                  - else
+                                    = values[0].inspect
+                                %td
+                                  - if values[1].nil?
+                                    %span.text-muted nulo
+                                  - elsif values[1] == ""
+                                    %span.text-muted vacío
+                                  - else
+                                    = values[1].inspect
+                    - else
+                      %span.text-muted No hay detalles disponibles para este cambio.
+          
+          / Paginación
+          .text-center
+            = paginate(@versions)
+        
+        / Botones de acción
+        .form-actions
+          = link_to "Volver al Historial", rails_admin.history_index_path, class: 'btn btn-default'
+          = link_to "Volver al Objeto", rails_admin.show_path(model_name: @abstract_model.to_param, id: @object.id), class: 'btn btn-info'
+
+:css
+  .dl-horizontal dt {
+    width: 120px;
+  }
+  .dl-horizontal dd {
+    margin-left: 140px;
+  }
+  .table-condensed > tbody > tr > td {
+    vertical-align: middle;
+  }
+
+
