@@ -135,8 +135,6 @@ GEM
       railties (>= 4.1.0)
       responders
       warden (~> 1.2.3)
-    domain_name (0.5.20190701)
-      unf (>= 0.0.5, < 1.0.0)
     dotenv (2.8.1)
     dotenv-rails (2.8.1)
       dotenv (= 2.8.1)
@@ -145,9 +143,6 @@ GEM
     erubis (2.7.0)
     execjs (2.9.1)
     ffi (1.16.3)
-    ffi-compiler (1.0.1)
-      ffi (>= 1.0.0)
-      rake
     font-awesome-sass (6.4.2)
       sassc (~> 2.0)
     globalid (1.2.1)
@@ -166,14 +161,6 @@ GEM
       haml (>= 4.0)
       nokogiri (>= 1.6.0)
       ruby_parser (~> 3.5)
-    http (5.1.1)
-      addressable (~> 2.8)
-      http-cookie (~> 1.0)
-      http-form_data (~> 2.2)
-      llhttp-ffi (~> 0.4.0)
-    http-cookie (1.0.5)
-      domain_name (~> 0.5)
-    http-form_data (2.3.0)
     i18n (1.14.1)
       concurrent-ruby (~> 1.0)
     image_processing (1.12.2)
@@ -189,7 +176,6 @@ GEM
     jmespath (1.6.2)
     jsbundling-rails (1.2.1)
       railties (>= 6.0.0)
-    json (2.6.3)
     kaminari (1.2.2)
       activesupport (>= 4.1.0)
       kaminari-actionview (= 1.2.2)
@@ -202,9 +188,6 @@ GEM
       activerecord
       kaminari-core (= 1.2.2)
     kaminari-core (1.2.2)
-    llhttp-ffi (0.4.0)
-      ffi-compiler (~> 1.0)
-      rake (~> 13.0)
     loofah (2.21.4)
       crass (~> 1.0.2)
       nokogiri (>= 1.12.0)
@@ -213,11 +196,6 @@ GEM
       net-imap
       net-pop
       net-smtp
-    mailersend-ruby (1.6.0)
-      dotenv (~> 2.7)
-      http (~> 5.0)
-      json (~> 2.5)
-      uri (~> 0.12.0)
     marcel (1.0.2)
     matrix (0.4.2)
     method_source (1.0.0)
@@ -354,10 +332,6 @@ GEM
       railties (>= 6.0.0)
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
-    unf (0.1.4)
-      unf_ext
-    unf_ext (0.0.8.2)
-    uri (0.12.2)
     warden (1.2.9)
       rack (>= 2.0.9)
     web-console (4.2.1)
@@ -382,6 +356,7 @@ GEM
 
 PLATFORMS
   x86_64-darwin-18
+  x86_64-darwin-24
   x86_64-linux
 
 DEPENDENCIES
@@ -402,7 +377,6 @@ DEPENDENCIES
   image_processing (~> 1.2)
   jbuilder
   jsbundling-rails
-  mailersend-ruby
   mini_magick
   paper_trail
   pg (~> 1.1)
