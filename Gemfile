@@ -114,7 +114,7 @@ end
 gem "cssbundling-rails"
 
 # Gestor de Correos
-gem "mailersend-ruby"
+# gem "mailersend-ruby"
 
 # Bitácora
 gem "paper_trail"
