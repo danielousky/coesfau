@@ -5,9 +5,8 @@
 	%h4.text-center.bg-info.py-2 Resumen Académico
 	.p-3
 		= render partial: '/grades/download_options', locals: {grade: grade}
-		
 		= render partial: '/grades/general', locals: {grade: grade}
-		
+
 		.row
 			.col= render partial: '/grades/total_table', locals: {grade: grade}
 			.col= render partial: '/grades/numbers_table', locals: {grade: grade}

@@ -20,6 +20,7 @@ class Qualification < ApplicationRecord
   validates :value, presence: true, numericality: { only_integer: true, in: 0..20 }
   validates :type_q, presence: true
   validates_uniqueness_of :academic_record, scope: [:type_q], message: 'Calificación ya existente', field_name: false
+  validates_uniqueness_of :academic_record, scope: [:definitive], message: 'Ya calificada', field_name: false
 
   after_save :update_academic_record_status
 
@@ -29,7 +30,9 @@ class Qualification < ApplicationRecord
 
   after_destroy :update_academic_record_status
 
-  def update_academic_record_status    
+  def update_academic_record_status
+
+    academic_record.destroy_dup
     definitive_q_value = self.academic_record.definitive_q_value
     if definitive_q_value and !self.academic_record.pi?
       status = (definitive_q_value >= 10) ? :aprobado : :aplazado

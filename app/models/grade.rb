@@ -36,6 +36,7 @@ class Grade < ApplicationRecord
   has_many :enroll_academic_processes, dependent: :destroy
   has_many :academic_processes, through: :enroll_academic_processes
   has_many :academic_records, through: :enroll_academic_processes
+  has_many :qualifications, through: :academic_records
 
   has_many :payment_reports, as: :payable, dependent: :destroy
 
@@ -409,6 +410,14 @@ class Grade < ApplicationRecord
   end
 
   def calculate_average periods_ids = nil
+
+    # ATENCIÓN: Si hay algún inconveniente con el cálculo de los "numeritos", verificar correindo el siguiente query:
+    # Qualification.joins(academic_record: :section).group('academic_records.id').having('count(*) > 1').count
+    # El promedio se calcula bien, incluso con las asignaturas absolutas. Por ahí no es el problema
+    # ATENCIÓN: El promedio simple no se calcula bien, porque no tiene en cuenta las asignaturas equivalentes. Por ahí no es el problema
+    # También se agrego un par de validaciones a Qualifications, para type_q y definitive. Con el propósito de que no tengan dobles valores.
+    # ESTE FUE EL PROBLEMA LA ÚLTIMA VEZ.
+    # Se agregó a callback de qualification, academic_record.destroy_dup
     if periods_ids
       aux = academic_records.of_periods(periods_ids).promedio
     else

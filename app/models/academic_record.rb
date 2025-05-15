@@ -80,6 +80,9 @@ class AcademicRecord < ApplicationRecord
 
   scope :no_retirados, -> {not_retirado}
 
+  scope :numericos, -> {joins(:subject).where('subjects.qualification_type = 0')}
+  scope :absoluta, -> {joins(:subject).where('subjects.qualification_type = 1')}
+
   scope :coursed, -> {where "academic_records.status = 1 or academic_records.status = 2 or academic_records.status = 4"}
 
   scope :qualified, -> {not_sin_calificar}
@@ -112,6 +115,8 @@ class AcademicRecord < ApplicationRecord
   scope :definitives, -> {joins(:qualifications).where('qualifications.definitive': true)}
 
   scope :promedio, -> {joins(:qualifications).coursed.definitives.average('qualifications.value')}
+  # ATENCIÓN: El cálculo del promedio no toma en cuenta el tipo de calificación. Si es "absoluta" igual se calcula el promedio bien.
+
   scope :promedio_approved, -> {aprobado.promedio}
   scope :weighted_average_approved, -> {aprobado.weighted_average}
 
@@ -137,6 +142,9 @@ class AcademicRecord < ApplicationRecord
 
   before_save :set_status_by_EQ_modality_section
   # FUNCTIONS:
+  def destroy_dup
+    qualifications.definitive.last.destroy if qualifications.definitive.count > 1
+  end  
 
   def equivalencia?
     section&.equivalencia?
@@ -658,8 +666,6 @@ class AcademicRecord < ApplicationRecord
       fields :status, :qualifications, :period_type, :student, :user, :address, :subject
     end
   end  
-
-  private
 
   def self.import row, fields
 
