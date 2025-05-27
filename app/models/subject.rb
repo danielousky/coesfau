@@ -47,7 +47,7 @@ class Subject < ApplicationRecord
 
   # VALIDATIONS:
   validates :code, presence: true, uniqueness: {case_sensitive: false}
-  validates :name, presence: true, uniqueness: {case_sensitive: false}
+  validates :name, presence: true#, uniqueness: {case_sensitive: false}
   validates :ordinal, presence: true
   validates :modality, presence: true
   validates :qualification_type, presence: true
