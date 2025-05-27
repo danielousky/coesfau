@@ -30,6 +30,14 @@ class Qualification < ApplicationRecord
 
   after_destroy :update_academic_record_status
 
+  after_save :set_pi_academic_record
+
+  def set_pi_academic_record
+    if self.value == 0 and self.type_q == 'final'
+      self.academic_record.update(status: :perdida_por_inasistencia)
+    end
+  end
+
   def update_academic_record_status
 
     academic_record.destroy_dup
