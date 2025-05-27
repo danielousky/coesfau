@@ -11,7 +11,7 @@
       %th Cal. Alf
 
   %tbody
-    - academic_records.sort_by_subject_name.each do |academic_record|
+    - academic_records.sort_by_subject_code.each do |academic_record|
       - subject = academic_record.subject
       %tr{class: academic_record.tr_class_by_status_q, style: 'padding: 3px'}
         %td= subject.code
