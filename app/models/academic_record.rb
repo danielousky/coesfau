@@ -55,6 +55,9 @@ class AcademicRecord < ApplicationRecord
   after_save :set_options_q
   after_save :update_grade_numbers#, if: :will_save_change_to_status?
 
+  after_create :update_section_quedan
+  after_destroy :update_section_quedan
+
   after_destroy :destroy_enroll_academic_process
 
   # SCOPE:
@@ -830,6 +833,10 @@ class AcademicRecord < ApplicationRecord
   end
 
   private
+
+  def update_section_quedan
+    section.update_quedan if section.present?
+  end
 
   # TRIGGER FUNCTIONS:
   def validate_state_vs_qualification

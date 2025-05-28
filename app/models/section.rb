@@ -61,6 +61,11 @@ class Section < ApplicationRecord
 
   #CALLBACKS
   before_save :set_code_to_02i
+  after_save :update_quedan
+  after_touch :update_quedan
+
+  before_save :update_quedan_if_capacity_changed
+
   
   # SCOPE:
   default_scope {includes(:course, :subject, :period, :area)} # No hace falta
@@ -413,13 +418,20 @@ class Section < ApplicationRecord
       end
 
       field :capacity do
-        label 'Cupos'
+        label 'Capacidad'
         column_width 40
         sortable 'sections.capacity'
         filterable false 
         pretty_value do
           ApplicationController.helpers.label_status('bg-info', value)
         end        
+      end
+
+      field :quedan do
+        column_width 40
+        pretty_value do
+          ApplicationController.helpers.label_status('bg-info', value)
+        end
       end
 
       field :total_academic_records do
@@ -575,7 +587,7 @@ class Section < ApplicationRecord
     end
 
     export do
-      fields :period, :area, :subject, :code, :classroom, :user, :qualified, :modality, :location, :schedules, :capacity
+      fields :period, :area, :subject, :code, :classroom, :user, :qualified, :modality, :location, :schedules, :capacity, :quedan
 
       field :total_students do 
         label 'Total inscritos'
@@ -607,7 +619,6 @@ class Section < ApplicationRecord
     end
   end
 
-  private
 
   def self.import row, fields
 
@@ -686,8 +697,17 @@ class Section < ApplicationRecord
     end
   end
 
+  def update_quedan
+    update_column(:quedan, capacity.to_i - academic_records.count)
+  end
+
   private
 
+    def update_quedan_if_capacity_changed
+      if will_save_change_to_capacity?
+        self.quedan = capacity.to_i - academic_records.count
+      end
+    end
 
     def paper_trail_update
       # changed_fields = self.changes.keys - ['created_at', 'updated_at']
