@@ -28,6 +28,7 @@ class EnrollAcademicProcess < ApplicationRecord
   has_many :sections, through: :academic_records
   has_many :schedules, through: :sections
   has_many :subjects, through: :sections
+  has_many :areas, through: :sections
 
   # ENUMERIZE:
   # IDEA CON ESTADO DE INSCRIPCIÓN EN GRADE Y ENROLL ACADEMIC PROCESS
@@ -63,9 +64,9 @@ class EnrollAcademicProcess < ApplicationRecord
 
   scope :with_any_academic_records, -> {joins(:academic_records).group(:"enroll_academic_processes.id").having('COUNT(*) > 0').count}
 
-  scope :with_i_academic_records, -> (i){joins(:academic_records).group(:"enroll_academic_processes.id").having('COUNT(*) = ?', i).count}
+  scope :with_n_academic_records, -> (n){joins(:academic_records).group(:"enroll_academic_processes.id").having('COUNT(*) = ?', n).count}
   
-  scope :total_with_i_academic_records, -> (i){(joins(:academic_records).group(:"enroll_academic_processes.id").having('COUNT(*) = ?', i).count).count}
+  scope :total_with_n_academic_records, -> (n){(with_n_academic_records(n)).count}
 
   scope :custom_search, -> (keyword) { joins(:user, :period).where("users.ci ILIKE '%#{keyword}%' OR periods.name ILIKE '%#{keyword}%'") }
 
@@ -266,7 +267,7 @@ class EnrollAcademicProcess < ApplicationRecord
     list do
       search_by :custom_search
       # filters [:period_name, :student]
-      scopes [:todos, :preinscrito, :reservado, :confirmado, :retirado]
+      scopes [:todos, :preinscrito, :reservado, :confirmado]
 
       field :enroll_status_label do
         label 'Estado'
@@ -301,6 +302,12 @@ class EnrollAcademicProcess < ApplicationRecord
       field :total_credits do
         label 'Tot Cred'
         column_width 40
+      end
+
+      field :areas do
+        label 'Áreas'
+        column_width 100
+        filterable true
       end
 
       field :created_at do
