@@ -12,7 +12,7 @@ class EnrollAcademicProcess < ApplicationRecord
   before_destroy :paper_trail_destroy
   before_update :paper_trail_update
 
-  after_save :update_current_permanence_status_on_grade
+  after_save :update_grade
 
   # ASSOCIATIONS:
   belongs_to :grade
@@ -382,6 +382,14 @@ class EnrollAcademicProcess < ApplicationRecord
     self.grade.last_enrolled.eql? self
   end
 
+  def is_the_first_enroll_of_grade?
+    self.grade.first_enrolled.eql? self
+  end
+  
+  def is_unique_enroll_of_grade?
+    self.grade.enroll_academic_processes.count.eql? 1
+  end
+
 
   def total_credits_coursed
     academic_records.total_credits_coursed
@@ -440,9 +448,14 @@ class EnrollAcademicProcess < ApplicationRecord
 
   private
 
-    def update_current_permanence_status_on_grade
-      grade.update(current_permanence_status: self.permanence_status) if is_the_last_enroll_of_grade?
-      
+    def update_grade
+      if is_unique_enroll_of_grade?
+        grade.update(start_process_id: self.academic_process_id, current_permanence_status: self.permanence_status) 
+      elsif is_the_first_enroll_of_grade?
+        grade.update(start_process_id: self.academic_process_id)
+      elsif is_the_last_enroll_of_grade?
+        grade.update(current_permanence_status: self.permanence_status)
+      end
     end
 
     def paper_trail_update

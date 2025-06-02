@@ -61,3 +61,38 @@ end
 
   end
 
+desc "Actualiza el start_process_id de todos los grados con su primer enroll_academic_process"
+task :update_grades_start_process => :environment do
+  begin
+    puts "Actualizando start_process_id de #{Grade.where(start_process_id: nil).count} los grados..."
+    Grade.where(start_process_id: nil).find_each do |grade|
+      first = grade.first_enrolled
+      if first
+		first.update_column(:permanence_status, EnrollAcademicProcess.permanence_statuses[:nuevo])
+        grade.update_column(:start_process_id, first.academic_process_id)
+        print '.'
+      else
+        print 'x'
+      end
+    end
+    puts "\nActualización completada de #{Grade.where(start_process_id: nil).count} grados sin start_process_id."
+  rescue StandardError => e
+    puts e
+  end
+end
+
+desc "Actualiza permanence_status a :nuevo para el primer enroll_academic_process de cada grado"
+task :set_first_enroll_permanence_to_nuevo => :environment do
+  begin
+    puts 'Actualizando permanence_status a :nuevo para los primeros enroll_academic_process de cada grado...'
+    EnrollAcademicProcess.find_each do |eap|
+      if eap.is_the_first_enroll_of_grade?
+        eap.update_column(:permanence_status, EnrollAcademicProcess.permanence_statuses[:nuevo])
+        print '.'
+      end
+    end
+    puts "\nActualización completada."
+  rescue StandardError => e
+    puts e
+  end
+end

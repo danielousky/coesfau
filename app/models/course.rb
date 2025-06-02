@@ -71,6 +71,33 @@ class Course < ApplicationRecord
     academic_records.count
   end
 
+  def newers
+    academic_records.joins(:enroll_academic_process).where("enroll_academic_processes.permanence_status = ?", 0)
+  end
+  def total_new
+    newers.count
+  end
+
+  def total_new_sc
+    newers.sin_calificar.count
+  end
+
+  def total_new_aprobados
+    newers.not_perdida_por_inasistencia.aprobado.count
+  end
+
+  def total_new_aplazados
+    newers.not_perdida_por_inasistencia.aplazado.count
+  end
+
+  def total_new_retirados
+    newers.retirado.count
+  end
+
+  def total_new_pi
+    newers.perdida_por_inasistencia.count
+  end
+  
   def total_sc
     academic_records.sin_calificar.count
   end
@@ -153,6 +180,15 @@ class Course < ApplicationRecord
 
         end
       end
+
+      field :total_new do
+        label 'Nue'
+        pretty_value do
+          ApplicationController.helpers.label_status('bg-info', value)
+
+        end
+      end
+
       field :total_sc do
         label 'SC'
         help 'Sin Calificar'
@@ -161,9 +197,21 @@ class Course < ApplicationRecord
         end
       end
 
+      field :total_new_sc do
+        label 'SC Nue'
+      end
+      
       field :total_aprobados do
         label 'A'
         help 'Aprobado'
+        pretty_value do
+          ApplicationController.helpers.label_status('bg-success', value)
+        end
+      end
+      
+      field :total_new_aprobados do
+        label 'A Nue'
+        help 'Aprobado Nuevos'
         pretty_value do
           ApplicationController.helpers.label_status('bg-success', value)
         end
@@ -174,18 +222,42 @@ class Course < ApplicationRecord
           ApplicationController.helpers.label_status('bg-danger', value)
         end        
       end
+      field :total_new_aplazados do
+        label 'AP Nue'
+        help 'Aplazado Nuevos'
+        pretty_value do
+          ApplicationController.helpers.label_status('bg-danger', value)
+        end
+      end
+
       field :total_retirados do
         label 'RT'
         pretty_value do
           ApplicationController.helpers.label_status('bg-secondary', value)
         end        
       end 
+      field :total_new_retirados do
+        label 'RT Nue'
+        help 'Retirados Nuevos'
+        pretty_value do
+          ApplicationController.helpers.label_status('bg-secondary', value)
+        end
+      end
+
       field :total_pi do
         label 'PI'
         pretty_value do
           ApplicationController.helpers.label_status('bg-danger', value)
         end        
-      end 
+      end
+      
+      field :total_new_pi do
+        label 'PI Nue'
+        help 'Perdida por Inasistencia Nuevos'
+        pretty_value do
+          ApplicationController.helpers.label_status('bg-danger', value)
+        end
+      end
       field :qualifications_average do
         label 'Prom'
         pretty_value do
@@ -224,6 +296,17 @@ class Course < ApplicationRecord
       field :total_academic_records do
         label 'Ins'
       end
+
+      field :total_new do
+        label 'Nue'
+        help 'Nuevos'
+      end
+
+      field :total_new_sc do
+        label 'SC Nue'
+        help 'Sin Calificar Nuevos'
+      end
+
       field :total_sc do
         label 'SC'
       end
@@ -231,15 +314,33 @@ class Course < ApplicationRecord
         label 'A'
         help 'Aprobado'
       end
+      field :total_new_aprobados do
+        label 'A Nue'
+        help 'Aprobado Nuevos'
+      end
       field :total_aplazados do
         label 'AP'
       end
+      field :total_new_aplazados do
+        label 'AP Nue'
+        help 'Aplazado Nuevos'
+      end
+
       field :total_retirados do
         label 'RT'
       end 
+      field :total_new_retirados do
+        label 'RT Nue'
+        help 'Retirados Nuevos'
+      end
+
       field :total_pi do
         label 'PI'
       end 
+      field :total_new_pi do
+        label 'PI Nue'
+        help 'Perdida por Inasistencia Nuevos'
+      end
       field :qualifications_average do
         label 'PROM'
       end

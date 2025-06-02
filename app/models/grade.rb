@@ -134,6 +134,10 @@ class Grade < ApplicationRecord
     enroll_academic_processes.joins(:academic_process).order('academic_processes.name': :desc).first
   end
 
+  def first_enrolled
+    enroll_academic_processes.joins(:academic_process).order('academic_processes.name': :asc).first
+  end
+
   def academic_processes_unenrolled
     school.academic_processes.joins(period: :period_type).order('periods.year DESC, period_types.code DESC').reject{|ap|self.academic_processes.ids.include?(ap.id)}
   end
@@ -517,6 +521,7 @@ class Grade < ApplicationRecord
   after_initialize do
     if new_record?
       self.study_plan_id ||= StudyPlan.first.id if StudyPlan.first
+      self.current_permanence_status ||= :nuevo
     end
   end  
 
