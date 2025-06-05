@@ -291,58 +291,51 @@ class Course < ApplicationRecord
     export do
       fields :academic_process, :period, :subject, :area
       field :total_sections do
-        label 'T. Sec'
+        label 'Total Sec'
       end
       field :total_academic_records do
-        label 'Ins'
+        label 'Inscritos'
       end
 
       field :total_new do
-        label 'Nue'
-        help 'Nuevos'
+        label 'Inscritos Nuevos'
       end
 
       field :total_new_sc do
-        label 'SC Nue'
-        help 'Sin Calificar Nuevos'
+        label 'Sin Calificar Nuevos'
       end
 
       field :total_sc do
-        label 'SC'
+        label 'Sin Calificar'
       end
       field :total_aprobados do
-        label 'A'
-        help 'Aprobado'
+        label 'Aprobado'
       end
       field :total_new_aprobados do
-        label 'A Nue'
-        help 'Aprobado Nuevos'
+        label 'Arpobados Nuevos'
       end
       field :total_aplazados do
-        label 'AP'
+        label 'Aplazados'
       end
       field :total_new_aplazados do
-        label 'AP Nue'
-        help 'Aplazado Nuevos'
+        label 'Aplazados Nuevos'
       end
 
       field :total_retirados do
-        label 'RT'
+        label 'Retirados'
       end 
       field :total_new_retirados do
-        label 'RT Nue'
-        help 'Retirados Nuevos'
+        label 'Retirados Nuevos'
       end
 
       field :total_pi do
         label 'PI'
       end 
       field :total_new_pi do
-        label 'PI Nue'
-        help 'Perdida por Inasistencia Nuevos'
+        label 'PI Nuevos'
       end
       field :qualifications_average do
-        label 'PROM'
+        label 'Promedio'
       end
 
     end
