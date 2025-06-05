@@ -27,6 +27,8 @@
       %span.input-group-text.bg-light.rounded-start.border-0.text-secondary.px-3
         %i.fas.fa-lock
       %input#inputPassword5.form-control.border-0.bg-light.rounded-end.ps-1{placeholder: "Contraseña", type: :password, name: 'user[password]', required: true}
+      %button.btn.btn-outline-secondary.rounded-end.border-0.px-3{type: "button", onclick: "togglePasswordVisibility()"}
+        %i.fas.fa-eye
   / Check box
   .mb-4.d-flex.justify-content-between.mb-4
     - if devise_mapping.rememberable?
@@ -41,3 +43,17 @@
     .d-grid
       %button.btn.btn-primary.mb-0{type: :submit} Entrar
 
+:javascript
+  function togglePasswordVisibility() {
+    var input = document.getElementById('inputPassword5');
+    var icon = event.currentTarget.querySelector('i');
+    if (input.type === 'password') {
+      input.type = 'text';
+      icon.classList.remove('fa-eye');
+      icon.classList.add('fa-eye-slash');
+    } else {
+      input.type = 'password';
+      icon.classList.remove('fa-eye-slash');
+      icon.classList.add('fa-eye');
+    }
+  }
