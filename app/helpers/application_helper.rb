@@ -26,7 +26,7 @@ module ApplicationHelper
 	end
 
 	def label_status(klazz, content)
-		text_color = (klazz.eql? 'bg-info') ? 'text-dark' : ''
+		text_color = ((klazz.eql? 'bg-info') or (klazz.eql? 'bg-success') or (klazz.eql? 'bg-warning')) ? 'text-dark' : ''
 		capture_haml{"<span class='text-center badge #{klazz} #{text_color}'>#{content}</span>".html_safe }
 	end
 
@@ -50,7 +50,7 @@ module ApplicationHelper
 	end
 
 	def label_link_with_tooptip(href, klazz, content, title, placement='top')
-		klazz += ' text-dark' if klazz.include? 'bg-info'
+		klazz += ' text-dark' if (klazz.include? 'bg-info' or klazz.include? 'bg-success' or klazz.include? 'bg-warning')
 		content_tag :a, href: href, rel: :tooltip, 'data-bs-toggle': :tooltip, 'data-bs-placement': placement, 'data-bs-original-title': title do
 			capture_haml{"<span class='text-center badge #{klazz}'>#{content}</span>".html_safe }
 		end	
@@ -64,9 +64,10 @@ module ApplicationHelper
 	end	
 
 	def label_status_with_tooptip(klazz, content, title, placement='top')
+		text_color = ((klazz.eql? 'bg-info') or (klazz.eql? 'bg-success') or (klazz.eql? 'bg-warning')) ? 'text-dark' : ''
 
 		content_tag :b, rel: :tooltip, 'data-bs-toggle': 'tooltip', 'data-bs-placement': placement, 'data-bs-original-title': title do
-			capture_haml{"<span class='text-center badge #{klazz}'>#{content}</span>".html_safe }
+			capture_haml{"<span class='text-center badge #{klazz} #{text_color}'>#{content}</span>".html_safe }
 		end	
 	end
 

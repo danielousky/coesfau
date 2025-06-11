@@ -199,6 +199,9 @@ class Course < ApplicationRecord
 
       field :total_new_sc do
         label 'SC Nue'
+        pretty_value do
+          ApplicationController.helpers.label_status('bg-secondary', value)
+        end
       end
       
       field :total_aprobados do
