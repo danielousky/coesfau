@@ -14,18 +14,18 @@
         %th.col-4.text-center Desde
         %th.col-4.text-center Hasta
         %th.text-center.align-middle Est. Permanencia
-        %th.text-center{width: '50px'}= "Eficiencia #{over_academic_process.period.name}"
-        %th.col-1.text-center= "Promedio #{over_academic_process.period.name}" 
-        %th.col-1.text-center= "Ponderado #{over_academic_process.period.name}" 
+        %th.text-center{width: '50px'}= "Eficiencia #{over_academic_process&.period.name}"
+        %th.col-1.text-center= "Promedio #{over_academic_process&.period.name}" 
+        %th.col-1.text-center= "Ponderado #{over_academic_process&.period.name}" 
     %tbody
       - grouped_grades.each do |appointment_from, grades_group|
         - grades_group.each_with_index do |grade, i|
           - student = grade.student
           - reverse_name = student.user.reverse_name
-          - eap = grade.enroll_academic_processes.where(academic_process_id: over_academic_process.id).first
+          - eap = grade.enroll_academic_processes.where(academic_process_id: over_academic_process&.id).first
 
           %tr
-            %td.text-center= grade.label_status_enroll_academic_process(over_academic_process.id)
+            %td.text-center= grade.label_status_enroll_academic_process(over_academic_process&.id)
             %td= student.sede 
             %td= student.user_ci
             %td{title: reverse_name}= link_to reverse_name, "/admin/student/#{grade.student_id}", target: '_black'
