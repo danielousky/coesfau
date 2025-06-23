@@ -61,4 +61,4 @@
       = link_to "/enrollment_days/#{day.id}/export.xls", class: 'btn btn-info float-end m-1' do
         .fa.fa-download
         Descargar
-      = render partial: '/enrollment_days/show', locals: {grades: day.own_grades_sort_by_appointment, academic_process: academic_process }
+      = render partial: '/enrollment_days/show', locals: {grades: day.own_grades_sort_by_appointment, over_academic_process: day.over_academic_process, academic_process: day.academic_process }

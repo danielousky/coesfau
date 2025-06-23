@@ -8,6 +8,8 @@ class EnrollmentDay < ApplicationRecord
 
   #RELATIONSHIPS:
   belongs_to :academic_process
+  belongs_to :over_academic_process, class_name: 'AcademicProcess', optional: true
+
   has_one :school, through: :academic_process 
   has_one :period, through: :academic_process 
   
@@ -78,9 +80,17 @@ class EnrollmentDay < ApplicationRecord
   end
 
   def own_grades_sort_by_appointment
-    # self.own_grades.order([appointment_time: :asc, duration_slot_time: :asc, efficiency: :desc, simple_average: :desc, weighted_average: :desc])
-    
-    self.own_grades.joins(:enroll_academic_processes).order([appointment_time: :asc, duration_slot_time: :asc, 'enroll_academic_processes.efficiency': :desc, 'enroll_academic_processes.simple_average': :desc, 'enroll_academic_processes.weighted_average': :desc]).uniq
+    self.own_grades
+    .joins(enroll_academic_processes: :academic_process)
+    .where('academic_processes.id': self.over_academic_process_id)
+    .order(
+      appointment_time: :asc,
+      duration_slot_time: :asc,
+      'enroll_academic_processes.efficiency': :desc,
+      'enroll_academic_processes.simple_average': :desc,
+      'enroll_academic_processes.weighted_average': :desc
+    )
+
   end
 
   def own_grades_sort_by_numbers

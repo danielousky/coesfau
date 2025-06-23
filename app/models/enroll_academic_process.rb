@@ -58,7 +58,7 @@ class EnrollAcademicProcess < ApplicationRecord
   scope :valid_to_enroll_in, -> () {joins(:grade).where("grades.current_permanence_status": [:regular, :reincorporado, :articulo3], "grades.appointment_time": nil)}
 
 
-  scope :sort_by_numbers_of_this_process, -> () {order(['enroll_academic_processes.simple_average': :desc, 'enroll_academic_processes.weighted_average': :desc])}
+  scope :sort_by_numbers_of_this_process, -> () {order(['enroll_academic_processes.efficiency': :desc, 'enroll_academic_processes.simple_average': :desc, 'enroll_academic_processes.weighted_average': :desc])}
 
   scope :without_academic_records, -> {joins(:academic_records).group(:"enroll_academic_processes.id").having('COUNT(*) = 0').count}
 

@@ -2,7 +2,7 @@
 
 = simple_form_for(enrollment_day, url: '/enrollment_days', html: { method: :post, novalidate: false }) do |f|
   .form-inputs
-    = f.hidden_field :academic_process_id
+    =# f.hidden_field :academic_process_id
     = f.input :academic_process_id, as: :hidden
     %br
     = f.input :start
@@ -25,9 +25,9 @@
 
     = f.input :slot_duration_minutes, collection: [["30 Minutos", 30],["60 Minutos", 60],["120 Minutos", 120]], as: :radio_buttons, required: true      
     %hr
-    .alert.alert-warning
-      = check_box_tag :by_before_process, true, checked: true
-      Aplicar sobre el periodo anterior
+    .form-group
+      = label_tag :enrollment_day_over_academic_process_id, "Seleccionar periodo académico"
+      = f.collection_select :over_academic_process_id, AcademicProcess.where.not(id: enrollment_day.academic_process_id), :id, :name,{}, {class: "form-control"}
   .modal-footer
     = f.button :submit, value: 'Crear Jornada de inscripción por cita horaria', class: 'btn btn-success'
 

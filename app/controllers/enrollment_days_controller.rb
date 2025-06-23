@@ -38,6 +38,7 @@ class EnrollmentDaysController < ApplicationController
     # @enrollment_day.start = selected_date
 
     if @enrollment_day.save
+
       flash[:success] = 'Jornada de inscripción por cita horaria creada con éxito.'
 
       total_updated = 0
@@ -50,7 +51,7 @@ class EnrollmentDaysController < ApplicationController
 
         appointment_time = @enrollment_day.start+(a*@enrollment_day.slot_duration_minutes).minutes
 
-        total_updated += academic_process.update_grades_enrollment_day params[:by_before_process], grades_by_timeslot, appointment_time, duration_slot_time
+        total_updated += academic_process.update_grades_enrollment_day @enrollment_day.over_academic_process_id, grades_by_timeslot, appointment_time, duration_slot_time
 
       end
 
@@ -59,7 +60,7 @@ class EnrollmentDaysController < ApplicationController
       if rest > 0
         appointment_time = @enrollment_day.start+(total_timeslots*@enrollment_day.slot_duration_minutes).minutes
 
-        total_updated += academic_process.update_grades_enrollment_day params[:by_before_process], rest-1, appointment_time, duration_slot_time
+        total_updated += academic_process.update_grades_enrollment_day @enrollment_day.over_academic_process_id, rest-1, appointment_time, duration_slot_time
 
       end
 
@@ -109,6 +110,6 @@ class EnrollmentDaysController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def enrollment_day_params
-      params.require(:enrollment_day).permit(:academic_process_id, :start, :total_duration_hours, :max_grades, :slot_duration_minutes)
+      params.require(:enrollment_day).permit(:academic_process_id, :start, :total_duration_hours, :max_grades, :slot_duration_minutes, :over_academic_process_id)
     end
 end
