@@ -7,16 +7,16 @@
   %table.table.table-striped.table-sm.table-hover.table-bordered.table-responsive.tableDataMia
     %thead
       %tr
-        %th.text-center= "Estado Insc #{academic_process.period.name}"
+        %th.text-center= "Estado Insc #{academic_process&.period&.name}"
         %th.text-center Sede
         %th Cédula
         %th.col-4{width: '350px'} Apellidos, Nombres
         %th.col-4.text-center Desde
         %th.col-4.text-center Hasta
         %th.text-center.align-middle Est. Permanencia
-        %th.text-center{width: '50px'}= "Eficiencia #{over_academic_process&.period.name}"
-        %th.col-1.text-center= "Promedio #{over_academic_process&.period.name}" 
-        %th.col-1.text-center= "Ponderado #{over_academic_process&.period.name}" 
+        %th.text-center{width: '50px'}= "Eficiencia #{over_academic_process&.period&.name}"
+        %th.col-1.text-center= "Promedio #{over_academic_process&.period&.name}" 
+        %th.col-1.text-center= "Ponderado #{over_academic_process&.period&.name}" 
     %tbody
       - grouped_grades.each do |appointment_from, grades_group|
         - grades_group.each_with_index do |grade, i|
