@@ -28,4 +28,12 @@ class UserMailer < ApplicationMailer
     
   end
 
+  def large_export(user_id, file_name, objects, schema)
+    user = User.find user_id
+    xlsx = ExcelConverter.new(objects, schema).to_xlsx
+    attachment = Base64.encode64(xlsx)
+    attachments["Users.xlsx"] = {mime_type: Mime[:xlsx], content: attachment, encoding: 'base64'}
+    mail(to: user.email_desc, subject: "¡Reporte largo solicitado: #{file_name}!")
+  end
+
 end
