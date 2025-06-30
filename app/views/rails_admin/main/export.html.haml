@@ -58,9 +58,9 @@
   .form-actions.row.justify-content-end.mb-3
     .col-sm-offset-2.col-sm-10
       %input{:name => "return_to", :type => :hidden, :value => "#{(params[:return_to].presence || request.referer)}"}/
-      %button.btn.btn-primary{:name => "csv", :type => "submit"}
+      %button.btn.btn-primary{:name => "xlsx", :type => "submit"}
         %i.fas.fa-check
-        = t("admin.export.confirmation", name: 'csv')
+        = t("admin.export.confirmation", name: 'Excel')
       %button.btn.btn-light{:name => "_continue", :type => "submit"}
         %i.fas.fa-times
         = t("admin.form.cancel")
