@@ -1,6 +1,11 @@
 class Qualification < ApplicationRecord
-  # t.integer "value"
-  # t.integer "type_q"
+
+  has_paper_trail on: [:create, :destroy, :update]
+
+  # CALLBACK
+  before_create :paper_trail_create
+  before_destroy :paper_trail_destroy
+  before_update :paper_trail_update
   
   belongs_to :academic_record
   # accepts_nested_attributes_for :academic_record
@@ -114,4 +119,24 @@ class Qualification < ApplicationRecord
     grado = self.grade
     grado.update(efficiency: grado.calculate_efficiency, simple_average: grado.calculate_average, weighted_average: grado.calculate_weighted_average)
   end
+
+  def paper_trail_update
+    changed_fields = self.changes.keys - ['created_at', 'updated_at']
+    object = I18n.t("activerecord.models.#{self.model_name.param_key}.one")
+    changed_fields.each do |field|
+      old_value, new_value = self.changes[field]
+      self.paper_trail_event = "¡#{object} cambió #{field} de #{old_value.inspect} a #{new_value.inspect}!"
+    end
+  end  
+
+  def paper_trail_create
+    object = I18n.t("activerecord.models.#{self.model_name.param_key}.one")
+    self.paper_trail_event = "¡Calificada, #{type_q}: #{self.value} #{'(definitiva)' if definitive}!"
+  end  
+
+  def paper_trail_destroy
+    object = I18n.t("activerecord.models.#{self.model_name.param_key}.one")
+    self.paper_trail_event = "¡Registro Académico eliminado!"
+  end  
+
 end
