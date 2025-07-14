@@ -6,10 +6,10 @@
 
 
 - if absoluta
-  %td
-    - options = {"aprobado"=>1, "aplazado"=>2}
+  %th
+    - options = {"aprobado"=>1, "retirado"=>3}
     - options.map do |v,k|
-      = radio_button_tag "[academic_record]status", v, status.eql?(v), disabled: disable_row, required: !disable_row, class: 'absoluta', id_obj: id, type_q: :final, title: v.titleize, onclick: 'sendAbsolute(this);'
+      = radio_button_tag "[academic_records][#{academic_record.id}]status", v, status.eql?(v), disabled: disable_row, required: !disable_row, class: 'absoluta', id_obj: id, type_q: :final, title: v.titleize, onclick: 'sendAbsolute(this);'
       .badge.bg-secondary= v.upcase
 
 - else
