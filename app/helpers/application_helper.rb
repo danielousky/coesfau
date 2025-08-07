@@ -21,6 +21,17 @@ module ApplicationHelper
 		end
 	end
 
+
+	def link_academic_records_csv object 
+		id = object.id
+		total = object.academic_records.count
+		cod = object.name
+		cod ||= object.code
+		cod ||= object.id
+		model_name = object.class.name
+		label_link_with_tooptip("/export_csv/academic_records/#{id}?model_name=#{model_name}", 'bg-success', "<i class='fa-solid fa-user-graduate'></i><i class='fa-solid fa-down-long'></i>", "Descargar #{total} Regisrtos Académicos del #{(translate_model model_name.underscore, 'one').titleize} #{cod}", placement='left') if total > 0
+	end
+
 	def btn_toggle_download classes, href, title_tooltip, value, onclick_action=nil
 		btn_toggle classes, 'fa fa-download', href, title_tooltip, value, onclick_action
 	end
@@ -71,8 +82,8 @@ module ApplicationHelper
 		end	
 	end
 
-	def translate_model model
-		I18n.t("activerecord.models.#{model}.other")
+	def translate_model model, singular='other'
+		I18n.t("activerecord.models.#{model}.#{singular}")
 	end
 
 	def checkbox_auth id, action, value, area_id, onclick=nil

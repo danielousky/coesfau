@@ -293,20 +293,21 @@ class AcademicProcess < ApplicationRecord
           end
         end
       end
+
       field :total_academic_records do
         column_width 100
-        label 'En Asignaturas'
+        label 'Inscritos por Asignatura'
         pretty_value do
           user = bindings[:view]._current_user
           if (user and user.admin and user.admin.authorized_read? 'AcademicRecord')
-            href = "/admin/academic_record?query=#{bindings[:object].period.name}"
-            ApplicationController.helpers.label_link_with_tooptip(href, 'badge bg-info', "#{value}", 'Totas Inscripciones En Asignaturas')            
+            link = "/admin/academic_record?f[period][28695][o]=like&f[period][28695][v]=#{bindings[:object].period.name}"
+            a = %{<a href=#{link} data-bs-toggle='tooltip' title='Total Inscripciones En Asignaturas'><span class='badge bg-info text-dark'>#{value}</span></a>}.html_safe
+            "#{a} #{ApplicationController.helpers.link_academic_records_csv bindings[:object]}".html_safe
           else
-            %{<span class='badge bg-info'>#{value}</span>}.html_safe
+            %{<span class='badge bg-info text-dark'>#{value}</span>}.html_safe
           end
         end
       end
-
     end
 
     edit do

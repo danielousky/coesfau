@@ -26,6 +26,7 @@ class AcademicRecord < ApplicationRecord
   has_one :grade, through: :enroll_academic_process
   has_one :study_plan, through: :grade
   has_one :student, through: :grade
+  has_one :school, through: :grade
   has_one :address, through: :student
   has_one :user, through: :student
   has_one :period, through: :academic_process
@@ -144,7 +145,22 @@ class AcademicRecord < ApplicationRecord
   scope :sort_by_user_name, -> {joins(:user).order('users.last_name asc, users.first_name asc')}
 
   before_save :set_status_by_EQ_modality_section
+
+
+
   # FUNCTIONS:
+  def self.header_for_report
+    # ['#', 'CI', 'NOMBRES', 'APELLIDOS','ESCUELA','CATEDRA','CÓDIGO ASIG', 'NOMBRE ASIG','PERIODO','SECCIÓN','ESTADO']
+    ['#', 'CÉDULA', 'NOMBRES', 'APELLIDOS','ESCUELA','CATEDRA','CÓDIGO ASIG', 'NOMBRE ASIG', 'CRÉDITOS', 'NOTA_FINAL', 'NOTA_DEF', 'TIPO_EXAM', 'PER_LECTI', 'ANO_LECT','SECCIÓN', 'PLAN']
+  end
+
+  def values_for_report
+    user_aux = user
+
+    [user_aux.ci, user_aux.first_name, user_aux.last_name, school.name, area.name, subject.code, subject.name, subject.unit_credits, self.final_q_to_02i, self.get_value_by_status, self.tipo_examen, period_type.code, period.year, section.code, study_plan&.code]
+  end
+  
+  
   def destroy_dup
     qualifications.definitive.last.destroy if qualifications.definitive.count > 1
   end  
@@ -163,6 +179,11 @@ class AcademicRecord < ApplicationRecord
     aux = user.reverse_name
     aux += " (retirado)" if retirado? 
     return aux
+  end
+
+  def tipo_examen
+    aux = qualifications.definitive.first
+    aux.nil? ? 'F' : aux.desc_conv.last
   end
 
 
