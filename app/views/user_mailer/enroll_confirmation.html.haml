@@ -3,7 +3,7 @@
 
 = "Estimad#{@genero}: <b>#{@nombre}</b>,".html_safe
   
-%p= "Su inscripción en #{@escuela_desc} para el período #{@periodo_id} ha sido validada para las siguientes asignaturas:".html_safe
+%p= "Su inscripción en #{@escuela_name} para el período #{@periodo_name} ha sido validada para las siguientes asignaturas:".html_safe
 
 %ol
   - @sections.each do |sec| 
