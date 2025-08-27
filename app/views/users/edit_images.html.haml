@@ -6,7 +6,7 @@
       = simple_form_for @user, html: { class: 'form-horizontal', novalidate: false } do |f|
         
         %h5.text-center.bg-dark.text-info.p-1 REGISTRO DE DATOS
-        %h5.text-center.bg-info.p-1 PASO 1: CARGAR IMÁGENES DE RESPALDO
+        %h5.text-center.bg-info.text-dark.p-1 PASO 1: CARGAR IMÁGENES DE RESPALDO
 
         - correo_ayuda = (@user.student and @user.student.grades.first) ? @user.student.grades.first.school.contact_email : 'coes.fau@gmail.com'
 

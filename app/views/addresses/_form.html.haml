@@ -4,7 +4,7 @@
     .border.p-3
       = render partial: 'layouts/progress_wizard', locals: {active: 4}
       = simple_form_for [@student, @address], html: {novalidate: false } do |f|
-        %h5.text-center.bg-info.p-1 PASO 4: DATOS DE UBICACIÓN
+        %h5.text-center.bg-info.text-dark.p-1 PASO 4: DATOS DE UBICACIÓN
 
         .form-inputs
           = f.hidden_field :student_id, value: @student.id

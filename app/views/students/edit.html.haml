@@ -6,7 +6,7 @@
     .border.p-3
       = simple_form_for @student, html: {novalidate: false } do |f|
         %h5.text-center.bg-dark.text-info.p-1 REGISTRO DE DATOS
-        %h5.text-center.bg-info.p-1 PASO 3: INFORMACIÓN IMPORTANTE COMPLEMENTARIA:
+        %h5.text-center.bg-info.text-dark.p-1 PASO 3: INFORMACIÓN IMPORTANTE COMPLEMENTARIA:
         - # Origins
         = render partial: 'form_origins', locals: {f: f}
 

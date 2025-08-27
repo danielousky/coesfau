@@ -63,7 +63,7 @@
             %td= text_field_tag nil, {}, {value: acre.final_q_to_02i_to_from, class: 'form-control form-control-sm', disabled: true}          
         = render partial: '/academic_records/qualification_to_s', locals: {academic_record: acre, id: id}
         %td.text-center
-          .badge.bg-info{id: "labelStatus#{acre.id}"}= status.titleize
+          .badge.bg-info.text-dark{id: "labelStatus#{acre.id}"}= status.titleize
 
 :javascript
 

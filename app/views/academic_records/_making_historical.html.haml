@@ -10,5 +10,5 @@
 - if enroll.academic_records.any?
 
   .border.mb-3
-    %h5.bg-info.p-1.text-center.mb-0 Registros de Inscripciones
+    %h5.bg-info.text-dark.p-1.text-center.mb-0 Registros de Inscripciones
     = render partial: 'academic_records/index_to_history', locals: {academic_records: enroll.academic_records, enabled_delete: true, enabled_change: false, enabled_retire: false}

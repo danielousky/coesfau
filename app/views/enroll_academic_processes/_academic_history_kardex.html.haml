@@ -14,9 +14,9 @@
       %tr
         %td.text-center= enroll_academic_process.academic_process.period.name
         %td.text-center
-          .badge.bg-info= enroll_academic_process.enroll_status.titleize if enroll_academic_process.enroll_status
+          .badge.bg-info.text-dark= enroll_academic_process.enroll_status.titleize if enroll_academic_process.enroll_status
         %td.text-center
-          .badge.bg-info= enroll_academic_process.permanence_status.titleize if enroll_academic_process.permanence_status
+          .badge.bg-info.text-dark= enroll_academic_process.permanence_status.titleize if enroll_academic_process.permanence_status
         %td.text-center= enroll_academic_process.academic_records.count
 
       %tr

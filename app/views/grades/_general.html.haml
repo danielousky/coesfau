@@ -22,10 +22,10 @@
 			%td.text-center.fw-bold= grade.admission_type.name
 			- if grade.registration_status
 				%td.text-center
-					%strong.badge.bg-info= grade.registration_status.titleize
+					%strong.badge.bg-info.text-dark= grade.registration_status.titleize
 			- if grade.graduate_status
 				%td.text-center
-					%strong.badge.bg-info= grade.graduate_status.titleize
+					%strong.badge.bg-info.text-dark= grade.graduate_status.titleize
 			%td.text-center.fw-bold= grade.label_current_permanence_status
 			- if current_user&.admin?
 				%td.text-center.fw-bold
