@@ -22,6 +22,13 @@ class Grade < ApplicationRecord
 
   ARTICULO3 = "Artículo 3°. Todo alumno que en un período no apruebe el 25% de la carga académica que curse o que, en todo caso no apruebe por lo menos una asignatura, deberá participar obligatoriamente en el procedimiento especial de recuperación establecido en estas normas. </br></br> Esto quiere decir que usted puede inscribirse normalmente y debe inscribir la carga mínima permitida por el Plan de Estudios de su Escuela. Usted debe aprobar al menos una asignatura para superar esta sanción. Si usted reprueba nuevamente todas las asignaturas inscritas, será sancionado con el Art. 06, es decir, será suspendido por dos sementres (un año) y deberá solicitar la reincorporación, según las fechas y los procedimientos establecidos por el Dpto. de Control de Estudios de la Facultad."
 
+  # PAPERTRAIL:
+  has_paper_trail on: [:create, :destroy, :update], limit: nil
+
+  before_create :paper_trail_create
+  before_destroy :paper_trail_destroy
+  before_update :paper_trail_update  
+
 
   # ASSOCIATIONS:
   belongs_to :student, primary_key: :user_id
@@ -524,5 +531,23 @@ class Grade < ApplicationRecord
       self.current_permanence_status ||= :nuevo
     end
   end  
+
+  private
+
+  def paper_trail_update
+    changed_fields = self.changes.keys - ['created_at', 'updated_at']
+    object = I18n.t("activerecord.models.#{self.model_name.param_key}.one")
+    self.paper_trail_event = "¡#{object} actualizado en #{changed_fields.to_sentence}!"
+  end  
+
+  def paper_trail_create
+    object = I18n.t("activerecord.models.#{self.model_name.param_key}.one")
+    self.paper_trail_event = "¡Completada inscripción en oferta académica!"
+  end  
+
+  def paper_trail_destroy
+    object = I18n.t("activerecord.models.#{self.model_name.param_key}.one")
+    self.paper_trail_event = "¡Registro Académico eliminado!"
+  end 
 
 end

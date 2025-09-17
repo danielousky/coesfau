@@ -1,4 +1,5 @@
 class Teacher < ApplicationRecord
+  include Userable
   # SCHEMA:
   # t.bigint "area_id", null: false
 
@@ -30,10 +31,6 @@ class Teacher < ApplicationRecord
 
   def desc
     "(#{user.ci}) #{user.reverse_name}" if user
-  end
-
-  def name
-    self.user.name if self.user
   end
 
   # CALLBACKS:

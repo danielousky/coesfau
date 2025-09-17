@@ -1,4 +1,5 @@
 class Admin < ApplicationRecord
+  include Userable
   # SCHEMA:
   # t.bigint "user_id", null: false
   # t.integer "role"

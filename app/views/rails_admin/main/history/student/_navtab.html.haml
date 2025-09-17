@@ -1,0 +1,14 @@
+- # Navegación por pestañas
+
+- if params['active_table'].present?
+    - @to_table = 'active'
+    - @active_timeline = ''
+- else
+    - @to_table = ''
+    - @active_timeline = 'active'
+
+%ul.nav.nav-tabs.mb-3{role: "tablist"}
+    %li.nav-item
+        %a{class: "nav-link #{@active_timeline}", href:  "/admin/student/#{@object.id}/history", role: "tab"} Vista Linea de Tiempo
+    %li.nav-item
+        %a{class: "nav-link #{@to_table}", href:  "/admin/student/#{@object.id}/history?active_table=true", role: "tab"} Vista Tabla

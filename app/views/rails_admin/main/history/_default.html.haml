@@ -1,0 +1,53 @@
+-# Parcial para mostrar el historial estándar de entidades que no son Student
+-# Incluye información básica del registro y su historial de cambios
+
+- if versions.any?
+  .table-responsive
+    %table.table.table-striped.table-hover.align-middle{style: "white-space: nowrap;overflow-x: scroll;"}
+      %thead
+        %tr
+          %th #
+          %th Id
+          %th Fecha
+          %th Usuario
+          %th Acción
+          %th{style: "overflow-x: scroll;"} Detalle
+      %tbody
+        - versions.reorder(created_at: :desc).each_with_index do |version, index|
+          %tr
+            %td
+              %small.text-muted= index+1
+            %td
+              %small.text-muted= version.id            
+            %td
+              %small.text-muted= version.created_at.strftime('%d/%m/%Y %H:%M:%S')
+            %td
+              - if version.whodunnit.present?
+                - user = User.find_by(id: version.whodunnit)
+                - if user
+                  = render partial: 'rails_admin/main/history/versions_user_card', locals: { user: user }
+                - else
+                  .text-muted.small Sistema: #{version.whodunnit}
+              - else
+                - if version.item_type.eql? 'User'
+                  - user = @object.user
+                  = render partial: 'rails_admin/main/history/versions_user_card', locals: { user: user }
+                - else
+                  .text-muted.small Sistema
+            %td{style: "overflow-x: scroll;"}
+              %p.small
+                - icon = version.respond_to?(:fa_icon) ? version.fa_icon(@object) : 'fa fa-info-circle text-info'
+                %i{ class: icon }
+                - if version.event&.eql? 'destroy'
+                  = 'Eliminado'
+                - else
+                  = version.event
+            %td{style: "overflow-x: scroll;width: 40%"}
+              %p.small
+                = version.version_desc.html_safe
+- else
+  .alert.alert-info.text-center
+    %i.fa.fa-info-circle.me-2
+    No hay historial disponible
+
+

@@ -1,5 +1,5 @@
 class Student < ApplicationRecord
-
+  
   # SCHEMA:
   # t.boolean "active", default: true
   # t.integer "disability"
@@ -11,8 +11,9 @@ class Student < ApplicationRecord
   # t.string "grade_title"
   # t.string "grade_university"
   # t.integer "graduate_year"
-
+  
   # GLOBALS VARIABLES:
+  include Userable
   ESTADOS_CIVILES = ['Soltero/a', 'Casado/a', 'Concubinato', 'Divorciado/a', 'Viudo/a']
   NACIONALIDAD = ['Venezolano/a', 'Venezolano/a Nacionalizado/a', 'Extranjero/a']
 
@@ -105,10 +106,6 @@ class Student < ApplicationRecord
     file = File.read("#{Rails.root}/public/countriesToCities.json")
 
     JSON.parse(file)
-  end
-
-  def name
-    user.ci_fullname if user
   end
 
   def user_ci

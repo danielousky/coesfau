@@ -1,0 +1,15 @@
+-# Parcial para mostrar el historial específico de estudiantes
+-# Incluye información del estudiante y bitácoras de sus grades
+
+/ Vista especial para Student - Mostrar bitácoras de sus grades
+
+
+= render partial: 'rails_admin/main/history/student/navtab', locals: { params: params }
+
+
+- if params['active_table'].present?
+  - # Tabla
+  = render partial: 'rails_admin/main/history/to_table', locals: { versions: versions, user_default: @object.user }
+- else
+  - # Timeline (Vista default)
+  = render partial: 'rails_admin/main/history/to_timeline', locals: { versions: versions, user_default: @object.user }

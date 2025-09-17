@@ -1,0 +1,36 @@
+-# Vista personalizada para mostrar el historial de PaperTrail de una entidad específica
+-# Esta vista sobrescribe la vista por defecto de Rails Admin para history
+
+.container-fluid
+
+  .row
+    .col-12
+      .card.border-0.shadow-sm
+        .card-header.bg-success.text-white
+          %h4.mb-0
+            %i.fa.fa-graduation-cap.me-2
+            - obj = I18n.t("activerecord.models.#{@object.class.name.underscore}.one", default: @object.class.name)
+            Bitácora de #{obj}: #{@object.try(:name)}
+
+        .card-body
+
+          - if @object.class.name == 'Student'
+            - versions = @object.user.versions.where("object_changes LIKE '%last_sign_in_at%' OR object_changes LIKE '%current_sign_in_at%'")#.reorder(created_at: :desc)
+            - @object.grades.each do |grade|
+              - versions = versions.or(grade.versions.where("object_changes NOT LIKE '--- {}\n'"))
+              - grade.enroll_academic_processes.each do |enroll|
+                - versions = versions.or(enroll.versions)
+              - grade.academic_records.each do |record|
+                - versions = versions.or(record.versions)
+                - record.qualifications.each do |qual|
+                  - versions = versions.or(qual.versions)
+            - versions = versions.reorder(created_at: :desc).limit(80)
+            = render partial: 'rails_admin/main/history/student', locals: { versions: versions, user_default: @object.user }
+          - elsif @object.class.name == 'Admin'
+            - versions = @object.versions
+            - versions = versions.or(PaperTrail::Version.where(whodunnit: @object.user.id.to_s)).limit(100)
+            = render partial: 'rails_admin/main/history/admin', locals: { versions: versions, user_default: @object.user }
+          - else
+            - versions = @object.versions
+            = render partial: 'rails_admin/main/history/default', locals: { versions: versions }
+

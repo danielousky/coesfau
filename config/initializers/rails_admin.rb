@@ -141,7 +141,7 @@ RailsAdmin.config do |config|
 
     ## With an audit adapter, you can add:
     history_index do
-      except [School, StudyPlan, ParentArea]
+      only []
     end
 
     history_show do

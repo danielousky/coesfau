@@ -88,6 +88,11 @@ class Section < ApplicationRecord
   scope :has_academic_record, -> (academic_record_id) {joins(:academic_records).where('academic_records.id': academic_record_id)}
 
   # FUNCTIONS:
+  def simply_desc
+    "#{self.subject.code.upcase}#{self.code.upcase} - #{self.subject.name} (#{self.academic_process.period_name})"
+  end
+
+
   def label_modality
     ApplicationController.helpers.label_status('bg-info', modality.titleize) if modality
   end
