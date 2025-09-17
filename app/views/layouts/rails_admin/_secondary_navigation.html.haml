@@ -1,27 +1,21 @@
--# id = 'changePeriodModal'
--# title = 'Cambiar Período'
--# content = render '/academic_processes/change_process_form'
--# modal = render partial: '/layouts/scaffold-modal', locals: {content: content, title: title, id: id}
-%ul.navbar-nav.ms-auto.root_links
-  - actions(:root).select(&:show_in_navigation).each do |action|
-    %li{class: "nav-item #{action.action_name}_root_link"}
-      = link_to wording_for(:menu, action), { action: action.action_name, controller: 'rails_admin/main' }, {class: ['nav-link']}.merge(action.turbo? ? {} : {data: {turbo: 'false'}})
-  - if _current_user
+  
+
+- if _current_user
+  %ul.navbar-nav.ms-auto.root_links
+    - if session[:period_name].present? 
+      - id = 'changePeriodSession'
+      %li.nav-item.btn.btn-outline-success.me-2{"data-bs-target": "##{id}", "data-bs-toggle": "modal", type: "button"}
+        .fa.fa-calendar
+        Período de la Sesión: #{session[:period_name]}
+
     %li.nav-item
-      - if false
-        - if session[:academic_process_id]
-          - academic_process = AcademicProcess.find session[:academic_process_id]
-          - msg = academic_process.period_name
-        - else
-          - msg = "Sin Periodo Activo"
-        = link_to msg, 'javascript:void(0)', {"data-bs-target": "##{id}", "data-bs-toggle": :modal, class: 'nav-link', title: 'Cambiar Período de la Sesión'}
-
-
-    - if _current_user and _current_user.profile_picture and _current_user.profile_picture.attached?
-      %li.nav-item
-        = image_tag _current_user.profile_picture_as_thumb, class: "avatar", size: '35x35'
-    - else
-      = image_tag 'foto_perfil_default_35.png'
+      - if _current_user&.profile_picture&.attached?
+        - begin
+          = image_tag _current_user.profile_picture_as_thumb, class: "avatar", size: '35x35'
+        - rescue Exception => e
+          = image_tag 'foto_perfil_default_35.png'
+      - else
+        = image_tag 'foto_perfil_default_35.png'
     - if user_link = edit_user_link
       %li.nav-item.edit_user_root_link
         =# user_link
@@ -30,21 +24,5 @@
         = link_to user_name, "/admin/user/#{_current_user&.id}/edit", class: 'nav-link' 
     - if logout_path.present?
       %li.nav-item
-        = link_to logout_path, method: logout_method, class: 'nav-link', data: {turbo: 'false'} do
-          %span.badge.bg-danger= t('admin.misc.log_out')
-
-- if false
-  :javascript
-    document.addEventListener("rails_admin.dom_ready", function() {
-      let ELEMENT = document.createElement("div")
-      ELEMENT.innerHTML = `#{modal.html_safe}`;
-      document.body.appendChild(ELEMENT);
-    });
-- if false
-  :javascript
-    document.addEventListener('rails_admin.dom_ready', function(){
-      let ele = $('.navbar-brand')
-      let elem = `#{image_tag 'logo_coes_simple.png', width: '40px'}`
-      elem.src = 'logo_coes_simple.png'
-      ele.prepend(elem);
-    });
+        = link_to logout_path, method: logout_method, class: 'btn btn-sm badge mt-2 btn-outline-danger align-text-bottom', data: {turbo: 'false'} do
+          = t('admin.misc.log_out')

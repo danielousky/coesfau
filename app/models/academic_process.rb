@@ -225,11 +225,16 @@ class AcademicProcess < ApplicationRecord
       sort_by 'periods.name'
 
       field :school do
+        visible do
+          admin = bindings[:view]._current_user&.admin
+          admin&.multiple_schools?
+        end
+        sticky true
         column_width 150
-
+        
         pretty_value do
           value.short_name
-        end        
+        end
         
       end
       fields :period do
@@ -242,6 +247,7 @@ class AcademicProcess < ApplicationRecord
 
       field :process_before do
         column_width 80
+        filterable false
         pretty_value do
           value.period.name if value
         end
@@ -268,8 +274,8 @@ class AcademicProcess < ApplicationRecord
         label 'Secciones'
         pretty_value do 
           user = bindings[:view]._current_user
-          if (user&.admin&.authorized_read? 'Section')
-            href = '/admin/section?query=#{bindings[:object].period.name}'
+          if (user&.admin&.authorized_read? 'Section') and bindings[:view].session[:period_name]&.eql?(bindings[:object].period.name)
+            href = "/admin/section?query=#{bindings[:object].period.name}"
             ApplicationController.helpers.label_link_with_tooptip(href, 'badge bg-info', "#{value} en #{bindings[:object].courses.count} Cursos", 'Total Secciones')
           else
             %{<span class='badge bg-info text-dark'>#{value}</span>}.html_safe
@@ -281,7 +287,7 @@ class AcademicProcess < ApplicationRecord
         column_width 240
         label 'Estudiantes'
         formatted_value do
-          if (bindings[:view]._current_user&.admin&.authorized_read? 'EnrollAcademicProcess')
+          if (bindings[:view]._current_user&.admin&.authorized_read? 'EnrollAcademicProcess') and bindings[:view].session[:period_name]&.eql?(bindings[:object].period.name)
             link_to_massive_confirmation = ''
             if bindings[:object].enroll_academic_processes.not_confirmado.any?
               link_to_massive_confirmation = bindings[:object].link_to_massive_confirmation
@@ -299,10 +305,11 @@ class AcademicProcess < ApplicationRecord
         label 'Inscritos por Asignatura'
         pretty_value do
           user = bindings[:view]._current_user
-          if (user and user.admin and user.admin.authorized_read? 'AcademicRecord')
-            link = "/admin/academic_record?f[period][28695][o]=like&f[period][28695][v]=#{bindings[:object].period.name}"
-            a = %{<a href=#{link} data-bs-toggle='tooltip' title='Total Inscripciones En Asignaturas'><span class='badge bg-info text-dark'>#{value}</span></a>}.html_safe
-            "#{a} #{ApplicationController.helpers.link_academic_records_csv bindings[:object]}".html_safe
+          if (user and user.admin and user.admin.authorized_read? 'AcademicRecord') and bindings[:view].session[:period_name]&.eql?(bindings[:object].period.name)
+            # link = "/admin/academic_record?f[period][28695][o]=like&f[period][28695][v]=#{bindings[:object].period.name}"
+            # a = %{<a href=#{link} data-bs-toggle='tooltip' title='Total Inscripciones En Asignaturas'><span class='badge bg-info text-dark'>#{value}</span></a>}.html_safe
+            # "#{a} #{ApplicationController.helpers.link_academic_records_csv bindings[:object]}".html_safe
+            "#{ApplicationController.helpers.link_academic_records_csv bindings[:object]}".html_safe
           else
             %{<span class='badge bg-info text-dark'>#{value}</span>}.html_safe
           end

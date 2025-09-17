@@ -292,7 +292,7 @@ class Course < ApplicationRecord
     end
 
     export do
-      fields :academic_process, :period, :subject, :area
+      fields :academic_process, :subject, :area
       field :total_sections do
         label 'Total Sec'
       end

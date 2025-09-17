@@ -1,0 +1,24 @@
+!!!
+%html{:lang => "#{I18n.locale}"}
+  %head
+    %meta{:content => "text/html; charset=UTF-8", "http-equiv" => "Content-Type"}/
+    = render "layouts/rails_admin/head"
+  %body.rails_admin
+    #admin-js{"data-i18n-options" => "#{I18n.t("admin.js").to_json}"}
+    #loading.badge.bg-warning{:style => "display:none; position:fixed; right:20px; bottom:20px; z-index:100000"}
+      = t('admin.loading')
+    %nav{:class => "navbar navbar-expand-md fixed-top #{RailsAdmin::Config.navbar_css_classes.join(' ')}"}
+      = render "layouts/rails_admin/navigation"
+    .container-fluid
+      = render "layouts/rails_admin/sidebar_navigation"
+      = render template: 'layouts/rails_admin/content'
+
+    %br
+    %br
+    = render 'layouts/remote-modal'
+    = render '/layouts/footer'
+    - if session[:period_name].present?
+      - title = 'Cambiar Periodo de la Sesión'
+      - id = 'changePeriodSession'
+      - content = render partial: '/session_admin/change_period_session'
+      = render partial: '/layouts/scaffold-modal', locals: {content: content, title: title, id: id}

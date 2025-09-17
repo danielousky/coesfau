@@ -318,6 +318,7 @@ class Section < ApplicationRecord
         label 'Período'
         searchable :name
         sortable :name
+        filterable false
         # associated_collection_cache_all false
         # associated_collection_scope do
         #   # bindings[:object] & bindings[:controller] are available, but not in scope's block!

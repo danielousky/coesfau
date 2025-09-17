@@ -51,7 +51,7 @@ class School < ApplicationRecord
   validates :contact_email, presence: true
 
   # CALLBAKCS:
-  after_initialize :set_unique_faculty
+  # after_initialize :set_unique_faculty
   before_save :clean_name_and_code
 
   # HOOKS:

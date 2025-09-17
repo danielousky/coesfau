@@ -12,6 +12,7 @@ Rails.application.routes.draw do
   match "/export_csv/academic_records/:id" => "export_csv#academic_records", via: :get
   match "/export_csv/enroll_academic_processes/:id" => "export_csv#enroll_academic_processes", via: :get
   match "/export/xls/:id" => "export#xls", via: :get
+  match "/session_admin/change_period_session" => "session_admin#change_period_session", via: :post
 
   resources :validar, only: :index do
     member do

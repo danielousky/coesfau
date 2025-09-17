@@ -8,8 +8,9 @@
 
 .row
 	- School.all.each do |school|
-		- @period_name = nil
-		- ap = school.academic_processes.first
+		- @period = Period.where(name: session[:period_name]).first
+		- ap = @period&.academic_processes.first
+		- ap ||= school.academic_processes.first
 		- @period_name = ap.period.name if (ap and ap.period)
 		- @query = "?query=#{@period_name}" unless @period_name.blank?
 
@@ -17,19 +18,23 @@
 			- if logged_as_admin and current_user.admin.authorized_manage? 'AcademicRecord'
 				.row
 					- object = I18n.t("activerecord.models.academic_record.other")
-					= link_to "/admin/academic_record#{@query}", class: 'btn btn-primary' do
+
+					= link_to '/admin/academic_record', class: 'btn btn-primary' do
+					
 						%h1.fa.fa-signature
 						%h4.text-center= "#{object.upcase} #{@period_name}"
 			- if logged_as_admin and current_user.admin.authorized_manage? 'Section'
 				.row
 					- object = I18n.t("activerecord.models.section.one")
-					= link_to "/admin/section#{@query}", class: 'btn btn-primary' do
+					
+					= link_to '/admin/section', class: 'btn btn-primary' do
 						%h1.fa.fa-list
 						%h4.text-center= "#{object.upcase} #{@period_name}"
 			- if logged_as_admin and current_user.admin.authorized_manage? 'EnrollAcademicProcess'
 				.row
 					- object = I18n.t("activerecord.models.enroll_academic_process.one")
-					= link_to "/admin/enroll_academic_process#{@query}", class: 'btn btn-primary' do
+					
+					= link_to '/admin/enroll_academic_process', class: 'btn btn-primary' do
 						%h1.fa.fa-calendar-check
 						%h4.text-center= "#{object.upcase} #{@period_name}"
 - if false

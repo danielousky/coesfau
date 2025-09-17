@@ -488,6 +488,7 @@ class AcademicRecord < ApplicationRecord
       field :period do
         label 'Periodo'
         column_width 120
+        filterable false
 
         associated_collection_cache_all false
         associated_collection_scope do

@@ -1,0 +1,51 @@
+-# id = 'changePeriodModal'
+-# title = 'Cambiar Período'
+-# content = render '/academic_processes/change_process_form'
+-# modal = render partial: '/layouts/scaffold-modal', locals: {content: content, title: title, id: id}
+%ul.navbar-nav.ms-auto.root_links
+  %li{class: "nav-item"}
+    = link_to '#', class: 'nav-link' do
+      = 'Hola'
+  - if _current_user
+    %li.nav-item
+      - if false
+        - if session[:academic_process_id]
+          - academic_process = AcademicProcess.find session[:academic_process_id]
+          - msg = academic_process&.process_name
+        - else
+          - msg = "Sin Periodo Activo"
+        %div{'data-bs-toggle': :tooltip, title: 'Cambiar Período de la Sesión'}
+          = link_to msg, 'javascript:void(0)', {"data-bs-target": "##{id}", "data-bs-toggle": :modal, class: 'nav-link'}
+
+
+    - if _current_user and _current_user.profile_picture and _current_user.profile_picture.attached?
+      %li.nav-item
+        = image_tag _current_user.profile_picture_as_thumb, class: "avatar", size: '35x35'
+    - else
+      = image_tag 'foto_perfil_default_35.png'
+    - if user_link = edit_user_link
+      %li.nav-item.edit_user_root_link
+        =# user_link
+        - user_name = _current_user.reverse_name
+        - user_name = _current_user.email if user_name.blank?
+        = link_to user_name, "/admin/user/#{_current_user&.id}/edit", class: 'nav-link' 
+    - if logout_path.present?
+      %li.nav-item
+        = link_to logout_path, method: logout_method, class: 'nav-link', data: {turbo: 'false'} do
+          %span.badge.bg-danger= t('admin.misc.log_out')
+
+- if false
+  :javascript
+    document.addEventListener("rails_admin.dom_ready", function() {
+      let ELEMENT = document.createElement("div")
+      ELEMENT.innerHTML = `#{modal.html_safe}`;
+      document.body.appendChild(ELEMENT);
+    });
+- if false
+  :javascript
+    document.addEventListener('rails_admin.dom_ready', function(){
+      let ele = $('.navbar-brand')
+      let elem = `#{image_tag 'logo_coes_simple.png', width: '40px'}`
+      elem.src = 'logo_coes_simple.png'
+      ele.prepend(elem);
+    });

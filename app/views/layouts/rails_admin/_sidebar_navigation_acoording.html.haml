@@ -1,0 +1,40 @@
+.d-flex.flex-column.flex-shrink-0.bg-light{style: "width: 4.5rem;"}
+  %a.d-block.p-3.link-dark.text-decoration-none{"data-bs-original-title" => "Icon-only", "data-bs-placement" => "right", "data-bs-toggle" => "tooltip", href: "/", title: ""}
+    %svg.bi{height: "32", width: "40"}
+      %use{"xlink:href" => "#bootstrap"}
+    %span.visually-hidden Icon-only
+  %ul.nav.nav-pills.nav-flush.flex-column.mb-auto.text-center
+    %li.nav-item
+      %a.nav-link.active.py-3.border-bottom{"aria-current" => "page", "data-bs-original-title" => "Home", "data-bs-placement" => "right", "data-bs-toggle" => "tooltip", href: "#", title: ""}
+        %svg.bi{"aria-label" => "Home", height: "24", role: "img", width: "24"}
+          %use{"xlink:href" => "#home"}
+    %li
+      %a.nav-link.py-3.border-bottom{"data-bs-original-title" => "Dashboard", "data-bs-placement" => "right", "data-bs-toggle" => "tooltip", href: "#", title: ""}
+        %svg.bi{"aria-label" => "Dashboard", height: "24", role: "img", width: "24"}
+          %use{"xlink:href" => "#speedometer2"}
+    %li
+      %a.nav-link.py-3.border-bottom{"data-bs-original-title" => "Orders", "data-bs-placement" => "right", "data-bs-toggle" => "tooltip", href: "#", title: ""}
+        %svg.bi{"aria-label" => "Orders", height: "24", role: "img", width: "24"}
+          %use{"xlink:href" => "#table"}
+    %li
+      %a.nav-link.py-3.border-bottom{"data-bs-original-title" => "Products", "data-bs-placement" => "right", "data-bs-toggle" => "tooltip", href: "#", title: ""}
+        %svg.bi{"aria-label" => "Products", height: "24", role: "img", width: "24"}
+          %use{"xlink:href" => "#grid"}
+    %li
+      %a.nav-link.py-3.border-bottom{"data-bs-original-title" => "Customers", "data-bs-placement" => "right", "data-bs-toggle" => "tooltip", href: "#", title: ""}
+        %svg.bi{"aria-label" => "Customers", height: "24", role: "img", width: "24"}
+          %use{"xlink:href" => "#people-circle"}
+  .dropdown.border-top
+    %a#dropdownUser3.d-flex.align-items-center.justify-content-center.p-3.link-dark.text-decoration-none.dropdown-toggle{"aria-expanded" => "false", "data-bs-toggle" => "dropdown", href: "#"}
+      %img.rounded-circle{alt: "mdo", height: "24", src: "https://github.com/mdo.png", width: "24"}/
+    %ul.dropdown-menu.text-small.shadow{"aria-labelledby" => "dropdownUser3"}
+      %li
+        %a.dropdown-item{href: "#"} New project...
+      %li
+        %a.dropdown-item{href: "#"} Settings
+      %li
+        %a.dropdown-item{href: "#"} Profile
+      %li
+        %hr.dropdown-divider/
+      %li
+        %a.dropdown-item{href: "#"} Sign out
