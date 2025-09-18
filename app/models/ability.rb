@@ -62,7 +62,7 @@ class Ability
             can :destroy, authd.authorizable_klazz_constantenize if authd.can_delete?
             can :import, authd.authorizable_klazz_constantenize if authd.can_import?
             can :export, authd.authorizable_klazz_constantenize if authd.can_export?
-            can :history, authd.authorizable_klazz_constantenize
+            # can :history, authd.authorizable_klazz_constantenize
 
         end
 

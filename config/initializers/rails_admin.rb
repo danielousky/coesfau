@@ -141,11 +141,15 @@ RailsAdmin.config do |config|
 
     ## With an audit adapter, you can add:
     history_index do
-      only []
+      visible false
     end
 
     history_show do
       except [School, StudyPlan, ParentArea]
+      visible do
+        user = bindings[:controller]&.current_user
+        user&.admin && (user.admin.desarrollador? || user.admin.jefe_control_estudio?)
+      end      
     end
   end
 

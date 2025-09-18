@@ -6,7 +6,6 @@ module RailsAdmin
     include RailsAdmin::MainHelper
     include RailsAdmin::ApplicationHelper
 
-    before_action :set_current_env
     before_action :set_current_period
     before_action :check_for_cancel
 
@@ -20,53 +19,6 @@ module RailsAdmin
       scope = model_config.scope
       auth_scope = @authorization_adapter&.query(auth_scope_key, model_config.abstract_model)
       
-      
-      if !(current_admin.desarrollador?)
-        
-        if (@abstract_model.to_s.eql? 'Departament' and session[:env_type].eql? 'Departament') or (@abstract_model.to_s.eql? 'School' and session[:env_type].eql? 'School')          
-          scope = scope.where(id: session[:env_ids]) 
-        else
-          # p "     Controller: #{controller_name} | Action: #{action_name} | @abstract_model: #{@abstract_model} | model_config.abstract_model: #{model_config.abstract_model}      ".center(2000, "$")
-          if @abstract_model.to_s.eql? 'AcademicProcess' and model_config.abstract_model.to_s.eql? 'Period' and action_name.eql? 'new'
-            schoolables = ['Subject', 'Teacher', 'StudyPlan', 'Departament', 'EnrollAcademicProcess', 'PaymentReport', 'Grade', 'Area', 'Section', 'Course', 'AcademicRecord']
-          else
-            schoolables = ['Subject', 'Teacher', 'StudyPlan', 'Departament', 'AcademicProcess', 'EnrollAcademicProcess', 'PaymentReport', 'Grade', 'Area', 'Section', 'Course', 'AcademicRecord']
-          end
-          schoolables.delete 'Teacher' if (session[:env_type]&.to_s.eql? 'School' and session[:env_ids].include? 11)
-          departamentables = ['Teacher', 'Area', 'Section']
-          if session[:env_type]&.to_s.eql? 'Departament'
-            if departamentables.include? @abstract_model.to_s
-
-              scope = (@abstract_model.to_s.eql? 'Section') ? scope.joins(:departament).where('departaments.id': session[:env_ids]) : scope.joins(:departaments).where('departaments.id': session[:env_ids])
-            else
-              school_ids = Departament.where(id: session[:env_ids]).map(&:school_id).uniq
-              if @abstract_model.to_s.eql? 'Student'
-                scope = scope.joins(:schools).where('schools.id': school_ids)
-              elsif schoolables.include? @abstract_model.to_s and schoolables.include? model_config.abstract_model.to_s
-                scope = scope.joins(:school).where('schools.id': school_ids) 
-              end
-            end
-          else
-            if @abstract_model.to_s.eql? 'Student' #and model_config.abstract_model.to_s.eql? 'Student'
-              if model_config.abstract_model.to_s.eql? 'StudyPlan'
-                # p "  IF: Estoy aquí después  #{model_config.abstract_model.to_s}".center(500, '#')
-                scope = scope.joins(:school).where('schools.id': session[:env_ids]) 
-              elsif !model_config.abstract_model.to_s.eql? 'AdmissionType'
-                scope = scope.joins(:schools).where('schools.id': session[:env_ids]) 
-                # p "  Else: Estoy aquí después  #{model_config.abstract_model.to_s}".center(500, '#')
-              end
-
-            elsif schoolables.include? @abstract_model.to_s and schoolables.include? model_config.abstract_model.to_s
-              scope = scope.joins(:school).where('schools.id': session[:env_ids])
-            elsif (schoolables << 'School').include? @abstract_model.to_s and (schoolables << 'School').include? model_config.abstract_model.to_s
-              scope = scope.joins(:school).where('schools.id': [])
-            end
-          end
-
-        end
-      else
-        scope = scope.joins(:school) if @abstract_model.to_s.eql? 'EnrollAcademicProcess' or @abstract_model.to_s.eql? 'AcademicRecord' or @abstract_model.to_s.eql? 'Section' or @abstract_model.to_s.eql? 'Course'
-      end
 
       if session[:period_name].present?
         case @abstract_model.to_s
@@ -92,16 +44,7 @@ module RailsAdmin
     end
     def logged_as_admin?
         current_user&.admin? and session[:rol].eql? 'admin'
-    end
-
-    def set_current_env
-      if current_admin
-        if !(current_admin.desarrollador?)
-          session[:env_type] = current_admin.env_auths.map(&:env_authorizable_type).first
-          session[:env_ids] = current_admin.env_auths.map(&:env_authorizable_id)
-        end
-      end
-    end    
+    end   
 
   private
 
