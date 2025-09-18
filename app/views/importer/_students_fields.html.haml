@@ -18,7 +18,8 @@
   #admission_type_field.control-group.row.mb-3.enum_type
     %label.col-sm-2.col-form-label.text-md-end{for: "admission_type_field"} Tipo de Admisión
     .col-sm-10.controls
-      = grouped_collection_select nil, :admission_type_id, School.all, :admission_types, :description, :id, :name, {:prompt => "Seleccione el tipo de Admisión a la escuela...", selected: @school_id}, { class: 'form-control', required: true}
+      =# grouped_collection_select nil, :admission_type_id, schools, :admission_types, :description, :id, :name, {:prompt => "Seleccione el tipo de Admisión a la escuela...", selected: @school_id}, { class: 'form-control', required: true}
+      = select_tag 'admission_type_id', options_for_select(AdmissionType.all.pluck(:name, :id)), class: "form-control required", required: true, include_blank: 'Seleccione Tipo de Adminsión...'
       .form-text
         %span.label.label-danger Requerido
 
