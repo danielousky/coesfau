@@ -25,7 +25,8 @@ class Schedule < ApplicationRecord
       field :name
     end
     edit do
-      fields :day, :starttime, :endtime
+      field :day
+      fields :starttime, :endtime
     end
     export do
       field :name do

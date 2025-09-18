@@ -1,0 +1,14 @@
+
+
+- unless field.multiple?
+  .btn-group.btn-group-toggle{"data-toggle" => "buttons"}
+    - field.enum.each do |at|
+      %label.btn.btn-info
+        - class_name_main = field.bindings[:view].params[:model_name]
+        - class_name_nested = field.bindings[:object].class.name.downcase
+        - enum_value = (class_name_main.present? && class_name_main != class_name_nested) ? at[0].to_sym : at[1]
+        = form.radio_button field.method_name, enum_value, checked: field.form_value.eql?(at[1])
+        = at[0]&.titleize
+- else
+  - js_data = {xhr: false, sortable: false, cacheAll: true, regional: {add: t("admin.misc.add_new"), chooseAll: t("admin.misc.chose_all"), clearAll: t("admin.misc.clear_all"), down: t("admin.misc.down"), remove: t("admin.misc.remove"), search: t("admin.misc.search"), up: t("admin.misc.up")}}
+  = form.select field.method_name, field.enum, { selected: field.form_value, object: form.object }, field.html_attributes.reverse_merge({data: { filteringmultiselect: true, options: js_data.to_json }, multiple: true})
