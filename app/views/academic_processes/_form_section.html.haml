@@ -13,16 +13,9 @@
     #section_modality_field.control-group.row.mb-3.enum_type.modality_field
       %label.col-sm-2.col-form-label.text-md-end{:for => "section_modality"} Tipo
       .col-sm-10.controls
-        .row
+        .row.px-2
           .col-sm-4
-            %select#section_modality{"data-enumeration" => "true", :name => "section[modality]", :placeholder => "Buscar", :style => "display: none;"}
-              %option{:label => " ", :value => ""}
-              %option{:value => "0"} nota_final
-              %option{:value => "1"} equivalencia
-            .input-group.filtering-select{"data-input-for" => "section_modality"}
-              %input.form-control.ra-filtering-select-input.ui-autocomplete-input{:autocomplete => "off", :placeholder => "Buscar", :required => "required", :style => "", :type => "text"}/
-              %span.input-group-btn
-                %label.btn.btn-info.dropdown-toggle{"aria-label" => "Show All Items", "data-bs-original-title" => "Show All Items", :role => "button"}
+          %input#section_modality.form-control{:name => "section[modality]", :type => "text", :value => "nota_final", :readonly => true, :tabindex => "-1"}
         .form-text
           %span.label.label-danger> Requerido
           \.

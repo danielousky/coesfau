@@ -7,19 +7,50 @@
   %fieldset
     #section_schedules_attributes_new_schedules_day_field.control-group.row.mb-3.enum_type.day_field
       %label.col-sm-2.col-form-label.text-md-end{:for => "section_schedules_attributes_new_schedules_day"} Día
-      .col-sm-10.controls
-        .row
-          .col-sm-4
-            %select#section_schedules_attributes_new_schedules_day{"data-enumeration" => "true", :name => "section[schedules_attributes][new_schedules][day]", :placeholder => "Buscar", :required => "required"}
-              %option{:label => " ", :value => ""}
-              %option{:value => "0"} Lunes
-              %option{:value => "1"} Martes
-              %option{:value => "2"} Miércoles
-              %option{:value => "3"} Jueves
-              %option{:value => "4"} Viernes
-              %option{:value => "5"} Sábado
-        .form-text
-          %span.label.label-danger Requerido
+      
+      
+
+      - if false
+        .col-sm-10.controls
+          .btn-group.btn-group-toggle{"data-toggle" => "buttons"}
+            %label.btn.btn-info
+              %input{:type => "radio", :value => "Lunes", :name => "section[schedules_attributes][0][day]", :id => "section_schedules_attributes_0_day_lunes"}
+              Lunes
+            %label.btn.btn-info
+              %input{:type => "radio", :value => "Martes", :name => "section[schedules_attributes][0][day]", :id => "section_schedules_attributes_0_day_martes"}
+              Martes
+            %label.btn.btn-info
+              %input{:type => "radio", :value => "Miércoles", :name => "section[schedules_attributes][0][day]", :id => "section_schedules_attributes_0_day_miércoles"}
+              Miércoles
+            %label.btn.btn-info
+              %input{:type => "radio", :value => "Jueves", :name => "section[schedules_attributes][0][day]", :id => "section_schedules_attributes_0_day_jueves"}
+              Jueves
+            %label.btn.btn-info
+              %input{:type => "radio", :value => "Viernes", :name => "section[schedules_attributes][0][day]", :id => "section_schedules_attributes_0_day_viernes"}
+              Viernes
+            %label.btn.btn-info
+              %input{:type => "radio", :value => "Sábado", :name => "section[schedules_attributes][0][day]", :id => "section_schedules_attributes_0_day_sábado"}
+              Sábado
+          .form-text
+            %span.label.label-danger Requerido
+            \.
+      
+      
+      
+      - if true 
+        .col-sm-10.controls
+          .row
+            .col-sm-4
+              %select#section_schedules_attributes_new_schedules_day{"data-enumeration" => "true", :name => "section[schedules_attributes][new_schedules][day]", :placeholder => "Buscar", :required => "required"}
+                %option{:label => " ", :value => ""}
+                %option{:value => "Lunes"} Lunes
+                %option{:value => "Martes"} Martes
+                %option{:value => "Miércoles"} Miércoles
+                %option{:value => "Jueves"} Jueves
+                %option{:value => "Viernes"} Viernes
+                %option{:value => "Sábado"} Sábado
+          .form-text
+            %span.label.label-danger Requerido
   #section_schedules_attributes_new_schedules_starttime_field.control-group.row.mb-3.time_type.starttime_field
     %label.col-sm-2.col-form-label.text-md-end{:for => "section_schedules_attributes_new_schedules_starttime"} Hora Inicio
     .col-sm-10.controls
