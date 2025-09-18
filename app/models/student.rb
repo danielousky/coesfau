@@ -324,8 +324,9 @@ class Student < ApplicationRecord
 
     # Cédula de Identidad
     if row[0]
-      row[0].strip!
+      row[0] = row[0]&.to_s
       row[0].delete! '^0-9'
+      row[0] = row[0].strip
     else
       return [0,0,0]
     end
