@@ -68,12 +68,17 @@
   =# render partial: 'schedules/index', locals: {schedules: academic_process.schedules}
 
   .modal-footer
+    - if current_user&.admin? and session[:rol].eql? 'admin' #and !enroll.nil?
+      .me-3.p-2.alert.alert-warning
+        = render partial: 'enroll_academic_processes/complete_and_send_email'#, locals: {enroll: enroll}
     / %a.btn.btn-sm.btn-outline-light{data: {dismiss: 'modal'}} Cancelar
     - enableSubmit = (totalCreditsReserved > 0 and totalCreditsReserved <= limitCredits and totalSubjectsReserved > 0 and totalSubjectsReserved <= limitSubjects)
 
     - disabledClass = enableSubmit ? '' : 'disabled'
     .d-grid.gap-2
+
       = submit_tag 'Completar', class: "#{disabledClass} btn btn-success btn-lg", id: 'submitBtn', 'data-disable-with': 'Enviando', disabled: !enableSubmit, onclick: 'completeEnroll(this);'
+
 
 :javascript
 

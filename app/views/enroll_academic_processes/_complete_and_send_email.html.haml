@@ -1,0 +1,12 @@
+%div
+    %label.btn.btn-success.btn-sm.tooltip-btn.me-2
+        = radio_button_tag 'enroll_status', :preinscrito, @object&.enroll_status == 'preinscrito'
+        Preinscrito
+    
+    %label.btn.btn-success.btn-sm.tooltip-btn.me-2
+        -# urlC = "/rails/mailers/user_mailer/enroll_confirmation?enroll_id=#{enroll.id}"
+        = radio_button_tag 'enroll_status', :confirmado, @object&.enroll_status == 'confirmado'
+        Confirmado
+    .btn.btn-sm.btn-info.me-2
+        = check_box_tag :send_confirmation, true
+        Enviar Correo Informativo de Completación de Proceso al Estudiante
