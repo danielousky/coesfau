@@ -254,6 +254,14 @@ class User < ApplicationRecord
     (self.how_many_roles? == 0)
   end
 
+   def links_to_detail
+    aux = []
+    aux << "<i class='fa-regular fa-user-tie'></i>#{I18n.t('activerecord.models.admin.one')}" if admin?
+    aux << "<a href='/admin/student/#{id}'><i class='fa-regular fa-user-graduate'></i>#{I18n.t('activerecord.models.student.one')}</a>" if student?
+    aux << "<a href='/admin/teacher/#{id}'><i class='fa-regular fa-chalkboard-user'></i>#{I18n.t('activerecord.models.teacher.one')}</a>" if teacher?
+    return aux.to_sentence.html_safe
+  end 
+
   def how_many_roles?
     aux = 0
     aux += 1 if admin?
@@ -355,6 +363,9 @@ class User < ApplicationRecord
         #   bindings[:view].render(partial: "rails_admin/main/image", locals: {object: bindings[:object]})
         # end
       # end
+      field :links_to_detail do
+        label 'Roles'
+      end      
       field :profile_picture, :active_storage 
       field :ci_image, :active_storage 
       field :ci
@@ -371,6 +382,9 @@ class User < ApplicationRecord
       items_per_page 10
       search_by :my_search #[:email, :first_name, :last_name, :ci]
       field :ci
+      field :links_to_detail do
+        label 'Roles'
+      end      
       field :email
       field :first_name
       field :last_name
