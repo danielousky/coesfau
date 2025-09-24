@@ -103,6 +103,8 @@ class AcademicRecord < ApplicationRecord
   scope :total_credits, -> {joins(:subject).sum('subjects.unit_credits')}
   scope :total_subjects, -> {(joins(:subject).group('subjects.id').count).count}
 
+  scope :numerica, -> {joins(:subject).where('subjects.qualification_type': Subject.qualification_types[:numerica])}
+
   scope :total_subjects_coursed, -> {coursed.total_subjects}
   scope :total_subjects_approved, -> {aprobado.total_subjects}
   scope :total_subjects_equivalence, -> {equivalencia.total_subjects}
@@ -113,16 +115,28 @@ class AcademicRecord < ApplicationRecord
   scope :total_credits_approved, -> {aprobado.total_credits}
   scope :total_credits_equivalence, -> {equivalencia.total_credits}
   scope :total_credits_not_equivalence, -> {not_equivalencia.total_credits}
+
+  scope :total_credits_coursed_not_equivalence, -> {not_equivalencia.total_credits_coursed}
+  scope :total_credits_coursed_not_equivalence_numeric, -> {numerica.total_credits_coursed_not_equivalence}
+
+  scope :total_credits_approved, -> {aprobado.total_credits}
+  scope :total_credits_approved_equivalence, -> {numerica.equivalencia.total_credits_approved}
+  scope :total_credits_approved_not_equivalence, -> {not_equivalencia.total_credits_approved}  
+  scope :total_credits_approved_not_equivalence_numeric, -> {numerica.total_credits_approved_not_equivalence}  
+
+
+  scope :total_credits_coursed_not_equivalence_numeric, -> {numerica.total_credits_coursed_not_equivalence}
   
-  scope :weighted_average, -> {joins(:subject).joins(:qualifications).definitives.coursed.sum('subjects.unit_credits * qualifications.value')}
+  scope :weighted_average, -> {joins(:subject).numerica.joins(:qualifications).not_equivalencia.definitives.coursed.sum('subjects.unit_credits * qualifications.value')}
 
   scope :definitives, -> {joins(:qualifications).where('qualifications.definitive': true)}
 
-  scope :promedio, -> {joins(:qualifications).coursed.definitives.average('qualifications.value')}
+  scope :promedio, -> {joins(:qualifications).numerica.coursed.not_equivalencia.definitives.average('qualifications.value')}
   # ATENCIÓN: El cálculo del promedio no toma en cuenta el tipo de calificación. Si es "absoluta" igual se calcula el promedio bien.
 
   scope :promedio_approved, -> {aprobado.promedio}
   scope :weighted_average_approved, -> {aprobado.weighted_average}
+  
 
   scope :student_enrolled_by_period, lambda { |period_id| joins(:academic_process).where("academic_processes.period_id": period_id).group(:student).count } 
 

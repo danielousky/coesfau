@@ -19,9 +19,11 @@ class AcademicProcessesController < ApplicationController
     @academic_process.enroll_academic_processes.each do |iep|
 
       grade = iep.grade
-
+      
       if iep.is_the_last_enroll_of_grade?
-
+        
+        iep.update(permanence_status: iep.get_regulation)
+        iep.reload
         if grade.update(current_permanence_status: iep.permanence_status, efficiency: grade.calculate_efficiency, weighted_average: grade.calculate_weighted_average, simple_average: grade.calculate_average) and iep.update(efficiency: iep.calculate_efficiency, simple_average: iep.calculate_average, weighted_average: iep.calculate_weighted_average)
           total_actualizados += 1
         else

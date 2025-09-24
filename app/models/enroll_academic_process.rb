@@ -1,4 +1,5 @@
 class EnrollAcademicProcess < ApplicationRecord
+  include Numerizable
   # SCHEMA:
   # t.bigint "grade_id", null: false
   # t.bigint "academic_process_id", null: false
@@ -33,7 +34,7 @@ class EnrollAcademicProcess < ApplicationRecord
   # ENUMERIZE:
   # IDEA CON ESTADO DE INSCRIPCIÓN EN GRADE Y ENROLL ACADEMIC PROCESS
   enum enroll_status: [:preinscrito, :reservado, :confirmado]
-  enum permanence_status: [:nuevo, :regular, :reincorporado, :articulo3, :articulo6, :articulo7, :intercambio, :desertor, :egresado, :egresado_doble_titulo, :permiso_para_no_cursar]  
+  enum permanence_status: [:nuevo, :regular, :reincorporado, :articulo3, :articulo6, :articulo7, :intercambio, :desertor, :egresado, :egresado_doble_titulo, :permiso_para_no_cursar, :retiro_total]  
 
   # VALIDATIONS:
   validates :grade, presence: true
@@ -111,7 +112,9 @@ class EnrollAcademicProcess < ApplicationRecord
       if !(self.grade.academic_records.qualified.any?)
         reglamento_aux = :nuevo
       elsif total_retire?
-        reglamento_aux = :desertor
+        reglamento_aux = :retiro_total
+      elsif self.academic_records.sin_calificar.any?
+        reglamento_aux = :por_calificar
       elsif self.academic_records.coursed.any?
         if coursed_but_not_approved_any?
           reglamento_aux = :articulo3
@@ -168,18 +171,6 @@ class EnrollAcademicProcess < ApplicationRecord
 
   def total_academic_records
     self.subjects.count
-  end
-
-  def total_subjects
-    subjects.count
-  end
-
-  def total_subjects_coursed
-    academic_records.total_subjects_coursed
-  end
-
-  def total_subjects_approved
-    academic_records.total_subjects_approved
   end
 
   def total_subjects_not_retired
@@ -390,61 +381,6 @@ class EnrollAcademicProcess < ApplicationRecord
     self.grade.enroll_academic_processes.count.eql? 1
   end
 
-
-  def total_credits_coursed
-    academic_records.total_credits_coursed
-  end
-
-  def total_credits_approved
-    academic_records.total_credits_approved
-  end
-
-  def efficiency_desc
-    if efficiency.nil?
-      '--'
-    else
-      (efficiency).round(2)
-    end
-  end
-
-  def simple_average_desc
-    if simple_average.nil?
-      '--'
-    else
-      (simple_average).round(2)
-    end
-  end
-
-  def weighted_average_desc
-    if weighted_average.nil?
-      '--'
-    else
-      (weighted_average).round(2)
-    end
-  end
-
-  def calculate_efficiency
-    cursados = self.total_subjects_coursed
-    aprobados = self.total_subjects_approved
-    if cursados < 0 or aprobados < 0
-      0.0
-    elsif cursados == 0 or (cursados > 0 and aprobados >= cursados)
-      1.0
-    else
-      (aprobados.to_f/cursados.to_f).round(4)
-    end
-  end
-
-  def calculate_average
-    aux = academic_records.promedio
-    (aux&.is_a? BigDecimal) ? aux.to_f.round(4) : self.simple_average
-  end
-
-  def calculate_weighted_average 
-    aux = academic_records.weighted_average
-    cursados = self.total_credits_coursed
-    (cursados > 0 and aux) ? (aux.to_f/cursados.to_f).round(4) : self.weighted_average
-  end
 
   private
 
