@@ -1,5 +1,7 @@
 module Numerizable
 
+    PERMANENCE_STATUSES = [:nuevo, :regular, :reincorporado, :articulo3, :articulo6, :articulo7, :intercambio, :desertor, :egresado, :egresado_doble_titulo, :permiso_para_no_cursar, :retiro_semestre]
+
     def numbers
         "Efi: #{self.efficiency}, Prom. Ponderado: #{self.weighted_average}, Prom. Simple: #{self.simple_average}"
         # redear una tabla descripción. OJO Sí es posible estandarizar

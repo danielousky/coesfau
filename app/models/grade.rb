@@ -52,7 +52,7 @@ class Grade < ApplicationRecord
   enum registration_status: [:universidad, :facultad, :escuela]
   enum enrollment_status: [:preinscrito, :asignado, :confirmado]
   enum graduate_status: [:no_graduable, :tesista, :posible_graduando, :graduando, :graduado]
-  enum current_permanence_status: [:nuevo, :regular, :reincorporado, :articulo3, :articulo6, :articulo7, :intercambio, :desertor, :egresado, :egresado_doble_titulo, :permiso_para_no_cursar, :retiro_total]
+  enum current_permanence_status: PERMANENCE_STATUSES
 
   # VALIDATIONS:
   # validates :student, presence: true
@@ -94,7 +94,7 @@ class Grade < ApplicationRecord
 
   scope :current_permanence_valid_to_enroll, -> {where('grades.current_permanence_status': [:regular, :reincorporado, :articulo3])}
 
-  scope :others_permanence_invalid_to_enroll, -> {where(current_permanence_status: [:nuevo, :articulo6, :articulo7, :intercambio, :desertor, :egresado, :egresado_doble_titulo, :permiso_para_no_cursar, :sin_calificar, :retiro_total])}
+  scope :others_permanence_invalid_to_enroll, -> {where(current_permanence_status: [:nuevo, :articulo6, :articulo7, :intercambio, :desertor, :egresado, :egresado_doble_titulo, :permiso_para_no_cursar, :sin_calificar, :retiro_semestre])}
 
   scope :special_authorized, -> (academic_process_id) {where(enabled_enroll_process_id:academic_process_id )}
 
