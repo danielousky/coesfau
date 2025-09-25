@@ -169,7 +169,9 @@ class Course < ApplicationRecord
       field :sections do
         column_width '300'
         pretty_value do
-          bindings[:object].sections.map{|sec| ApplicationController.helpers.link_to(sec.code, "/admin/section/#{sec.id}")}.to_sentence.html_safe
+          "<div style='overflow-x:auto; white-space:nowrap;'>".html_safe +
+            bindings[:object].sections.map { |sec| ApplicationController.helpers.link_to(sec.code, "/admin/section/#{sec.id}") }.to_sentence.html_safe +
+            "</div>".html_safe
         end
       end
       field :total_academic_records do
