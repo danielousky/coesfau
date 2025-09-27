@@ -101,11 +101,15 @@
               %b ATENCIÓN: 
               Su estado actual de permanencia lo imposibilita para inscribirse. Contacte al personal de Control de Estudio de la escuela para solventar su situación si considera que el caso lo amerita.
               = grade.help_msg
-          - elsif (academic_process_before and grade.enroll_academic_processes.of_academic_process(academic_process_before.id).any?)
+          - elsif (academic_process_before and !grade.enroll_academic_processes.of_academic_process(academic_process_before.id).any?)
             .alert.alert-danger 
               %b ATENCIÓN: 
               = "Usted no realizó un proceso de inscripción en el período anterior (#{academic_process_before.period_name}) por lo que su preinscripción no podrá realizarla. Debe dirigirse a Control de Estudio para solventar su situación."
               = grade.help_msg
+          - else
+            .alert.alert-danger
+              %b ATENCIÓN:
+              No está habilitado para inscribirse en este proceso. Contacte al personal de Control de Estudio para solventar su situación si considera que el caso lo amerita.
 
     - unless title&.blank?
       :javascript
