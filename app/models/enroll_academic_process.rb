@@ -105,8 +105,9 @@ class EnrollAcademicProcess < ApplicationRecord
   end
 
   def get_regulation
-    if permiso_para_no_cursar?
-      reglamento_aux = :permiso_para_no_cursar
+
+    if PERMANENCE_STATUSES_SETEABLES.include? self.permanence_status&.to_sym
+      return self.permanence_status.to_sym
     else
       reglamento_aux = :regular
       if !(self.grade.academic_records.qualified.any?)
@@ -207,21 +208,6 @@ class EnrollAcademicProcess < ApplicationRecord
     end
     return ApplicationController.helpers.label_status("bg-#{label_color}", self.enroll_status&.titleize)
   end
-
-  def label_permanence_status
-    # [:nuevo, :regular, :reincorporado, :articulo3, :articulo6, :articulo7, :intercambio, :desertor, :egresado, :egresado_doble_titulo]  
-    label_color = 'info'
-    case self.permanence_status
-    when 'articulo3'
-      label_color = 'warning'
-    when 'articulo6'
-      label_color = 'danger'
-    when 'articulo7'
-      label_color = 'dark'
-    end
-    return ApplicationController.helpers.label_status("bg-#{label_color}", self.permanence_status&.titleize)
-  end
-
 
   rails_admin do
     navigation_label 'Reportes'

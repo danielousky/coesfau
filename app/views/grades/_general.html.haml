@@ -26,7 +26,7 @@
 			- if grade.graduate_status
 				%td.text-center
 					%strong.badge.bg-info.text-dark= grade.graduate_status.titleize
-			%td.text-center.fw-bold= grade.label_current_permanence_status
+			%td.text-center.fw-bold= grade.label_permanence_status
 			- if current_user&.admin?
 				%td.text-center.fw-bold
 					%div{title: grade.appointment_from_to}

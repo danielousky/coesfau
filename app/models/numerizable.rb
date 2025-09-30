@@ -1,6 +1,30 @@
 module Numerizable
 
-    PERMANENCE_STATUSES = [:nuevo, :regular, :reincorporado, :articulo3, :articulo6, :articulo7, :intercambio, :desertor, :egresado, :egresado_doble_titulo, :permiso_para_no_cursar, :retiro_semestre]
+    PERMANENCE_STATUSES = [:nuevo, :regular, :reincorporado, :articulo3, :articulo6, :articulo7, :intercambio, :desertor, :egresado, :egresado_doble_titulo, :permiso_para_no_cursar, :retiro_semestre, :reincorporado_por_intercambio]
+    PERMANENCE_STATUSES_SETEABLES = [:reincorporado, :intercambio, :desertor, :egresado, :egresado_doble_titulo, :permiso_para_no_cursar, :retiro_semestre, :reincorporado_por_intercambio]
+
+
+    def aux_permanence_status
+        if self.is_a? Grade
+            self.current_permanence_status
+        else
+            self.permanence_status
+        end
+    end
+
+    def label_permanence_status
+        # [:nuevo, :regular, :reincorporado, :articulo3, :articulo6, :articulo7, :intercambio, :desertor, :egresado, :egresado_doble_titulo]
+        if self.nuevo? or self.regular? or self.reincorporado? or self.intercambio? or self.egresado? or self.egresado_doble_titulo?
+            label = 'bg-success'
+        elsif self.articulo3?
+            label = 'bg-warning'
+        elsif self.articulo6? or self.retiro_semestre? or self.articulo7? or self.desertor?
+            label = 'bg-danger'
+        else
+            label = 'bg-info'
+        end
+        ApplicationController.helpers.label_status(label, aux_permanence_status.titleize)
+    end
 
     def numbers
         "Efi: #{self.efficiency}, Prom. Ponderado: #{self.weighted_average}, Prom. Simple: #{self.simple_average}"

@@ -224,20 +224,6 @@ class Grade < ApplicationRecord
     end
   end
 
-  def label_current_permanence_status
-    # [:nuevo, :regular, :reincorporado, :articulo3, :articulo6, :articulo7, :intercambio, :desertor, :egresado, :egresado_doble_titulo]
-    if self.nuevo? or self.regular? or self.reincorporado? or self.intercambio? or self.egresado? or self.egresado_doble_titulo?
-      label = 'bg-info'
-    elsif self.articulo3?
-      label = 'bg-warning'
-    else 
-      label = 'bg-danger'
-    end
-
-    ApplicationController.helpers.label_status(label, current_permanence_status.titleize)
-
-  end
-
   def label_status_enroll_academic_process(academic_process_id)
     if iep = self.enroll_academic_processes.of_academic_process(academic_process_id).first
       iep.label_status
