@@ -5,7 +5,7 @@
 - user = grade.student.user
 
 - if current_user.student? and (session[:rol].eql? 'student') and school.enable_dependents?
-  - subjects_offer_by_dependency = grade.subjects_offer_by_dependent_v2
+  - subjects_offer_by_dependency = grade.subjects_offer_by_dependent
   - courses_offer = courses_offer.where(subject_id: subjects_offer_by_dependency.ids)
 
 - courses_offer = courses_offer.order_by_subject_code
