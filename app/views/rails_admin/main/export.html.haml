@@ -61,7 +61,9 @@
       %button.btn.btn-primary{:name => "xlsx", :type => "submit"}
         %i.fas.fa-check
         = t("admin.export.confirmation", name: 'Excel')
+      %button.btn.btn-outline-secondary{:name => "csv", :type => "submit"}
+        %i.fas.fa-check
+        = t("admin.export.confirmation", name: 'CSV')
       %button.btn.btn-light{:name => "_continue", :type => "submit"}
         %i.fas.fa-times
         = t("admin.form.cancel")
-

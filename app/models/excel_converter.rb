@@ -36,20 +36,47 @@ class ExcelConverter
     end
   end
 
-  def to_xlsx
-    package = Axlsx::Package.new
-    workbook = package.workbook
-
-    workbook.add_worksheet(name: "Datos") do |sheet|
-      sheet.add_row generate_excel_header
-
-      method = @objects.respond_to?(:find_each) ? :find_each : :each
-      @objects.send(method) do |object|
-        sheet.add_row generate_excel_row(object)
-      end
+  # Método específico para CSV streaming que evita conflictos de ordenamiento
+  def to_csv_streaming(response_stream)
+    p "  Iniciando exportación CSV streaming    ".center(1000, 'C')
+    
+    # Generar encabezados
+    headers = generate_excel_header
+    response_stream.write headers.join(";") + "\n"
+    
+    processed_count = 0
+    batch_size = 20
+    
+    # Usar find_each sin ordenamiento específico para evitar conflictos
+    if @objects.respond_to?(:reorder)
+      # Remover cualquier ordenamiento que pueda causar conflictos
+      objects_to_process = @objects.reorder(nil)
+    else
+      objects_to_process = @objects
+    end
+    
+    objects_to_process.find_each(batch_size: batch_size) do |object|
+      row_data = generate_excel_row(object)
+      response_stream.write row_data.join(";") + "\n"
+      processed_count += 1
     end
 
-    package.to_stream.read
+  end
+
+  def to_xlsx_streaming(response_stream)
+    require 'xlsxtream'
+
+    headers = generate_excel_header
+    scope = @objects.respond_to?(:reorder) ? @objects.reorder(nil) : @objects
+
+    Xlsxtream::Workbook.open(response_stream) do |xlsx|
+      xlsx.write_worksheet('Datos') do |sheet|
+        sheet << headers
+        scope.find_each(batch_size: 20) do |object|
+          sheet << generate_excel_row(object)
+        end
+      end
+    end
   end
 
   private

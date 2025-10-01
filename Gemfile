@@ -26,7 +26,8 @@ group :development, :production do
   # gem 'axlsx_rails'
   gem 'caxlsx'
   gem 'caxlsx_rails'
-
+  
+  gem 'xlsxtream'
   # The original asset pipeline for Rails [https://github.com/rails/sprockets-rails]
   gem "sprockets-rails"
 
