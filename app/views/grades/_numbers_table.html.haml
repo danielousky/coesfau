@@ -2,10 +2,10 @@
 %table.table.table-sm.border
 	%tr
 		%td.text-end Eficiencia:
-		%td.text-start.fw-bold= grade.calculate_efficiency
+		%td.text-start.fw-bold= grade.efficiency
 	%tr
 		%td.text-end Promedio Simple:
-		%td.text-start.fw-bold= grade.calculate_average
+		%td.text-start.fw-bold= grade.simple_average
 	%tr
 		%td.text-end Promedio Simple Aprobado:
 		%td.text-start.fw-bold= grade.calculate_average_approved
@@ -14,4 +14,4 @@
 		%td.text-start.fw-bold= grade.calculate_weighted_average_approved
 	%tr
 		%td.text-end Promedio Ponderado:
-		%td.text-start.fw-bold= grade.calculate_weighted_average
+		%td.text-start.fw-bold= grade.weighted_average
