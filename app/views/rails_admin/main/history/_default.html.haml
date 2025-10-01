@@ -30,7 +30,7 @@
                   .text-muted.small Sistema: #{version.whodunnit}
               - else
                 - if version.item_type.eql? 'User'
-                  - user = @object.user
+                  - user = @object.user unless @object.is_a? User
                   = render partial: 'rails_admin/main/history/versions_user_card', locals: { user: user }
                 - else
                   .text-muted.small Sistema

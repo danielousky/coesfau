@@ -1,12 +1,13 @@
 .d-flex.align-items-center
-    - if user.profile_picture.attached?
-        - begin
-            = image_tag user.profile_picture_as_thumb, class: "rounded-circle me-2", style: 'max-width: 30px; max-height: 30px;'
-        - rescue Exception => e
-            = image_tag 'foto_perfil_default_35.png'
-    - else
-        .bg-secondary.rounded-circle.d-flex.align-items-center.justify-content-center.me-2{style: 'max-width: 30px; max-height: 30px;'}
-            %i.fa.fa-user.text-white{style: 'font-size: 12px;'}
-    .small
-        .fw-bold= "#{user.first_name} #{user.last_name}"
-        .text-muted= user.ci
+    - if user.present?
+        - if user&.profile_picture&.attached?
+            - begin
+                = image_tag user.profile_picture_as_thumb, class: "rounded-circle me-2", style: 'max-width: 30px; max-height: 30px;'
+            - rescue Exception => e
+                = image_tag 'foto_perfil_default_35.png'
+        - else
+            .bg-secondary.rounded-circle.d-flex.align-items-center.justify-content-center.me-2{style: 'max-width: 30px; max-height: 30px;'}
+                %i.fa.fa-user.text-white{style: 'font-size: 12px;'}
+        .small
+            .fw-bold= "#{user.first_name} #{user.last_name}"
+            .text-muted= user.ci
