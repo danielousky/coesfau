@@ -25,7 +25,7 @@
           - eap = grade.enroll_academic_processes.where(academic_process_id: over_academic_process&.id).first
 
           %tr
-            %td.text-center= grade.label_status_enroll_academic_process(over_academic_process&.id)
+            %td.text-center= grade.label_status_enroll_academic_process(academic_process&.id)
             %td= student.sede 
             %td= student.user_ci
             %td{title: reverse_name}= link_to reverse_name, "/admin/student/#{grade.student_id}", target: '_black'
