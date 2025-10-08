@@ -54,10 +54,6 @@ class Admin < ApplicationRecord
     user_aux.delete if user_aux.without_rol?
   end 
 
-  def periods
-    Period.order('periods.name': :desc).distinct
-  end
-
   def multiple_schools?
     School.count > 1
   end

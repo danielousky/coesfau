@@ -11,7 +11,7 @@
       %span.control-label
         Período a Cambiar:
       .controls
-        - @periods = current_user&.admin&.periods.reject{|pe| pe.name.eql? session[:period_name]}
+        - @periods = Period.all.joins(:period_type).where.not('periods.name': session[:period_name]).order(['periods.year DESC', 'period_types.name DESC']) #current_user&.admin&.periods.reject{|pe| pe.name.eql? session[:period_name]}
         = collection_select nil, :nuevo, @periods, :name, :name, {:prompt => 'Seleccione Período'}, { class: 'form-control', required: true }
   .modal-footer
     = submit_tag 'Cambiar Período', class: 'btn btn-primary'

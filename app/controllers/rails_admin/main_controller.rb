@@ -48,8 +48,12 @@ module RailsAdmin
 
   private
 
+    def periods
+      Period.all.joins(:period_type).order(['periods.year DESC', 'period_types.name DESC'])
+    end
+
     def set_current_period
-      session[:period_name] ||= current_user.admin.periods&.first&.name
+      session[:period_name] ||= periods.first&.name
     end
 
     def action_missing(name, *_args)
