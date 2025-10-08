@@ -53,8 +53,8 @@ class AcademicProcess < ApplicationRecord
   # SCOPE:
   # default_scope { order(name: :desc) }
   # default_scope { order(Arel.sql("REPLACE(name, 'INT', '') DESC")) }
-  scope :sort_by_period_type, -> { joins(period: :period_type).order(['periods.year DESC', 'period_types.name DESC']) }
-  default_scope { sort_by_period_type }
+  scope :sort_by_period_type, -> { joins(:period, :period_type).order(['periods.year DESC', 'period_types.name DESC']) }
+  # default_scope { sort_by_period_type }
 
   scope :without_enroll_academic_processes, -> {left_joins(:enroll_academic_processes).where('enroll_academic_processes.academic_process_id': nil)}
 

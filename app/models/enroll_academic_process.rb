@@ -24,6 +24,7 @@ class EnrollAcademicProcess < ApplicationRecord
   
   belongs_to :academic_process
   has_one :period, through: :academic_process
+  has_one :period_type, through: :period
   has_many :payment_reports, as: :payable, dependent: :destroy
   has_many :academic_records, dependent: :destroy
   has_many :sections, through: :academic_records

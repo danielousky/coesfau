@@ -3,7 +3,7 @@
     .text-center.bg-info.text-dark.py-2 Historial Académico
 
   #accordionFlush.accordion.accordion-flush
-    - grade.enroll_academic_processes.sort_by_period.each do |enroll_academic_process|
+    - grade.enroll_academic_processes.includes(:period, :school).sort_by_period.each do |enroll_academic_process|
       - school = enroll_academic_process.school
       - academic_process = enroll_academic_process.academic_process
       - enrolling_process = (school&.enroll_process.eql? academic_process)
