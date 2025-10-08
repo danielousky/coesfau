@@ -1,4 +1,4 @@
 .text-center
   = form_tag(nil, class: "form-inline") do 
     .input-group{style: 'width:65%'}
-      = collection_select(:school, :active_process_id, school.academic_processes.limit(3), :id, :period_name, {include_blank: 'Sin Periodo Activo', selected: school.active_process_id}, {class: "form-control form-control-sm ", 'data-bs-original-title': "Esta acción modificará la posibilidad de calificar a los profesores, entre otras cosas. Para desactivar el período seleccione 'Sin Perído Activo'", onchange: 'setEnabledEnroll(this);', id: "active_process_id#{school.id}", type_elem: 'active_process_id' })
+      = collection_select(:school, :active_process_id, school.academic_processes.sort_by_period_type.limit(3), :id, :period_name, {include_blank: 'Sin Periodo Activo', selected: school.active_process_id}, {class: "form-control form-control-sm ", 'data-bs-original-title': "Esta acción modificará la posibilidad de calificar a los profesores, entre otras cosas. Para desactivar el período seleccione 'Sin Perído Activo'", onchange: 'setEnabledEnroll(this);', id: "active_process_id#{school.id}", type_elem: 'active_process_id' })

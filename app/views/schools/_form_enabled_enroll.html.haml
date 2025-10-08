@@ -1,7 +1,7 @@
 .text-center
   = form_tag(nil, class: "form-inline") do 
     .input-group{style: 'width:60%'}
-      = collection_select(:school, :enroll_process_id, school.academic_processes.limit(3), :id, :period_name, {include_blank: 'Inscripción Cerrada', selected: school.enroll_process_id}, {class: "form-control form-control-sm ", 'data-bs-original-title': "Esta acción modificará la posibilidad de inscribirse a los estudiantes. Para cerrar la inscripción seleccione 'Inscripción Cerrada'", onchange: 'setEnabledEnroll(this);', id: "enroll_process_id#{school.id}", type_elem: 'enroll_process_id'})
+      = collection_select(:school, :enroll_process_id, school.academic_processes.sort_by_period_type.limit(3), :id, :period_name, {include_blank: 'Inscripción Cerrada', selected: school.enroll_process_id}, {class: "form-control form-control-sm ", 'data-bs-original-title': "Esta acción modificará la posibilidad de inscribirse a los estudiantes. Para cerrar la inscripción seleccione 'Inscripción Cerrada'", onchange: 'setEnabledEnroll(this);', id: "enroll_process_id#{school.id}", type_elem: 'enroll_process_id'})
       -# url = "/schools/#{school.id}"
       =# collection_select(:school, :enroll_process_id, school.academic_processes, :id, :period_name, {include_blank: 'Inscripción Cerrada', selected: school.enroll_process_id}, {class: "form-control form-control-sm ", 'data-bs-original-title': "Esta acción modificará la posibilidad de inscribirse a los estudiantes. Para cerrar la inscripción seleccione 'Inscripción Cerrada'", onclick: 'updateElem(`'+url+'`, `{"school":{"enroll_process_id":${this.attributes["type_elem"].value}}}`);', id: "enroll_process_id#{school.id}", type_elem: 'enroll_process_id'})
 
