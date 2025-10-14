@@ -49,6 +49,12 @@ es:
       char_length_up_to: "máximos caracteres permitidos "
       cancel: "Cancelar"
     actions:
+      move_academic_records:
+        title: "Mover Registros Académicos"
+        link: "Mover Registros Académicos"
+        breadcrumb: "Mover Registros Académicos"
+        menu: "Mover Registros Académicos"
+        description: "Mover Registros Académicos de un curso a otro"    
       history_show:
         title: "Bitácora %{model_label}"
         menu: "Bitácora"

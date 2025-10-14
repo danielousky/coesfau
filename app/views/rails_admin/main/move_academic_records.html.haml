@@ -1,0 +1,54 @@
+%h4.bg-warning.text-dark.p-2.mb-3
+  Mover Registros Académicos desde
+  - if @mode == :course
+    %strong= @course.curso_name
+  - elsif @mode == :section
+    %strong= "Sección #{@section.code} (#{@section.course.curso_name})"
+
+
+- if @mode == :course
+  - if @destination_courses.blank?
+    .alert.alert-info No hay cursos destino disponibles con la misma asignatura.
+  - else
+    - action_path = "/admin/course/#{@course.id}/move_academic_records"
+    = form_tag action_path, method: :post do
+      .row.mb-3
+        .col-md-8
+          %label.form-label Curso destino
+          = select_tag :dest_course_id,
+            options_from_collection_for_select(@destination_courses, 'id', 'name'),
+            include_blank: 'Seleccione un curso destino',
+            class: 'form-select', required: true
+        .col-md-4
+          %label.form-label Opciones
+          .form-check
+            = check_box_tag :create_missing_sections, '1', true, class: 'form-check-input', id: 'create_missing_sections'
+            %label.form-check-label{for: 'create_missing_sections'} Crear secciones faltantes automáticamente
+          .form-check
+            = check_box_tag :delete_sections, '1', false, class: 'form-check-input', id: 'delete_sections'
+            %label.form-check-label{for: 'delete_sections'} Eliminar secciones y curso origen si quedan vacíos
+      .mt-3
+        = submit_tag 'Mover Registros', class: 'btn btn-primary', data: {confirm: 'Esta acción moverá todos los registros académicos a secciones equivalentes por código en el curso destino. ¿Está seguro?'}
+        = link_to 'Cancelar', "/admin/course/#{@course.id}", class: 'btn btn-outline-secondary ms-2'
+
+- elsif @mode == :section
+  - if @destination_sections.blank?
+    .alert.alert-info No hay secciones destino disponibles en el mismo curso.
+  - else
+    - action_path = "/admin/section/#{@section.id}/move_academic_records"
+    = form_tag action_path, method: :post do
+      .row.mb-3
+        .col-md-8
+          %label.form-label Sección destino
+          = select_tag :dest_section_id,
+            options_from_collection_for_select(@destination_sections, 'id', 'code'),
+            include_blank: 'Seleccione una sección destino',
+            class: 'form-select', required: true
+        .col-md-4
+          %label.form-label Opciones
+          .form-check
+            = check_box_tag :delete_sections, '1', false, class: 'form-check-input', id: 'delete_sections'
+            %label.form-check-label{for: 'delete_sections'} Eliminar sección origen si queda vacía
+      .mt-3
+        = submit_tag 'Mover Registros', class: 'btn btn-primary', data: {confirm: 'Esta acción moverá todos los registros académicos a la sección destino seleccionada. ¿Está seguro?'}
+        = link_to 'Cancelar', "/admin/section/#{@section.id}", class: 'btn btn-outline-secondary ms-2'

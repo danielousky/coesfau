@@ -151,6 +151,13 @@ RailsAdmin.config do |config|
         user&.admin && (user.admin.desarrollador? || user.admin.jefe_control_estudio?)
       end      
     end
+
+    # Acción personalizada: mover registros académicos entre cursos
+    require_relative '../../lib/rails_admin/config/actions/move_academic_records'
+    move_academic_records do
+      i18n_key :move_academic_records
+    end
+
   end
 
   # config.model Section do
