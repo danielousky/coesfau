@@ -15,7 +15,7 @@ class EnrollAcademicProcessesController < ApplicationController
       @faculty = @school.faculty
       @user = @enroll_academic_process.user
       @period = @enroll_academic_process.period
-      @academic_records = @enroll_academic_process.academic_records
+      @academic_records = @enroll_academic_process.academic_records.not_equivalencia
       event = 'Se generó Constancia de Inscripción'
       file_name = "ConstanciaInscripcion#{@enroll_academic_process.short_name}"
       @title = 'CONSTANCIA DE INSCRIPCIÓN'
