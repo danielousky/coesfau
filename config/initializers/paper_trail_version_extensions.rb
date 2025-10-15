@@ -150,11 +150,28 @@ module PaperTrailVersionExtensions
         return "Intento #{translate_attr(field)}: #{prev} → #{curr}: #{_e.message}"
       end
 
-      if field.eql? 'enroll_status' 
+      if field.eql? 'enroll_status'
         if prev.eql? 1 and curr.eql? 0
           return "<b>¡Preinscripción Completada!</b> ".html_safe
         elsif curr.eql? 1
           return "<b>¡Preinscripción Iniciada!</b> ".html_safe
+        end
+      elsif field.eql? 'permanence_status'
+        if prev and curr
+          prev_val = EnrollAcademicProcess.permanence_statuses.keys[prev]
+          curr_val = EnrollAcademicProcess.permanence_statuses.keys[curr]
+          return "Cambio de #{translate_attr(field)} de <b>#{prev_val.humanize}</b> a <b>#{curr_val.humanize}</b>".html_safe
+        elsif prev.nil? && curr
+          curr_val = EnrollAcademicProcess.permanence_statuses.keys[curr]
+          return "Asignación de #{translate_attr(field)} a <b>#{curr_val.humanize}</b>".html_safe
+        end
+      elsif field.eql? 'status'
+        prev_val = AcademicRecord.statuses.keys[prev] if prev
+        curr_val = AcademicRecord.statuses.keys[curr] if curr
+        if prev_val && curr_val
+          return "Cambio de #{translate_attr(field)} de <b>#{prev_val.humanize}</b> a <b>#{curr_val.humanize}</b>".html_safe
+        elsif prev.nil? && curr_val
+          return "Asignación de #{translate_attr(field)} a <b>#{curr_val.humanize}</b>".html_safe
         end
       else
         return "Cambio de #{translate_attr(field)}: #{prev} → #{curr}"

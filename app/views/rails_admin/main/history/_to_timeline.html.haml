@@ -39,7 +39,10 @@
                     = render partial: 'rails_admin/main/history/versions_user_card', locals: { user: user }
                   - else
                     .text-muted.small Sistema: #{version.whodunnit}
-                .bg-info.text-dark.p-2= "#{version.version_desc}"
+                .bg-info.text-dark.p-2
+                  = 'Actualización de la calificación: ' if version.item_type.eql? 'Qualification' and version.event.eql? 'update'
+                  = "<a href='/admin/section/#{version.item&.section&.id}'>#{version.item&.section&.simply_desc}</a> </br>".html_safe if version.item_type.eql? 'AcademicRecord' and version.item.present?
+                  = version.version_desc.html_safe
 
 :css
   .timeline {
