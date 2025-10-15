@@ -434,8 +434,8 @@ es:
         one: 'Facultad'
         other: 'Facultades'
       grade:
-        one: 'Grado'
-        other: 'Grados'
+        one: 'Expediente'
+        other: 'Expedientes'
       general_setup:
         one: 'Configuración General'
         other: 'Configuraciones generales'
@@ -502,7 +502,7 @@ es:
         max_credits: 'Máximo Créditos'
         max_subjects: 'Máximas Asignaturas'
         enroll_academic_processes: 'Inscripciones en Período'
-        grades: 'Grados'
+        grades: 'Expedientes'
         students: 'Estudiantes'
         modality: 'Tipo'
         process_before: Período Anterior
@@ -527,7 +527,7 @@ es:
         student: 'Estudiante'
         period: 'Período'
         subject: 'Asignatura'
-        grade: 'Grado'
+        grade: 'Expediente'
         academic_process: 'Período'
         period_type: 'Tipo de Período'
         user: 'Usuario'
@@ -596,7 +596,7 @@ es:
         subject: 'Asignatura'
         offer_as_pci: 'Ofertar cómo PCI'
       enroll_academic_process:
-        grade: 'Grado'
+        grade: 'Expediente'
         academic_process: 'Período'
         enroll_status: 'Estado de Inscripción'
         permanence_status: 'Estado de Permanencia'
@@ -699,7 +699,7 @@ es:
         classroom: 'Aula'
         code: 'Sección'
         course: 'Curso (Período/Asignatura)'
-        grades: Grados
+        grades: Expedientes
         faculty: Facultad
         enabled: 'Activa'
         enroll_academic_process: Inscripción en Registro Académico

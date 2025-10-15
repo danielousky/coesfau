@@ -25,9 +25,8 @@
           .card.border-0.shadow-sm
             .card-header
               %small{class: "text-muted #{text_date}"}= version.created_at.strftime('%d/%m/%Y %H:%M:%S')
-              %i{class: "text-muted #{text_id}", style: 'font-size: xx-small;'}
-                = version.id
-                %label= t("activerecord.models.#{version.item_type.underscore}.one", default: version.item_type)  
+              %i{class: "me-0 badge bg-success #{text_id}", style: 'font-size: xx-small;'}
+                = link_to t("activerecord.models.#{version.item_type.underscore}.one", default: version.item_type), "/admin/#{version.item_type}/#{version.item_id}", class: 'text-decoration-none' if version.item_id.present?
 
               .p-2.m-2
                 - if !version.whodunnit.present?

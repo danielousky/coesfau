@@ -117,9 +117,48 @@ module PaperTrailVersionExtensions
   def describe_change_line(field, values)
     prev, curr = values
     if [true, false].include?(prev) && [true, false].include?(curr)
-      "#{translate_attr(field)}: #{boolean_transition_label(field, prev, curr)}"
+      return "#{translate_attr(field)}: #{boolean_transition_label(field, prev, curr)}"
     else
-      "#{translate_attr(field)}: #{prev} → #{curr}"
+      # Intentar resolver nombres si el field corresponde a una clase y prev/curr son IDs
+      begin
+        klass = field.to_s.safe_constantize || field.to_s.sub(/_id$/, '').camelize.safe_constantize
+        if klass
+          translate_klass = I18n.t("activerecord.models.#{klass.model_name.i18n_key}.one", default: klass.name)
+          prev_name = resolve_name_from_id(klass, prev)
+          curr_name = resolve_name_from_id(klass, curr)
+          # Solo si ambos se pueden resolver a nombre usamos la versión "bonita"; si no, fallback
+
+          if prev_name && curr_name
+            return "Cambio de #{translate_klass}:</br><b>de:</b></br> #{prev_name} </br><b>a:</b></br> #{curr_name}".html_safe
+          elsif curr_name && prev_name.blank? 
+            
+            if obj = klass.where(id: curr).first
+              if obj.is_a?(EnrollAcademicProcess)
+                return "<b>#{translate_klass} #{obj&.academic_process&.period_name} </b>".html_safe
+              elsif obj.is_a?(Section)
+                return "Selección de #{translate_klass} <b><a href='/admin/section/#{obj&.id}'>#{obj&.code}</a></b> </br><b style='font-size: small;color:darkcyan;'>#{obj.subject&.desc}</b>".html_safe
+              else
+                return "<b>#{translate_klass}</b>:<br/> #{curr_name}".html_safe
+              end
+            else
+              return "Objeto no encontrado: </b>#{translate_klass}: #{curr_name} </b>. Pudo ser eliminado".html_safe
+            end
+          end
+        end
+      rescue => _e
+        # En caso de cualquier error, mantener el fallback actual
+        return "Intento #{translate_attr(field)}: #{prev} → #{curr}: #{_e.message}"
+      end
+
+      if field.eql? 'enroll_status' 
+        if prev.eql? 1 and curr.eql? 0
+          return "<b>¡Preinscripción Completada!</b> ".html_safe
+        elsif curr.eql? 1
+          return "<b>¡Preinscripción Iniciada!</b> ".html_safe
+        end
+      else
+        return "Cambio de #{translate_attr(field)}: #{prev} → #{curr}"
+      end
     end
   end
 
@@ -136,6 +175,22 @@ module PaperTrailVersionExtensions
     return 'Encendida' if prev == false && curr == true
     # Sin cambio
     curr.to_s
+  end
+
+  # Resuelve el nombre de un objeto dado su clase y un id
+  # Devuelve nil si no puede resolver o si el objeto no responde a :name
+  def resolve_name_from_id(klass, id)
+    return nil if id.nil? || (id.is_a?(String) && id.strip.empty?)
+    # Si viene como string numérico, convertir a entero de forma segura
+    safe_id = begin
+      Integer(id)
+    rescue ArgumentError, TypeError
+      id
+    end
+    obj = klass.find_by(id: safe_id)
+    return nil unless obj
+    return obj.name if obj.respond_to?(:name)
+    nil
   end
 end
 
