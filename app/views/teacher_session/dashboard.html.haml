@@ -1,6 +1,6 @@
 
 .vh-100.d-flex.justify-content-center
-  - headers = ['#','Sección', 'Asignatura', 'Periodo', 'Inscritos', 'Opciones']
+  - headers = ['#', 'Periodo','Código','Asignatura','Sección','Inscritos', 'Estadisticas','Opciones']
   .col-md-11
     = render 'layouts/main_banner'
     %h4.text-center.text-primary.mb-3 Secciones Asignadas 
@@ -10,13 +10,35 @@
           - headers.each do |head|
             %th= head.titleize
       %tbody.table-group-divider
-        - current_teacher.sections.sort_by_period_reverse.each_with_index do |sec,i|
+        - current_teacher.sections.joins(:subject).sort_by_period_reverse.order('subjects.code': :asc).each_with_index do |sec,i|
           %tr
             %td= i+1
-            %td= sec.code
-            %td= sec.subject.name
             %td= sec.period.name
-            %td= sec.academic_records.count
+            %td= sec.code
+            %td= sec.subject.code
+            %td= sec.subject.name
+            %td.text-center
+              .badge.bg-info.text-dark.align-items-center
+                = sec.academic_records.size
+                de
+                = sec.capacity
+            %td.text-center.align-items-center
+              - if sec.qualified?
+                - counts = sec.academic_records.group(:status).count.transform_keys(&:to_s)
+                - get_count = ->(*keys) { keys.flatten.map(&:to_s).map { |k| counts[k] || 0 }.sum }
+                .row.g-1
+                  .col-auto
+                    .badge.bg-success.text-white{'data-bs-toggle': :tooltip, title: 'Aprobados'}
+                      = "#{get_count.call(%w(aprobado))}"
+                  .col-auto
+                    .badge.bg-danger.text-white{'data-bs-toggle': :tooltip, title: 'Aplazados'}
+                      = "#{get_count.call(%w(aplazado))}"
+                  .col-auto
+                    .badge.bg-danger.text-white{'data-bs-toggle': :tooltip, title: 'Perdida por Inasistencia'}
+                      = "#{get_count.call(%w(perdida_por_inasistencia))}"
+                  .col-auto
+                    .badge.bg-warning.text-dark{'data-bs-toggle': :tooltip, title: 'Retirados'}
+                      = "#{get_count.call(%w(retirado))}"
             %td
               - if !sec.qualified? and sec.is_in_process_active?
                 = link_to section_path(sec), class: 'btn btn-sm btn-success' do
