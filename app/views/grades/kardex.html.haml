@@ -1,22 +1,10 @@
-%table.no_border.mb-3
-	%theader
-		%tr
-			%th
-			%th.text-end
-				%b Fecha de Emisión:
-				= "#{I18n.l(Time.zone.now, format: '%a, %d / %B / %Y')}"
-
-.text-center.mb-4
-	= render partial: '/grades/general_kardex', locals: {grade: grade}
-%hr	
-	
-= render partial: 'enroll_academic_processes/academic_history_kardex', locals: {enroll_academic_processes: grade.enroll_academic_processes}
+= render partial: 'enroll_academic_processes/academic_history_kardex', locals: {enroll_academic_processes: @grade.enroll_academic_processes}
 %hr	
 .nobreak
 	.text-center
 		%h3.mt-3.text-center Resumen Académico
-		= render partial: '/grades/credits_kardex', locals: {study_plan: grade.study_plan, grade: grade}
-		= render partial: '/grades/numbers_kardex', locals: {grade: grade}
+		= render partial: '/grades/credits_kardex', locals: {study_plan: @grade.study_plan, grade: @grade}
+		= render partial: '/grades/numbers_kardex'
 
 
 	/%h6 Esquema de calificación por convocatoria

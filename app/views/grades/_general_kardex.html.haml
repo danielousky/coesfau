@@ -1,13 +1,22 @@
+%table.no_border.mb-3
+  %theader
+    %tr
+      %th
+      %th.text-end
+        %b Fecha de Emisión:
+        = I18n.l(Time.zone.now, format: "%a, %d %h %Y / %I:%M %P")
 
-%table.no_border{style: 'width: 100%'}
-  %tbody
-    %tr
-      %th Cédula
-      %th Nombre
-      %th Plan de estudio
-      %th Expediente
-    %tr
-      %td= grade.user.ci
-      %td= grade.user.reverse_name
-      %td= grade.study_plan.name
-      %td= grade.id
+.text-center.mb-4
+  %table.no_border{style: 'width: 100%'}
+    %tbody
+      %tr
+        %th Cédula
+        %th Nombre
+        %th Plan de estudio
+        %th Expediente
+      %tr
+        %td= @grade.user.ci
+        %td= @grade.user.reverse_name
+        %td= @grade.study_plan.name
+        %td= @grade.id
+%hr

@@ -1,7 +1,10 @@
 - begin
   - if image 
-    = link_to main_app.url_for(image), target: '_blank', rel: 'noopener noreferrer' do
-      = image_tag main_app.url_for(image), size: size, alt: alt  
+    -# En PDF evitamos abrir enlaces y usamos ruta local para optimizar wkhtmltopdf
+    - if defined?(wicked_pdf_image_tag)
+      = wicked_pdf_image_tag main_app.url_for(image), size: size, alt: alt
+    - else
+      = image_tag main_app.url_for(image), size: size, alt: alt
   - else
     .alert.alert-warning Sin Imagen
 - rescue Exception => e

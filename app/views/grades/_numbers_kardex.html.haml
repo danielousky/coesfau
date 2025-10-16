@@ -1,8 +1,8 @@
 %table.no_border.mt-3.table
 	%tbody
 		%tr
-			%td= render partial: '/grades/totals_credits', locals: {grade: grade}
+			%td= render partial: '/grades/totals_credits', locals: {grade: @grade}
 			%td
-			%td= render partial: '/grades/totals_subjets', locals: {grade: grade}
+			%td= render partial: '/grades/totals_subjets', locals: {grade: @grade}
 			%td
-			%td= render partial: '/grades/totals_average', locals: {grade: grade}
+			%td= render partial: '/grades/totals_average', locals: {grade: @grade}

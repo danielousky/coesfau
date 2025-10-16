@@ -16,7 +16,14 @@ WickedPdf.config = {
   exe_path: Gem.bin_path('wkhtmltopdf-binary', 'wkhtmltopdf'),
 
   # Needed for wkhtmltopdf 0.12.6+ to use many wicked_pdf asset helpers
-  enable_local_file_access: true
+  enable_local_file_access: true,
+  # Optimización: deshabilitar JS para evitar esperas de timeouts y reflows
+  disable_javascript: true,
+  # Usar media print para CSS
+  print_media_type: true,
+  # DPI de salida razonable (reduce peso)
+  dpi: 96,
+  image_dpi: 96
 
 
   # Layout file to be used for all PDFs
