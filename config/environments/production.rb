@@ -24,12 +24,21 @@ Rails.application.configure do
 
   
   # Forzar logs a STDOUT y al fichero log/production.log (doble salida)
-  file_logger = ActiveSupport::Logger.new(Rails.root.join("log/production.log"))
-  file_logger.formatter = config.log_formatter
-  stdout_logger = ActiveSupport::Logger.new(STDOUT)
-  # Hacer que stdout también se duplique al fichero
-  stdout_logger.extend(ActiveSupport::Logger.broadcast(file_logger))
-  config.logger = ActiveSupport::TaggedLogging.new(stdout_logger)
+  # Usamos un MultiIO para escribir simultáneamente a STDOUT y al fichero.
+  class MultiIO
+    def initialize(*targets) @targets = targets end
+    def write(*args) @targets.each { |t| t.write(*args) } end
+    def close; @targets.each { |t| t.close if t.respond_to?(:close) } end
+    def flush; @targets.each { |t| t.flush if t.respond_to?(:flush) } end
+  end
+
+  logfile_path = Rails.root.join("log/production.log")
+  logfile = File.open(logfile_path, "a")
+  logfile.sync = true
+
+  multi_io_logger = ActiveSupport::Logger.new(MultiIO.new(STDOUT, logfile))
+  multi_io_logger.formatter = config.log_formatter
+  config.logger = ActiveSupport::TaggedLogging.new(multi_io_logger)
 
 
 
