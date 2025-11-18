@@ -24,7 +24,7 @@ Rails.application.configure do
 
   
   # Forzar logs a STDOUT y al fichero log/production.log (doble salida)
-  file_logger = ActiveSupport::Logger.new(Rails.root.join("/var/log/coesfau/production.log"))
+  file_logger = ActiveSupport::Logger.new(Rails.root.join("log/production.log"))
   file_logger.formatter = config.log_formatter
   stdout_logger = ActiveSupport::Logger.new(STDOUT)
   # Hacer que stdout también se duplique al fichero
