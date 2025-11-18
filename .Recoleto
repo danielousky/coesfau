@@ -1,0 +1,22 @@
+Recoleto
+
+Cómo implementar turbo_stream para reemplazar un frame: 
+
+routes:
+  member do
+    post :refresh_efficiency  
+  
+controller:
+  
+  def refresh_efficiency
+    respond_to do |format|
+      format.turbo_stream { render turbo_stream: turbo_stream.replace("numbers_table_#{@grade.id}", partial: "grades/numbers_table", locals: { grade: @grade }) }
+    end
+  end
+
+view:
+
+  = turbo_frame_tag "numbers_table_#{grade.id}" do
+    # La zona que queremos cambiar
+    %h6.fw-bold.text-center Promedios
+      %table.table.table-sm.border
