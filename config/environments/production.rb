@@ -22,6 +22,17 @@ Rails.application.configure do
     enable_starttls_auto: true
   }
 
+  
+  # Forzar logs a STDOUT y al fichero log/production.log (doble salida)
+  file_logger = ActiveSupport::Logger.new(Rails.root.join("log/production.log"))
+  file_logger.formatter = config.log_formatter
+  stdout_logger = ActiveSupport::Logger.new(STDOUT)
+  # Hacer que stdout también se duplique al fichero
+  stdout_logger.extend(ActiveSupport::Logger.broadcast(file_logger))
+  config.logger = ActiveSupport::TaggedLogging.new(stdout_logger)
+
+
+
   config.cache_classes = true
 
   # Eager load code on boot. This eager loads most of Rails and
@@ -33,7 +44,7 @@ Rails.application.configure do
   # Full error reports are disabled and caching is turned on.
 
 
-  config.consider_all_requests_local       = false
+  config.consider_all_requests_local       = true
   config.action_controller.perform_caching = true
 
   # Ensures that a master key has been made available in either ENV["RAILS_MASTER_KEY"]
