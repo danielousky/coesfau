@@ -444,6 +444,40 @@ class Grade < ApplicationRecord
     end
   end  
 
+  require 'benchmark'
+
+  def self.measure
+    queries = 0
+    sub = ActiveSupport::Notifications.subscribe('sql.active_record') do |*, payload|
+      next if payload[:name] == 'SCHEMA' || payload[:cached]
+      queries += 1
+    end
+    time = Benchmark.realtime { yield }
+    [time, queries]
+  ensure
+    ActiveSupport::Notifications.unsubscribe(sub)
+  end
+
+
+  def self.test_redimiento
+
+    # g = Grade.find(<ID_DEL_GRADE>)
+     g = Grade.last
+    # Calentamiento
+    g.subjects_offer_by_dependent.to_a
+    g.subjects_offer_by_dependent_v2.to_a
+
+    t1,q1 = measure { g.subjects_offer_by_dependent.to_a }
+    t2,q2 = measure { g.subjects_offer_by_dependent_v2.to_a }
+
+    puts "v1: #{t1.round(4)}s, #{q1} queries"
+    puts "v2: #{t2.round(4)}s, #{q2} queries"
+
+  end
+
+
+
+
   private
 
   def paper_trail_update
