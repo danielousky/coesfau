@@ -68,8 +68,39 @@ module RailsAdmin
 
       @page_name = wording_for(:title)
 
+      # Custom behavior: when searching Users and the result is a single record
+      # with exactly one role, redirect to the role detail (Admin, Student, Teacher).
+      if @abstract_model&.to_s == 'User' && @action.key == :index && params[:query].present? && !params[:associated_collection]
+        model_config = @model_config
+        scope = model_config.scope
+        auth_scope = @authorization_adapter&.query(:index, model_config.abstract_model)
+        scope = scope.merge(auth_scope) if auth_scope
+
+        # Fetch the collection for current query without pagination
+        result = get_collection(model_config, scope, false)
+
+        total = result.respond_to?(:total_count) ? result.total_count : result.size
+        if total == 1
+          user = result.first
+          # Redirect only if the user has exactly one role
+          if user.respond_to?(:how_many_roles?) && user.how_many_roles? == 1
+            if user.respond_to?(:admin?) && user.admin?
+              admin = user.admin
+              redirect_to show_path(model_name: :admin, id: admin.id) and return if admin
+            elsif user.respond_to?(:student?) && user.student?
+              student = user.student
+              redirect_to show_path(model_name: :student, id: student.id) and return if student
+            elsif user.respond_to?(:teacher?) && user.teacher?
+              teacher = user.teacher
+              redirect_to show_path(model_name: :teacher, id: teacher.id) and return if teacher
+            end
+          end
+        end
+      end
+
       instance_eval(&@action.controller)
     end
+
 
     def method_missing(name, *args, &block)
       action = RailsAdmin::Config::Actions.find(name.to_sym)

@@ -14,7 +14,8 @@
     %span.navbar-toggler-icon
   =# form_for(resource, as: resource_name, url: session_path(resource_name), data: { turbo: :false }) do |f|
   = form_tag("/admin/user", class: 'd-flex me-3', method: :get, data: { turbo: :false }) do
-    - @value = params['query'] if @object.class.name.eql? 'User'
+    - # Le asigna a @value el valor del parámetro 'query' si existe y si la url incluye admin/user
+    - @value = params['query'] if request.fullpath.include?('/admin/user')   
     %input.border-0.me-0.form-control{name: :query, "aria-label" => "Buscar", placeholder: "Buscar Usuario", type: "search", value: @value}
     %button.border-0.ms-0.btn.btn-success.rounded-end{type: "submit"} 
       %i.fa-solid.fa-search
