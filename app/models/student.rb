@@ -263,7 +263,11 @@ class Student < ApplicationRecord
 
       field :admission_types do
         label 'Ingreso'
-        # filterable true
+        # Agregar filtro por tipo de ingreso
+
+        queryable true
+        filterable true
+        searchable :name
       end
 
       field :user_phone do
@@ -283,6 +287,11 @@ class Student < ApplicationRecord
 
     export do
       fields :user, :nacionality, :origin_country, :sede, :origin_city, :birth_date, :marital_status, :address, :created_at
+      field :admission_types do
+        queryable true
+        filterable true
+        searchable :name
+      end
     end
 
     import do
