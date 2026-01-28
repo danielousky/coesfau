@@ -288,6 +288,7 @@ class Student < ApplicationRecord
     export do
       fields :user, :nacionality, :origin_country, :sede, :origin_city, :birth_date, :marital_status, :address, :created_at
       field :admission_types do
+        label 'Ingreso'
         queryable true
         filterable true
         searchable :name
