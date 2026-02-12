@@ -1,5 +1,5 @@
 class GradesController < ApplicationController
-  before_action :set_grade, only: %i[ show edit update destroy kardex ]
+  before_action :set_grade, only: %i[ show edit update destroy kardex export_approved_subjects ]
   # Precarga específica para PDF Kardex para evitar N+1 y acelerar render
   before_action :preload_kardex_data, only: %i[ kardex ]
 
@@ -29,6 +29,23 @@ class GradesController < ApplicationController
                load_media_error_handling: 'ignore'
       end
     end      
+  end
+
+  def export_approved_subjects
+    respond_to do |format|
+      format.xls do
+        # filename = "Asignaturas_Aprobadas_#{@grade.user.ci}.xls"
+        # send_file @grade.export_approved_subjects_excel, filename: filename, disposition: 'inline'
+        begin
+          filename = "Asignaturas_Aprobadas_#{@grade.user.ci}.xls"
+          file_path = @grade.export_approved_subjects_excel
+          send_file file_path, filename: filename, disposition: 'inline'
+        rescue => e
+          flash[:danger] = "Error al generar el archivo Excel: #{e.message}"
+          redirect_to grade_path(@grade)
+        end        
+      end
+    end
   end
 
   # GET /grades/1 or /grades/1.json
