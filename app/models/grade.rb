@@ -475,6 +475,52 @@ class Grade < ApplicationRecord
 
   end
 
+  def export_approved_subjects_excel
+    require 'spreadsheet'
+
+    @book = Spreadsheet::Workbook.new
+    @sheet = @book.create_worksheet name: "Asignaturas Aprobadas"
+
+    # Obtener registros aprobados ordenados por código de asignatura
+    approved_records = self.academic_records_from_subjects_approved.order('subjects.code')
+
+    # Configurar anchos de columnas
+    @sheet.column(0).width = 12  # Código
+    @sheet.column(1).width = 50  # Nombre Asignatura
+    @sheet.column(2).width = 12  # Sección
+    @sheet.column(3).width = 12  # Calificación
+
+    # Información del estudiante en la cabecera
+    user = self.user
+    @sheet.row(0).concat ["Estudiante: #{user.reverse_name}"]
+    @sheet.row(1).concat ["CI: #{user.ci}"]
+    @sheet.row(2).concat ["Email: #{user.email}"]
+    @sheet.row(3).concat ["Escuela: #{self.school.name}"]
+    
+    # Encabezados de la tabla
+    @sheet.row(5).concat ['CÓDIGO', 'NOMBRE ASIGNATURA', 'SECCIÓN', 'CALIFICACIÓN']
+
+    # Agregar datos de asignaturas aprobadas
+    approved_records.each_with_index do |record, i|
+      subject = record.subject
+      section = record.section
+      grade_value = record.get_value_by_status
+      
+      @sheet.row(i + 6).concat [
+        subject.code,
+        subject.name,
+        section.code,
+        grade_value
+      ]
+    end
+
+    # Escribir en archivo temporal en la raíz del proyecto (igual que en Section.excel_list)
+    file_name = "asignaturas_aprobadas_temp_#{self.id}"
+    @book.write file_name
+    
+    # Retornar el path completo del archivo
+    return file_name
+  end
 
 
 
