@@ -101,6 +101,18 @@ class Grade < ApplicationRecord
   # without_appointment_time.enrolled_in_academic_process(process_before_id)
 
 
+  # scope :current_permanence_valid_to_enroll, -> {
+  #   vals = EnrollAcademicProcess.initial_permanence_statuses.values_at('regular','reincorporado','articulo3')
+  #   joins(:enroll_academic_processes).where("COALESCE(enroll_academic_processes.permanence_status, academic_processes.initial_permanence_status) IN (?)", vals)
+  # }
+
+  # scope :others_permanence_invalid_to_enroll, -> {
+  #   keys = ['nuevo','articulo6','articulo7','intercambio','desertor','egresado','egresado_doble_titulo','permiso_para_no_cursar','sin_calificar','retiro_semestre']
+  #   vals = EnrollAcademicProcess.initial_permanence_statuses.values_at(*keys)
+  #   joins(:enroll_academic_processes).where("COALESCE(enroll_academic_processes.permanence_status, academic_processes.initial_permanence_status) IN (?)", vals)
+  # }
+
+
 
   # scope :with_academic_records, -> { where('(SELECT COUNT(*) FROM  "grades" INNER JOIN "enroll_academic_processes" ON "enroll_academic_processes"."grade_id" = "grades"."id" INNER JOIN "academic_records" ON "academic_records"."enroll_academic_process_id" = "enroll_academic_processes"."id") > 0') }
 

@@ -43,17 +43,6 @@ class Qualification < ApplicationRecord
     end
   end
 
-  def update_academic_record_status
-
-    academic_record.destroy_dup
-    definitive_q_value = self.academic_record.definitive_q_value
-    if definitive_q_value and !self.academic_record.pi?
-      status = (definitive_q_value >= 10) ? :aprobado : :aplazado
-      self.academic_record.update(status: status)
-    end
-    update_status
-  end
-
   def approved?
     if is_valid_numeric_value?
       value >= 10
@@ -105,6 +94,18 @@ class Qualification < ApplicationRecord
 
   private
 
+   def update_academic_record_status
+    
+    academic_record.destroy_dup
+    definitive_q_value = self.academic_record.definitive_q_value
+    if definitive_q_value and !self.academic_record.pi?
+      status = (definitive_q_value >= 10) ? 'aprobado' : 'aplazado'      
+      self.academic_record.update!(status: status)
+
+    end
+    update_status
+  end 
+
   def update_status
 
     if self.diferido? or self.reparacion?
@@ -112,7 +113,7 @@ class Qualification < ApplicationRecord
     end
 
     eap = self.enroll_academic_process
-    eap.update(permanence_status: eap.get_regulation) if enroll_academic_process&.finished?
+    eap.update(permanence_status: eap.get_regulation) if eap&.finished?
     
     eap.update(efficiency: eap.calculate_efficiency, simple_average: eap.calculate_average, weighted_average: eap.calculate_weighted_average)    
 

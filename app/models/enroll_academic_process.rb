@@ -138,10 +138,23 @@ class EnrollAcademicProcess < ApplicationRecord
   def coursed_but_not_approved_any?
     self.academic_records.coursed.any? and !(self.academic_records.aprobado.any?)
   end
+
   def finished?
     academic_records.any? and (academic_records.count.eql? academic_records.qualified.count)
   end
 
+  # def fully_qualified?
+  #   academic_records.any? && !academic_records.sin_calificar.any?
+  # end
+
+  # def finished?
+
+  #   # academic_records.any? && (academic_records.count.eql? academic_records.qualified.count)
+  #   # Es lo mismo que arriba
+  #   fully_qualified?
+  # end
+
+  
   def before_enrolled
     
     if before_process = self.academic_process.process_before

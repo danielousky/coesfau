@@ -1,6 +1,6 @@
 module Numerizable
 
-    PERMANENCE_STATUSES = [:nuevo, :regular, :reincorporado, :articulo3, :articulo6, :articulo7, :intercambio, :desertor, :egresado, :egresado_doble_titulo, :permiso_para_no_cursar, :retiro_semestre, :reincorporado_por_intercambio, :por_calificar]
+    PERMANENCE_STATUSES = [:nuevo, :regular, :reincorporado, :articulo3, :articulo6, :articulo7, :intercambio, :desertor, :egresado, :egresado_doble_titulo, :permiso_para_no_cursar, :retiro_semestre, :reincorporado_por_intercambio, :por_calificar, :retiro_definitivo, :expulsado_por_articulo7, :sancion_disciplinaria, :intercambio_regular, :intercambio_doble_titulacion, :reincorporado_por_permiso_para_no_cursar, :reincorporado_por_articulo6, :reincorporado_por_articulo7, :reincorporado_por_decersion, :convenios110, :convenio111 ]
     PERMANENCE_STATUSES_SETEABLES = [:reincorporado, :intercambio, :desertor, :egresado, :egresado_doble_titulo, :permiso_para_no_cursar, :retiro_semestre, :reincorporado_por_intercambio]
 
 

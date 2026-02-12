@@ -45,7 +45,7 @@ class AcademicRecord < ApplicationRecord
   validates_with SamePeriodValidator, field_name: false  
   validates_with SameSchoolValidator, field_name: false
   validates_with SameSubjectInPeriodValidator, field_name: false, if: :new_record?
-  validates_with ApprovedAndEnrollingValidator, field_name: false
+  validates_with ApprovedAndEnrollingValidator, field_name: false, if: :new_record?
 
   # validates :qualifications, presence: true, if: lambda{ |object| (object.subject.present? and object.subject.numerica? and (object.aprobado? or object.aplazado? or object.equivalencia? ))}
 
@@ -53,8 +53,7 @@ class AcademicRecord < ApplicationRecord
   validates_presence_of :qualifications, message: "Calificación no puede estar en blanco. Si desea eliminar la calificación, coloque el estado de calificación a 'Sin Calificar'", if: lambda{ |object| (object.subject.present? and object.subject.numerica? and (object.aprobado? or object.aplazado?))}
 
   # CALLBACK
-  after_save :set_options_q
-  after_save :update_grade_numbers#, if: :will_save_change_to_status?
+  after_save :update_attributes_autoupdate
 
   after_create :update_section_quedan
   after_destroy :update_section_quedan
@@ -92,6 +91,12 @@ class AcademicRecord < ApplicationRecord
   scope :qualified, -> {not_sin_calificar}
 
   scope :coursing, -> {where "academic_records.status != 1 and academic_records.status != 2 and academic_records.status != 3"} # Excluye retiradas también
+
+  scope :qualified_by_qualifications, -> {joins(:qualifications)}
+  # buscar ahora los registros acadímicos que no tengan calificaciones asociadas
+  scope :not_qualified_by_qualifications, -> {left_joins(:qualifications).where(qualifications: {id: nil})}
+
+  scope :qualified_not_retired, -> {coursed}
 
   scope :total_credits_coursed_on_process, -> (periods_ids) {coursed.joins(:academic_process).where('academic_processes.id': periods_ids).joins(:subject).sum('subjects.unit_credits')}
   scope :total_credits_approved_on_process, -> (periods_ids) {aprobado.joins(:academic_process).where('academic_processes.id': periods_ids).joins(:subject).sum('subjects.unit_credits')}
@@ -882,9 +887,13 @@ class AcademicRecord < ApplicationRecord
 
   end
 
+  def update_attributes_autoupdate
+    set_options_q
+    update_grade_numbers
+  end
+
   def set_options_q
     self.qualifications.destroy_all if (self.pi? or self.retirado? or self.sin_calificar? or (self.subject and self.subject.absoluta?))
-
     self.qualifications.create(type_q: :final, value: 0) if self.pi?
   end
 
