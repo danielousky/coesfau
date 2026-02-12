@@ -117,6 +117,7 @@ Rails.application.routes.draw do
   resources :grades do
     member do
       get 'kardex'
+      get 'export_approved_subjects'
     end
   end
 
