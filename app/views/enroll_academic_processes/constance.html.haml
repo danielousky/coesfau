@@ -43,16 +43,16 @@
 
 %p.text-justify= "Constancia que se expide a solicitud de la parte interesada en la Ciudad Universitaria en Caracas, el día #{I18n.l(Time.now, format: "%d de %B de %Y")}.".html_safe
 
+
+- enlace = "https://coesfau.com/validar/#{@version.id}/constancias?object_id=#{@enroll_academic_process.id}"
+- enlace +="&study=true" if @study_contance.eql? true
+
+- imagen_qr = CodigoQr.generate_image enlace
+- #pdf.image imagen_qr, width: 120, at: [10, (pdf.y)+40]
+
+.text-center= image_tag imagen_qr
+
 - unless @school&.code.eql? 'EACRV'
-
-  - enlace = "https://coesfau.com/validar/#{@version.id}/constancias?object_id=#{@enroll_academic_process.id}"
-  - enlace +="&study=true" if @study_contance.eql? true
-
-  - imagen_qr = CodigoQr.generate_image enlace
-  - #pdf.image imagen_qr, width: 120, at: [10, (pdf.y)+40]
-
-  .text-center= image_tag imagen_qr
-
   .alert-message.text-justify
     %p= "<b>ATENCIÓN:</b> Para verificar la autenticidad del presente documento escanee el código QR, haga clic en la siguiente dirección o escríbala en su navegador web:".html_safe
     %p= enlace
