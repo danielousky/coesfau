@@ -514,8 +514,12 @@ class Grade < ApplicationRecord
       ]
     end
 
+    # Escribir en archivo temporal en la raíz del proyecto (igual que en Section.excel_list)
     file_name = "asignaturas_aprobadas_temp_#{self.id}"
-    return file_name if (@book.write file_name)
+    @book.write file_name
+    
+    # Retornar el path completo del archivo
+    return file_name
   end
 
 

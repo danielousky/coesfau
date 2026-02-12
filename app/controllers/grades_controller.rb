@@ -34,8 +34,14 @@ class GradesController < ApplicationController
   def export_approved_subjects
     respond_to do |format|
       format.xls do
-        filename = "Asignaturas_Aprobadas_#{@grade.user.ci}.xls"
-        send_file @grade.export_approved_subjects_excel, filename: filename, disposition: 'inline'
+        begin
+          filename = "Asignaturas_Aprobadas_#{@grade.user.ci}.xls"
+          file_path = @grade.export_approved_subjects_excel
+          send_file file_path, filename: filename, disposition: 'inline'
+        rescue => e
+          flash[:danger] = "Error al generar el archivo Excel: #{e.message}"
+          redirect_to grade_path(@grade)
+        end
       end
     end
   end
