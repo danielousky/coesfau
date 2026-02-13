@@ -2,9 +2,10 @@
 = link_to "/grades/#{grade.id}/kardex.pdf", class: 'btn btn-success float-end mb-3 me-2', target: '_blank', rel: "noopener noreferrer" do
 	.fa.fa-download.fa-list
 	Kardex PDF
-= link_to "/grades/#{grade.id}/export_approved_subjects.xls", class: 'btn btn-primary float-end mb-3 me-2', target: '_blank', rel: "noopener noreferrer" do
-	.fa.fa-download.fa-table
-	Asignaturas Aprobadas Excel
+- if current_user&.admin? and session[:rol].eql? 'admin'
+	= link_to "/grades/#{grade.id}/export_approved_subjects.xls", class: 'btn btn-primary float-end mb-3 me-2', target: '_blank', rel: "noopener noreferrer" do
+		.fa.fa-download.fa-table
+		Asignaturas Aprobadas Excel
 
 
 
