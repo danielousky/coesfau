@@ -1,10 +1,12 @@
-= render partial: 'enroll_academic_processes/academic_history_kardex', locals: {enroll_academic_processes: @grade.enroll_academic_processes}
-%hr	
-.nobreak
-	.text-center
-		%h3.mt-3.text-center Resumen Académico
-		= render partial: '/grades/credits_kardex', locals: {study_plan: @grade.study_plan, grade: @grade}
-		= render partial: '/grades/numbers_kardex'
+
+= render partial: 'enroll_academic_processes/academic_history_kardex', locals: {enroll_academic_processes: @grade.enroll_academic_processes, approved: approved}
+- unless approved
+	%hr	
+	.nobreak
+		.text-center
+			%h3.mt-3.text-center Resumen Académico
+			= render partial: '/grades/credits_kardex', locals: {study_plan: @grade.study_plan, grade: @grade}
+			= render partial: '/grades/numbers_kardex'
 
 
 	/%h6 Esquema de calificación por convocatoria

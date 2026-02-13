@@ -1,7 +1,7 @@
 class GradesController < ApplicationController
-  before_action :set_grade, only: %i[ show edit update destroy kardex export_approved_subjects ]
+  before_action :set_grade, only: %i[ show edit update destroy kardex kardex_approved export_approved_subjects ]
   # Precarga específica para PDF Kardex para evitar N+1 y acelerar render
-  before_action :preload_kardex_data, only: %i[ kardex ]
+  before_action :preload_kardex_data, only: %i[ kardex kardex_approved ]
 
   # GET /grades or /grades.json
   def index
@@ -14,10 +14,15 @@ class GradesController < ApplicationController
     respond_to do |format|
       format.pdf do
         # Registrar la descarga en PaperTrail
-        @grade.versions.create(event: 'Se generó Kardex')        
+        if params[:approved] == 'true'
+          @grade.versions.create(event: 'Se generó Kardex de Aprobadas')
+        else
+          @grade.versions.create(event: 'Se generó Kardex')
+        end
         title = 'Historia Académica'
+        title += ' (Aprobadas)' if params[:approved] == 'true'
         render pdf: "kardex-#{school.code}-#{user.ci}",
-               locals: {grade: @grade},
+               locals: {grade: @grade, approved: params[:approved] == 'true'},
                formats: [:html],
                page_size: 'letter',
                header: { html: { template: '/grades/kardex_title', formats: [:html], layout: false, locals: { title: title, school: school, user: user } } },
@@ -29,6 +34,27 @@ class GradesController < ApplicationController
                load_media_error_handling: 'ignore'
       end
     end      
+  end
+
+  def kardex_approved
+    school = @grade.school
+    user = @grade.user
+    respond_to do |format|
+      format.pdf do
+        @grade.versions.create(event: 'Se generó Kardex de Aprobadas')
+        title = 'Historia Académica (Aprobadas)'
+        render pdf: "kardex-aprobadas-#{school.code}-#{user.ci}",
+               locals: {grade: @grade, approved: true},
+               formats: [:html],
+               page_size: 'letter',
+               header: { html: { template: '/grades/kardex_title', formats: [:html], layout: false, locals: { title: title, school: school, user: user } } },
+               footer: { center: "Página: [page] de [topage]", font_size: '10' },
+               margin: { top: 56 },
+               disable_javascript: true,
+               load_error_handling: 'ignore',
+               load_media_error_handling: 'ignore'
+      end
+    end
   end
 
   def export_approved_subjects
@@ -115,7 +141,7 @@ class GradesController < ApplicationController
 
     # Precargar asociaciones usadas en el PDF para evitar N+1
     def preload_kardex_data
-      return unless action_name == 'kardex'
+      return unless %w[kardex kardex_approved].include?(action_name)
       @grade = Grade.includes(
         { student: :user },
         { study_plan: [:school, :subject_types] },

@@ -1,6 +1,11 @@
 %h3.text-center.mb-2 Historial Académico
 
-- enroll_academic_processes.sort_by_period_reverse.each do |enroll_academic_process|
+
+- enrolls = enroll_academic_processes.sort_by_period_reverse
+- if approved
+  - enrolls = enrolls.select { |enroll| enroll.academic_records.aprobado.any? }
+
+- enrolls.each do |enroll_academic_process|
   
   %table.table-sm.nobreak
     %thead
@@ -17,9 +22,10 @@
           .badge.bg-info.text-dark= enroll_academic_process.enroll_status.titleize if enroll_academic_process.enroll_status
         %td.text-center
           .badge.bg-info.text-dark= enroll_academic_process.permanence_status.titleize if enroll_academic_process.permanence_status
+        - records = approved ? enroll_academic_process.academic_records.aprobado : enroll_academic_process.academic_records
         %td.text-center= enroll_academic_process.academic_records.count
 
       %tr
         %td{style: 'padding: 10px', colspan: 4}
-          = render partial: 'academic_records/index_to_history_kardex', locals: {academic_records: enroll_academic_process.academic_records}
+          = render partial: 'academic_records/index_to_history_kardex', locals: {academic_records: records, approved: approved}
   %br
