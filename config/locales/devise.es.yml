@@ -45,7 +45,7 @@ es:
       updated: "Actualizó su cuenta correctamente."
       updated_but_not_signed_in: "Actualizó su cuenta correctamente, pero debe iniciar sesión nuevamente debido a que su contraseña ha cambiado."
     sessions:
-      signed_in: "¡Hola, bienvenido a tu sesión de COESFAU!"
+      signed_in: "¡Hola, bienvenido a tu sesión de COESFAU! Por tu seguridad, cambia tu contraseña con frecuencia y evita usar tu cédula, nombres, fechas de nacimiento o datos personales; usa una combinación de letras, números y símbolos."
       signed_out: "¡Hasta luego, nos vemos pronto!"
       already_signed_out: "Se cerró sesión correctamente."
     unlocks:
