@@ -36,4 +36,18 @@ class UserMailer < ApplicationMailer
     mail(to: user.email_desc, subject: "¡Reporte largo solicitado: #{file_name}!")
   end
 
+  def login_alert(user, login_data = {})
+    @user = user
+    @sign_in_at = login_data[:sign_in_at] || Time.current
+    @ip_address = login_data[:ip_address].presence || 'No disponible'
+    @location = login_data[:location].presence || 'No disponible'
+    @device = login_data[:device].presence || 'No disponible'
+    @browser = login_data[:browser].presence || 'No disponible'
+    @os = login_data[:os].presence || 'No disponible'
+    @user_agent = login_data[:user_agent].presence || 'No disponible'
+    @reset_password_url = Rails.application.routes.url_helpers.new_user_password_url
+
+    mail(to: user.email_desc, subject: 'Alerta de seguridad: nuevo inicio de sesión en COES-FAU')
+  end
+
 end

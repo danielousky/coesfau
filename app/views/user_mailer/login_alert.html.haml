@@ -1,0 +1,42 @@
+%h3 Alerta de seguridad: nuevo inicio de sesión en COES-FAU
+
+%p
+  Hola
+  %strong= @user.full_name.presence || @user.email
+  , registramos un nuevo inicio de sesión en tu cuenta.
+
+%p
+  %strong Detalles del acceso:
+%ul
+  %li
+    %strong Fecha y hora:
+    = I18n.l(@sign_in_at.in_time_zone, format: :long)
+  %li
+    %strong Dirección IP:
+    = @ip_address
+  %li
+    %strong Ubicación aproximada:
+    = @location
+  %li
+    %strong Dispositivo:
+    = @device
+  %li
+    %strong Navegador:
+    = @browser
+  %li
+    %strong Sistema operativo:
+    = @os
+
+%p
+  %strong User-Agent:
+  = @user_agent
+
+%h4 ¿No fuiste tú?
+%ol
+  %li Cambia tu contraseña inmediatamente.
+  %li Restablece tu clave desde este enlace:
+  %li= link_to 'Restablecer contraseña', @reset_password_url
+  %li Contacta a soporte institucional para bloquear o revisar tu cuenta.
+
+%p
+  Si reconoces este inicio de sesión, no necesitas realizar ninguna acción.
