@@ -1,4 +1,4 @@
-- if ((section.totaly_qualified? and section.is_in_process_active?) or (current_user.admin? and session[:rol] and session[:rol].eql? 'admin'))
+- if (((section.totaly_qualified? and section.is_in_process_active?) or (current_user.admin? and session[:rol] and session[:rol].eql? 'admin')) and !section.equivalencia?)
   = link_to "/sections/#{section.id}.pdf", class: 'btn btn-success btn-sm float-right m-3', target: '_blank', rel: "noopener noreferrer" do
     .fa.fa-download.fa-list
     Generar Acta  

@@ -31,6 +31,11 @@ class SectionsController < ApplicationController
       respond_to do |format|
         format.html
         format.pdf do
+          if @section.equivalencia?
+            fallback_path = current_admin ? "/admin/section/#{@section.id}" : section_path(@section)
+            redirect_back fallback_location: fallback_path, alert: 'No está permitido generar acta para secciones de equivalencia.'
+            next
+          end
           top = 72
           # top += 10 if @section.subject&.name&.length > 52
           render pdf: "acta_#{@section.number_acta}", template: "sections/acta", locals: {section: @section}, formats: [:html], page_size: 'letter', header: {html: {template: '/sections/acta_header', formats: [:html], layout: false, locals: {school: @section.school, section: @section}}}, footer: {html: {template: '/sections/signatures', formats: [:html]}}, margin: {top: top, bottom: 68}#, dpi: 150

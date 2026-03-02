@@ -496,11 +496,12 @@ class Section < ApplicationRecord
         label 'Acta'
         pretty_value do
           current_user = bindings[:view]._current_user
-          if (current_user.admin? and bindings[:view].session[:rol] and bindings[:view].session[:rol].eql? 'admin' and current_user.admin.authorized_manage? 'Section' and bindings[:object].academic_records.any?) #and bindings[:object].qualified?
+          if (current_user.admin? and bindings[:view].session[:rol] and bindings[:view].session[:rol].eql? 'admin' and current_user.admin.authorized_manage? 'Section' and bindings[:object].academic_records.any? and !bindings[:object].equivalencia?)
             ApplicationController.helpers.btn_toggle_download 'btn-success', "/sections/#{bindings[:object].id}.pdf", 'Generar Acta', nil
           end
         end
       end
+
     end
 
     show do
