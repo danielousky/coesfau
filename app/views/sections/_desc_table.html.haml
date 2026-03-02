@@ -19,7 +19,7 @@
       %td{title: section.subject.desc}
         - if section.subject
           - if current_user.admin? and session[:rol].eql? 'admin'
-            %a{href: "/admin/subject/#{section.subject_id}"}= section.subject.desc 
+            %a{href: "/admin/subject/#{section&.subject&.id}"}= section&.subject&.desc 
           - else
             = section.subject.desc
 
