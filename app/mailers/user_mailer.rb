@@ -45,7 +45,7 @@ class UserMailer < ApplicationMailer
     @browser = login_data[:browser].presence || 'No disponible'
     @os = login_data[:os].presence || 'No disponible'
     @user_agent = login_data[:user_agent].presence || 'No disponible'
-    @reset_password_url = Rails.application.routes.url_helpers.new_user_password_url
+    @reset_password_url = new_user_password_url
 
     mail(to: user.email_desc, subject: 'Alerta de seguridad: nuevo inicio de sesión en COES-FAU')
   end
