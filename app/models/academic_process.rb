@@ -296,9 +296,9 @@ class AcademicProcess < ApplicationRecord
               btn_massive_qualification = ApplicationController.helpers.link_to_massive_qualification_sections(object)
             end
 
-            "<span style='white-space: nowrap;'>#{label_total} #{label_without_qualified} #{label_qualified} #{btn_massive_qualification}</span>".html_safe
+            "<span style='white-space: nowrap;'>#{label_total} #{label_qualified} #{label_without_qualified} #{btn_massive_qualification}</span>".html_safe
           else
-            "<span style='white-space: nowrap;'>#{label_total} #{label_without_qualified} #{label_qualified}</span>".html_safe
+            "<span style='white-space: nowrap;'>#{label_total} #{label_qualified} #{label_without_qualified}</span>".html_safe
           end
         end
       end
