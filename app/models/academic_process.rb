@@ -112,14 +112,6 @@ class AcademicProcess < ApplicationRecord
     self.enroll_academic_processes.count
   end
 
-  def link_to_massive_confirmation
-    "<a href='/academic_processes/#{id}/massive_confirmation' title='Confirmar todos los preinscritos' data-confirm='Está acción confirmará todos los preinscritos. ¿Está completamente seguro?' class='label bg-info'><i class= 'fa-regular fa-list-check'></i></a>".html_safe
-  end
-
-  def link_to_massive_qualification_sections
-    "<a href='/academic_processes/#{id}/massive_qualification_sections' rel='tooltip' data-bs-toggle='tooltip' data-bs-placement='top' data-bs-original-title='Marcar todas las secciones sin calificar como calificadas' data-confirm='Está acción marcará todas las secciones sin calificar como calificadas. ¿Está completamente seguro?' class='label bg-success'><i class='fa-solid fa-list-check'></i></a>".html_safe
-  end
-
   def label_total_enrolls_by_status
     total = []
 
@@ -301,7 +293,7 @@ class AcademicProcess < ApplicationRecord
 
             btn_massive_qualification = ''
             if user&.admin&.authorized_manage?('Section') and total_without_qualified > 0
-              btn_massive_qualification = object.link_to_massive_qualification_sections
+              btn_massive_qualification = ApplicationController.helpers.link_to_massive_qualification_sections(object)
             end
 
             "<span style='white-space: nowrap;'>#{label_total} #{label_without_qualified} #{label_qualified} #{btn_massive_qualification}</span>".html_safe
@@ -318,7 +310,7 @@ class AcademicProcess < ApplicationRecord
           if (bindings[:view]._current_user&.admin&.authorized_read? 'EnrollAcademicProcess') and bindings[:view].session[:period_name]&.eql?(bindings[:object].period.name)
             link_to_massive_confirmation = ''
             if bindings[:object].enroll_academic_processes.not_confirmado.any?
-              link_to_massive_confirmation = bindings[:object].link_to_massive_confirmation
+              link_to_massive_confirmation = ApplicationController.helpers.link_to_massive_confirmation(bindings[:object])
             end
             "#{bindings[:object].btn_total_enrolls_by_status} #{link_to_massive_confirmation}".html_safe
 
