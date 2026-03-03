@@ -36,6 +36,38 @@ module ApplicationHelper
 		btn_toggle classes, 'fa fa-download', href, title_tooltip, value, onclick_action
 	end
 
+	def link_to_massive_qualification_sections(academic_process)
+		massive_action_link(
+			academic_process,
+			'massive_qualification_sections',
+			'Marcar todas las secciones sin calificar como calificadas',
+			'Está acción marcará todas las secciones sin calificar como calificadas. ¿Está completamente seguro?',
+			'label bg-success',
+			'fa-solid fa-list-check'
+		)
+	end
+
+	def link_to_massive_confirmation(academic_process)
+		massive_action_link(
+			academic_process,
+			'massive_confirmation',
+			'Confirmar todos los preinscritos',
+			'Está acción confirmará todos los preinscritos. ¿Está completamente seguro?',
+			'label bg-info',
+			'fa-regular fa-list-check'
+		)
+	end
+
+	def massive_action_link(academic_process, action_name, tooltip_text, confirm_text, css_class, icon_class)
+		content_tag :a,
+			{ href: "/academic_processes/#{academic_process.id}/#{action_name}",
+			  'data-confirm': confirm_text,
+			  class: css_class }.merge(bootstrap_tooltip_attrs(tooltip_text)) do
+			capture_haml{"<i class='#{icon_class}'></i>".html_safe}
+		end
+	end
+	private :massive_action_link
+
 	def label_status(klazz, content)
 		text_color = ((klazz.eql? 'bg-info') or (klazz.eql? 'bg-success') or (klazz.eql? 'bg-warning')) ? 'text-dark' : ''
 		capture_haml{"<span class='text-center badge #{klazz} #{text_color}'>#{content}</span>".html_safe }
@@ -62,14 +94,14 @@ module ApplicationHelper
 
 	def label_link_with_tooptip(href, klazz, content, title, placement='top')
 		klazz += ' text-dark' if (klazz.include? 'bg-info' or klazz.include? 'bg-success' or klazz.include? 'bg-warning')
-		content_tag :a, href: href, rel: :tooltip, 'data-bs-toggle': :tooltip, 'data-bs-placement': placement, 'data-bs-original-title': title do
+		content_tag :a, { href: href }.merge(bootstrap_tooltip_attrs(title, placement)) do
 			capture_haml{"<span class='text-center badge #{klazz}'>#{content}</span>".html_safe }
 		end	
 	end	
 
 	def btn_link_with_tooptip(href, klazz, content, title, placement='top')
 
-		content_tag :a, href: href, rel: :tooltip, 'data-bs-toggle': :tooltip, 'data-bs-placement': placement, 'data-bs-original-title': title, class: "btn btn-sm #{klazz}" do
+		content_tag :a, { href: href, class: "btn btn-sm #{klazz}" }.merge(bootstrap_tooltip_attrs(title, placement)) do
 			capture_haml{"<span class='text-center'>#{content}</span>".html_safe }
 		end	
 	end	
@@ -77,10 +109,15 @@ module ApplicationHelper
 	def label_status_with_tooptip(klazz, content, title, placement='top')
 		text_color = ((klazz.eql? 'bg-info') or (klazz.eql? 'bg-success') or (klazz.eql? 'bg-warning')) ? 'text-dark' : ''
 
-		content_tag :b, rel: :tooltip, 'data-bs-toggle': 'tooltip', 'data-bs-placement': placement, 'data-bs-original-title': title do
+		content_tag :b, bootstrap_tooltip_attrs(title, placement) do
 			capture_haml{"<span class='text-center badge #{klazz} #{text_color}'>#{content}</span>".html_safe }
 		end	
 	end
+
+	def bootstrap_tooltip_attrs(title, placement='top')
+		{ rel: :tooltip, 'data-bs-toggle': :tooltip, 'data-bs-placement': placement, 'data-bs-original-title': title }
+	end
+	private :bootstrap_tooltip_attrs
 
 	def translate_model model, singular='other'
 		I18n.t("activerecord.models.#{model}.#{singular}")
@@ -95,7 +132,7 @@ module ApplicationHelper
 
 	def simple_toggle href, value, title_tooltip, color_type, icon, onclick_action = nil
 		target = (href.include? 'descargar') ? '_blank' : ''
-		link_to href, class: "tooltip-btn text-#{color_type}", onclick: onclick_action, target: target, 'data_toggle': :tooltip, title: title_tooltip do
+		link_to href, { class: "tooltip-btn text-#{color_type}", onclick: onclick_action, target: target }.merge(bootstrap_tooltip_attrs(title_tooltip)) do
 			capture_haml{"<i class= '#{icon}'></i> #{value}".html_safe}
 		end
 

@@ -37,7 +37,7 @@ module ImporterHelper
 
   def btn_eliminar_prelacion(dep)
 
-    link_to dependencia_path(dep), class: "tooltip-btn text-danger", 'data_toggle': :tooltip, title: 'Eliminar prelación', method: :delete do
+    link_to dependencia_path(dep), class: "tooltip-btn text-danger", rel: :tooltip, 'data-bs-toggle': :tooltip, 'data-bs-placement': :top, 'data-bs-original-title': 'Eliminar prelación', method: :delete do
       capture_haml{glyph :trash}
     end
   end

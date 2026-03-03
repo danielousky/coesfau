@@ -35,7 +35,7 @@
     %label.col-sm-2.col-form-label.text-md-end{for: "registration_status_field"} Estado de Registro
     .col-sm-10.controls
       - Grade.registration_statuses.map do |k,v|
-        %label.btn.btn-secondary.btn-sm.tooltip-btn{'data_toggle': :tooltip, title: k.titleize}
+        %label.btn.btn-secondary.btn-sm.tooltip-btn{rel: :tooltip, 'data-bs-toggle': :tooltip, 'data-bs-placement': :top, 'data-bs-original-title': k.titleize}
           = radio_button_tag 'registration_status', k, false
           = "#{k.upcase}"
       .form-text

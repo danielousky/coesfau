@@ -90,8 +90,10 @@
     const elementText = document.getElementById(`progress-text-target-${id}`);
     element.classList.add("direct-upload--error tooltip-btn alert alert-danger text-danger");
     element.classList.remove("text-success");
-    element.setAttribute("title", error);
-    element.setAttribute("data-toggle", 'tooltip');
+    element.setAttribute("rel", 'tooltip');
+    element.setAttribute("data-bs-toggle", 'tooltip');
+    element.setAttribute("data-bs-placement", 'top');
+    element.setAttribute("data-bs-original-title", error);
     elementText.innerHTML = `Error guardando: ${error}%`;
   })
 

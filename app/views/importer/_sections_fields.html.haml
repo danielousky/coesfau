@@ -26,7 +26,7 @@
   %label.col-sm-2.col-form-label.text-md-end{for: "modality_field"} Tipo de Calificación
   .col-sm-10.controls
     - Section.modalities.each_with_index.map do |value, i|
-      %label.btn.btn-secondary.btn-sm.tooltip-btn{'data_toggle': :tooltip, title: value[0].titleize}
+      %label.btn.btn-secondary.btn-sm.tooltip-btn{rel: :tooltip, 'data-bs-toggle': :tooltip, 'data-bs-placement': :top, 'data-bs-original-title': value[0].titleize}
         = radio_button_tag 'modallity', value[0], i.eql?(0)
         = "#{value[0].upcase}"
     .form-text

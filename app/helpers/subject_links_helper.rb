@@ -11,7 +11,7 @@ module SubjectLinksHelper
 			else
 				aux = asignatura.ordinal
 			end
-			"<span class='badge bg-info tooltip-btn' data-toggle='tooltip' title= 'Orden'>#{aux}</span>".html_safe
+			"<span class='badge bg-info tooltip-btn' rel='tooltip' data-bs-toggle='tooltip' data-bs-placement='top' data-bs-original-title='Orden'>#{aux}</span>".html_safe
 		end
 	end
 
@@ -29,7 +29,7 @@ module SubjectLinksHelper
 	end
 
 	def btn_delete_depend(dep)
-		link_to "/subject_links/#{dep.id}.json", class: "tooltip-btn text-danger", 'data_toggle': :tooltip, title: 'Eliminar prelación', method: :delete, onclick: "$('#dep#{dep.id}').remove();" do
+		link_to "/subject_links/#{dep.id}.json", class: "tooltip-btn text-danger", rel: :tooltip, 'data-bs-toggle': :tooltip, 'data-bs-placement': :top, 'data-bs-original-title': 'Eliminar prelación', method: :delete, onclick: "$('#dep#{dep.id}').remove();" do
 			capture_haml{"<i class='fa fa-trash'></i>".html_safe}
 		end
 	end
