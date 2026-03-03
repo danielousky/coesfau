@@ -117,7 +117,7 @@ class AcademicProcess < ApplicationRecord
   end
 
   def link_to_massive_qualification_sections
-    "<a href='/academic_processes/#{id}/massive_qualification_sections' title='Marcar todas las secciones sin calificar como calificadas' data-confirm='Está acción marcará todas las secciones sin calificar como calificadas. ¿Está completamente seguro?' class='label bg-success'><i class='fa-solid fa-list-check'></i></a>".html_safe
+    "<a href='/academic_processes/#{id}/massive_qualification_sections' rel='tooltip' data-bs-toggle='tooltip' data-bs-placement='top' data-bs-original-title='Marcar todas las secciones sin calificar como calificadas' data-confirm='Está acción marcará todas las secciones sin calificar como calificadas. ¿Está completamente seguro?' class='label bg-success'><i class='fa-solid fa-list-check'></i></a>".html_safe
   end
 
   def label_total_enrolls_by_status
