@@ -64,6 +64,7 @@ Rails.application.routes.draw do
   resources :academic_processes do
     member do
       get 'massive_confirmation'
+      get 'massive_qualification_sections'
       get 'clean_courses'
       get 'run_regulation'
     end

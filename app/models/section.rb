@@ -75,6 +75,7 @@ class Section < ApplicationRecord
   scope :custom_search, -> (keyword) { joins(:period, :subject).where("sections.code ILIKE '%#{keyword}%' OR subjects.name ILIKE '%#{keyword}%' OR subjects.code ILIKE '%#{keyword}%' OR periods.name ILIKE '%#{keyword}%'").sort_by_period }
   
   scope :qualified, -> () {where(qualified: true)}
+  scope :without_qualified, -> () {where(qualified: false)}
 
   # Atención: Este scope no esta trabajando
   # scope :codes, -> () {select(:code).all.distinct.order(code: :asc).map{|s| s.code}}

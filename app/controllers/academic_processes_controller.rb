@@ -1,5 +1,5 @@
 class AcademicProcessesController < ApplicationController
-  before_action :set_academic_process, only: %i[ show edit update destroy clone_sections clean_courses run_regulation massive_confirmation]
+  before_action :set_academic_process, only: %i[ show edit update destroy clone_sections clean_courses run_regulation massive_confirmation massive_qualification_sections]
 
   def massive_confirmation
     total = @academic_process.enroll_academic_processes.not_confirmado
@@ -10,6 +10,19 @@ class AcademicProcessesController < ApplicationController
       flash[:danger] = "No fue posible completar la operación: #{total.errors.full_messages.to_sentence}"
     end
     redirect_back fallback_location: '/admin/enroll_academic_process'
+  end
+
+  def massive_qualification_sections
+    total = @academic_process.sections.where(qualified: false)
+    updated = total.update_all(qualified: true, updated_at: Time.current)
+
+    if updated > 0
+      flash[:success] = "Se actualizaron #{updated} secciones como calificadas"
+    else
+      flash[:info] = 'No hay secciones sin calificar para actualizar'
+    end
+
+    redirect_back fallback_location: '/admin/academic_process'
   end
 
   def run_regulation

@@ -116,6 +116,10 @@ class AcademicProcess < ApplicationRecord
     "<a href='/academic_processes/#{id}/massive_confirmation' title='Confirmar todos los preinscritos' data-confirm='Está acción confirmará todos los preinscritos. ¿Está completamente seguro?' class='label bg-info'><i class= 'fa-regular fa-list-check'></i></a>".html_safe
   end
 
+  def link_to_massive_qualification_sections
+    "<a href='/academic_processes/#{id}/massive_qualification_sections' title='Marcar todas las secciones sin calificar como calificadas' data-confirm='Está acción marcará todas las secciones sin calificar como calificadas. ¿Está completamente seguro?' class='label bg-success'><i class='fa-solid fa-list-check'></i></a>".html_safe
+  end
+
   def label_total_enrolls_by_status
     total = []
 
@@ -173,6 +177,10 @@ class AcademicProcess < ApplicationRecord
 
   def total_sections_qualified
     self.sections.qualified.count
+  end
+
+  def total_sections_without_qualified
+    self.sections.where(qualified: false).count
   end
 
   def total_sections_without_teacher_assigned
@@ -273,15 +281,32 @@ class AcademicProcess < ApplicationRecord
 
       field :total_sections do
 
-        column_width 150
+        column_width 160
         label 'Secciones'
         pretty_value do 
           user = bindings[:view]._current_user
-          if (user&.admin&.authorized_read? 'Section') and bindings[:view].session[:period_name]&.eql?(bindings[:object].period.name)
-            href = "/admin/section?query=#{bindings[:object].period.name}"
-            ApplicationController.helpers.label_link_with_tooptip(href, 'badge bg-info', "#{value} en #{bindings[:object].courses.count} Cursos", 'Total Secciones')
+          object = bindings[:object]
+          total_qualified = object.total_sections_qualified
+          total_without_qualified = object.total_sections_without_qualified
+          link = "/admin/section?query=#{object.period.name}"
+
+          label_total = ApplicationController.helpers.label_status_with_tooptip('bg-info', value, 'Total Secciones')
+          label_without_qualified = ApplicationController.helpers.label_status_with_tooptip('bg-secondary', total_without_qualified, 'Secciones Sin Calificar')
+          label_qualified = ApplicationController.helpers.label_status_with_tooptip('bg-success', total_qualified, 'Secciones Calificadas')
+
+          if user&.admin&.authorized_read?('Section')
+            label_total = ApplicationController.helpers.label_link_with_tooptip(link, 'badge bg-info', value, "Total Secciones (#{object.courses.count} cursos)")
+            label_without_qualified = ApplicationController.helpers.label_link_with_tooptip("#{link}&scope=without_qualified", 'badge bg-secondary', total_without_qualified, 'Secciones Sin Calificar')
+            label_qualified = ApplicationController.helpers.label_link_with_tooptip("#{link}&scope=qualified", 'badge bg-success', total_qualified, 'Secciones Calificadas')
+
+            btn_massive_qualification = ''
+            if user&.admin&.authorized_manage?('Section') and total_without_qualified > 0
+              btn_massive_qualification = object.link_to_massive_qualification_sections
+            end
+
+            "<span style='white-space: nowrap;'>#{label_total} #{label_without_qualified} #{label_qualified} #{btn_massive_qualification}</span>".html_safe
           else
-            %{<span class='badge bg-info text-dark'>#{value}</span>}.html_safe
+            "<span style='white-space: nowrap;'>#{label_total} #{label_without_qualified} #{label_qualified}</span>".html_safe
           end
         end
       end
