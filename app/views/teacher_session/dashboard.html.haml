@@ -23,22 +23,21 @@
                 de
                 = sec.capacity
             %td.text-center.align-items-center
-              - if sec.qualified?
-                - counts = sec.academic_records.group(:status).count.transform_keys(&:to_s)
-                - get_count = ->(*keys) { keys.flatten.map(&:to_s).map { |k| counts[k] || 0 }.sum }
-                .row.g-1
-                  .col-auto
-                    .badge.bg-success.text-white{'data-bs-toggle': :tooltip, title: 'Aprobados'}
-                      = "#{get_count.call(%w(aprobado))}"
-                  .col-auto
-                    .badge.bg-danger.text-white{'data-bs-toggle': :tooltip, title: 'Aplazados'}
-                      = "#{get_count.call(%w(aplazado))}"
-                  .col-auto
-                    .badge.bg-danger.text-white{'data-bs-toggle': :tooltip, title: 'Perdida por Inasistencia'}
-                      = "#{get_count.call(%w(perdida_por_inasistencia))}"
-                  .col-auto
-                    .badge.bg-warning.text-dark{'data-bs-toggle': :tooltip, title: 'Retirados'}
-                      = "#{get_count.call(%w(retirado))}"
+              - counts = sec.academic_records.group(:status).count.transform_keys(&:to_s)
+              - get_count = ->(*keys) { keys.flatten.map(&:to_s).map { |k| counts[k] || 0 }.sum }
+              .row.g-1
+                .col-auto
+                  .badge.bg-success.text-white{'data-bs-toggle': :tooltip, title: 'Aprobados'}
+                    = "#{get_count.call(%w(aprobado))}"
+                .col-auto
+                  .badge.bg-danger.text-white{'data-bs-toggle': :tooltip, title: 'Aplazados'}
+                    = "#{get_count.call(%w(aplazado))}"
+                .col-auto
+                  .badge.bg-danger.text-white{'data-bs-toggle': :tooltip, title: 'Perdida por Inasistencia'}
+                    = "#{get_count.call(%w(perdida_por_inasistencia))}"
+                .col-auto
+                  .badge.bg-warning.text-dark{'data-bs-toggle': :tooltip, title: 'Retirados'}
+                    = "#{get_count.call(%w(retirado))}"
             %td
               - if !sec.qualified? and sec.is_in_process_active?
                 = link_to section_path(sec), class: 'btn btn-sm btn-success' do
